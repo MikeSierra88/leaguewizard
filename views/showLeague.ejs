@@ -1,0 +1,42 @@
+<%- include('partials/header'); -%>
+    
+    <h1>League standings</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Played</th>
+                <th>Win</th>
+                <th>Draw</th>
+                <th>Loss</th>
+                <th>GD</th>
+                <th>Points</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>PC</td>
+                <td>Manchester United</td>
+                <td>4</td>
+                <td>1</td>
+                <td>2</td>
+                <td>1</td>
+                <td>-2</td>
+                <td>5</td>
+                <td><a href="/league/team">Details</a></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p><a href="/league/match/new">Add match</a></p>
+    
+    <p><a href="/league/team/new">Add team</a></p>
+    
+    <a href="/">Back to index</a>
+    
+<%- include('partials/footer'); -%>
