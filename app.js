@@ -1,4 +1,4 @@
-// index.js
+// app.js
 
 /**
  * Required External Modules
@@ -8,7 +8,9 @@ const express = require("express"),
       path    = require("path"),
       bodyParser = require('body-parser'),
       createError           = require('http-errors'),
+      League = require("./models/league"),
       mongoose = require("mongoose"),
+      moment = require("moment"),
       { expressCspHeader, 
       SELF, NONCE } = require('express-csp-header');
 
@@ -40,6 +42,8 @@ const app  = express(),
     const db = mongoose.connection;
       db.once('open', function() {
         console.log('DB connected');
+        // Seed test data into database
+        // require('./models/seedData');
     });
 
 // view engine setup
@@ -73,7 +77,7 @@ const app  = express(),
  */
 
 // match routes
-    app.get("/league/match/new", (req, res) => {
+    app.get("/leagues/:leagueid/matches/new", (req, res) => {
         
         res.status(200).render("newMatch", {
             title: "League Wizard - Add Match"
@@ -81,22 +85,45 @@ const app  = express(),
         
     });
     
-    app.post("/league/match", (req, res) => {
+    app.post("/leagues/:leagueid/matches", (req, res) => {
         
        res.status(200).send("new match POST reached");
        
     });
     
 // team routes
-    app.get("/league/team", (req, res) => {
-        
-        res.status(200).render("showTeam", {
-            title: "League Wizard - Team details"
+    app.get("/leagues/:leagueid/teams/:teamid", (req, res) => {
+        League.findById(req.params.leagueid).populate("teams").populate("matches").exec(function(err, foundLeague) {
+            if (err) {
+                res.render("error", {error: err});
+            } 
+            else {
+                if (foundLeague === undefined || foundLeague === null) {
+                    res.redirect("/leagues");
+                } 
+                else {
+                    var foundTeam = foundLeague.teams.filter(function(team){
+                        return team._id == req.params.teamid;
+                    }).toObject();
+                    if (foundTeam === undefined || foundTeam === null) {
+                        console.log("Team not found");
+                        var leagueUrl = "/leagues/" + foundLeague._id;
+                        res.redirect(leagueUrl);
+                    }
+                    else {
+                        res.status(200).render("showTeam", {
+                            title: "League Wizard - Standings",
+                            league: foundLeague,
+                            team: foundTeam[0],
+                            moment: moment
+                        });
+                    }
+                }
+            }
         });
-        
     });
     
-    app.get("/league/team/new", (req, res) => {
+    app.get("/leagues/:leagueid/teams/new", (req, res) => {
         
         res.status(200).render("newTeam", {
             title: "League Wizard - Add team to league"
@@ -104,19 +131,36 @@ const app  = express(),
         
     });
     
-    app.post("/league/team", (req, res) => {
+    app.post("/leagues/:leagueid/teams", (req, res) => {
         
        res.status(200).send("new team POST reached");
        
     });
 
 // league routes
-    app.get("/league", (req, res) => {
-        
-        res.status(200).render("showLeague", {
-            title: "League Wizard - Standings"
+    
+    app.get("/leagues", (req, res) => {
+        res.redirect("/");
+    });
+    
+    app.get("/leagues/:id", (req, res) => {
+        League.findById(req.params.id).populate("teams").populate("matches").exec(function(err, foundLeague) {
+            if (err) {
+                res.render("error", {error: err});
+            } else {
+                if (foundLeague === undefined || foundLeague === null) {
+                    res.redirect("/leagues");
+                    
+                } else {
+                    res.status(200).render("showLeague", {
+                        title: "League Wizard - Standings",
+                        league: foundLeague,
+                        moment: moment
+                    });
+                }
+                
+            }
         });
-        
     });
     
 // index route
@@ -146,7 +190,7 @@ const app  = express(),
       // render the error page
       res.status(err.status || 500);
       var error = err;
-      res.render("error.ejs", {error: error});
+      res.render("error", {error: error});
     });
 
 /**

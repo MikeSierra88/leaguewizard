@@ -9,33 +9,35 @@
                 <th>Name</th>
                 <th>Team</th>
                 <th>Played</th>
-                <th>Win</th>
+                <th>Won</th>
                 <th>Draw</th>
-                <th>Loss</th>
+                <th>Lost</th>
                 <th>GD</th>
                 <th>Points</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
+            <% league.teams.forEach((team) => { %>
             <tr>
-                <td>1</td>
-                <td>PC</td>
-                <td>Manchester United</td>
-                <td>4</td>
-                <td>1</td>
-                <td>2</td>
-                <td>1</td>
-                <td>-2</td>
-                <td>5</td>
-                <td><a href="/league/team">Details</a></td>
+                <td><%= team.position %></td>
+                <td><%= team.name %></td>
+                <td><%= team.footballTeam %></td>
+                <td><%= team.played %></td>
+                <td><%= team.won %></td>
+                <td><%= team.draw %></td>
+                <td><%= team.lost %></td>
+                <td><%= (team.goalsfor - team.goalsagainst) %></td>
+                <td><%= (team.won * 3 + team.draw) %></td>
+                <td><a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a></td>
             </tr>
+            <% }); %>
         </tbody>
     </table>
     
-    <p><a href="/league/match/new">Add match</a></p>
+    <p><a href="/leagues/<%= league._id %>/matches/new">Add match</a></p>
     
-    <p><a href="/league/team/new">Add team</a></p>
+    <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
     
     <a href="/">Back to index</a>
     

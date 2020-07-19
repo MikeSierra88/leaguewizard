@@ -1,7 +1,7 @@
 {
   "name": "leaguewizard",
   "version": "0.0.1",
-  "description": "",
+  "description": "FIFA Office League Web App",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "Gabor Meszaros",
   "email": "reklam11@gmail.com",
-  "license": "none",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/MikeSierra88/leaguewizard/issues"
   },
@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "express-csp-header": "^4.0.0",
     "http-errors": "^1.8.0",
+    "moment": "^2.27.0",
     "mongoose": "^5.9.24"
   }
 }

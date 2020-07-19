@@ -1,9 +1,14 @@
 <%- include('partials/header'); -%>
-    
     <h1>Team details</h1>
     
+    <h2>Name</h2>
+    <p><%= team.name %></p>
+    
+    <h2>Team</h2>
+    <p><%= team.footballTeam %></p>
+    
     <h2>Current position</h2>
-    <p>1</p>
+    <p><%= team.position %></p>
     
     <h2>Matches played</h2>
     
@@ -20,15 +25,35 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>H</td>
-                <td>HX</td>
-                <td>Borussia Dortmund</td>
-                <td>4</td>
-                <td>1</td>
-                <td>W</td>
-                <td>2020.07.17.</td>
-            </tr>
+            <% league.matches.forEach((match) => { %>
+                <% if (match.homeTeam.equals(team._id)) { %>
+                    <% var opposition = league.teams.filter(function(aTeam){return aTeam._id.equals(match.awayTeam);})[0]; %>
+                <tr>
+                    <td>H</td>
+                    <td><%=opposition.name%></td>
+                    <td><%=opposition.footballTeam%></td>
+                    <td><%=match.homeScore%></td>
+                    <td><%=match.awayScore%></td>
+                    <% var result; %>
+                    <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
+                    <td><%= result %></td>
+                    <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                </tr>
+                <% } else if (match.awayTeam.equals(team._id)) { %>
+                    <% var opposition = league.teams.filter(function(aTeam){return aTeam._id.equals(match.homeTeam);})[0]; %>
+                <tr>
+                    <td>A</td>
+                    <td><%=opposition.name%></td>
+                    <td>Borussia Dortmund</td>
+                    <td><%=match.awayScore%></td>
+                    <td><%=match.homeScore%></td>
+                    <% var result; %>
+                    <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
+                    <td><%= result %></td>
+                    <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                </tr> 
+                <% } %>
+            <% }); %>
         </tbody>
     </table>
     
@@ -50,6 +75,6 @@
         </tbody>
     </table>
     
-    <a href="/league">Back to league</a>
+    <a href="/leagues/<%=league._id%>">Back to league</a>
     
 <%- include('partials/footer'); -%>
