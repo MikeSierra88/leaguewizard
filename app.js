@@ -9,7 +9,11 @@ const express = require("express"),
       bodyParser = require('body-parser'),
       createError           = require('http-errors'),
       League = require("./models/league"),
+      Match = require("./models/match"),
+      Team = require("./models/team"),
       mongoose = require("mongoose"),
+      cookieParser          = require('cookie-parser'),
+      methodOverride        = require('method-override'),
       moment = require("moment"),
       { expressCspHeader, 
       SELF, NONCE } = require('express-csp-header');
@@ -52,13 +56,17 @@ const app  = express(),
     app.set("view engine", "ejs");
     
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(cookieParser());
     app.use(express.static(path.join(__dirname, 'public')));
+    app.use(methodOverride("_method"));
     
 // CSP header
     app.use(expressCspHeader({
       directives: {
         'default-src': [SELF, NONCE, '*.google.com'],
-        'script-src': [SELF, NONCE, 'cdnjs.cloudflare.com'],
+        'script-src': [SELF, NONCE, 'code.jquery.com'],
         'style-src': [SELF, NONCE],
         'img-src': [SELF, NONCE],
         'font-src': [SELF, NONCE, '*.fontawesome.com']
@@ -78,16 +86,125 @@ const app  = express(),
 
 // match routes
     app.get("/leagues/:leagueid/matches/new", (req, res) => {
-        
-        res.status(200).render("newMatch", {
-            title: "League Wizard - Add Match"
+        League.findById(req.params.leagueid).populate("teams").exec(function(err, foundLeague) {
+            if (err) {
+                res.render("error", {error: err});
+            } else {
+                if (foundLeague === undefined || foundLeague === null) {
+                    res.redirect("/leagues");
+                } 
+                else {
+                    res.status(200).render("newMatch", {
+                    title: "League Wizard - Add Match",
+                    league: foundLeague
+                    });
+                }
+            }
         });
-        
     });
     
-    app.post("/leagues/:leagueid/matches", (req, res) => {
-        
-       res.status(200).send("new match POST reached");
+    app.post("/leagues/:leagueid/matches", async function(req, res) {
+        if (req.body.homeTeam != req.body.awayTeam) {
+            var newMatch = new Match({
+                league: req.body.league,
+                homeTeam: req.body.homeTeam,
+                awayTeam: req.body.awayTeam,
+                homeScore: req.body.homeScore,
+                awayScore: req.body.awayScore,
+                date: Date.parse(req.body.date)
+            });
+            await newMatch.save(function(err, match){
+                if (err) {
+                    res.render("error", {error: err});
+                } else {
+                    League.findById(req.params.leagueid).populate("teams").exec(async function(err, foundLeague) {
+                    if (err) {
+                        res.render("error", {error: err});
+                    } else {
+                        // insert match id into league's match list
+                        foundLeague.matches.push(match._id);
+                        // find home team to update
+                        Team.findById(match.homeTeam).exec(async function(err, foundTeam) {
+                            if (err) {
+                                res.render("error", {error: err});
+                            } else {
+                                foundTeam.played += 1;
+                                foundTeam.goalsfor += match.homeScore;
+                                foundTeam.goalsagainst += match.awayScore;
+                                if (match.homeScore > match.awayScore) {
+                                    foundTeam.won += 1;
+                                } else if (match.homeScore < match.awayScore) {
+                                    foundTeam.lost += 1;
+                                } else { 
+                                    foundTeam.draw += 1; 
+                                }
+                                await foundTeam.save();
+                            }
+                        });
+                        // find away team to update
+                        Team.findById(match.awayTeam).exec(async function(err, foundTeam2) {
+                            if (err) {
+                                res.render("error", {error: err});
+                            } else {
+                                foundTeam2.played += 1;
+                                foundTeam2.goalsfor += match.awayScore;
+                                foundTeam2.goalsagainst += match.homeScore;
+                                if (match.homeScore < match.awayScore) {
+                                    foundTeam2.won += 1;
+                                } else if (match.homeScore > match.awayScore) {
+                                    foundTeam2.lost += 1;
+                                } else { 
+                                    foundTeam2.draw += 1; 
+                                }
+                                await foundTeam2.save();
+                            }
+                        });
+                        // sort according to league rules
+                        foundLeague.teams.sort(function(teamA, teamB){
+                            var teamApoints = teamA.won * 3 + teamA.draw;
+                            var teamBpoints = teamB.won * 3 + teamB.draw;
+                            var teamAGD = teamA.goalsfor - teamA.goalsagainst;
+                            var teamBGD = teamB.goalsfor - teamB.goalsagainst;
+                            if (teamApoints > teamBpoints) {
+                                return -1;
+                            } else if (teamApoints < teamBpoints) {
+                                return 1;
+                            } else if (teamAGD > teamBGD) {
+                                return -1;
+                            } else if (teamAGD <teamBGD) {
+                                return 1;
+                            } else if (teamA.goalsfor > teamB.goalsfor) {
+                                return -1;
+                            }
+                            else if (teamA.goalsfor < teamB.goalsfor) {
+                                return 1;
+                            }
+                            else return 0;
+                        });
+                        
+                        // update positions and each team and save them
+                        for (var i = 0; i < foundLeague.teams.length; i++) {
+                            foundLeague.teams[i].position = i + 1;
+                            await foundLeague.teams[i].save();
+                        }
+                        
+                        //save changes in league and redirect
+                        foundLeague.save(function(err) {
+                            if (err) {
+                                res.render("error", {error: err});
+                            } else {
+                                var redirectUrl = "/leagues/" + req.params.leagueid;
+                                return res.redirect(redirectUrl);
+                            }
+                        });
+                    }
+                    });
+                }
+            });
+        } else {
+            var redirectUrl = "/leagues/" + req.params.leagueid + "/matches/new";
+            return res.redirect(redirectUrl);
+        }
        
     });
     
@@ -102,22 +219,26 @@ const app  = express(),
                     res.redirect("/leagues");
                 } 
                 else {
-                    var foundTeam = foundLeague.teams.filter(function(team){
-                        return team._id == req.params.teamid;
-                    }).toObject();
-                    if (foundTeam === undefined || foundTeam === null) {
-                        console.log("Team not found");
-                        var leagueUrl = "/leagues/" + foundLeague._id;
-                        res.redirect(leagueUrl);
-                    }
-                    else {
-                        res.status(200).render("showTeam", {
-                            title: "League Wizard - Standings",
-                            league: foundLeague,
-                            team: foundTeam[0],
-                            moment: moment
-                        });
-                    }
+                    Team.findById(req.params.teamid).exec(function(err, foundTeam){
+                        if (err) {
+                            res.render("error", {error: err});
+                        } else {
+                            if (foundTeam === undefined || foundTeam === null) {
+                                console.log("Team not found");
+                                var leagueUrl = "/leagues/" + foundLeague._id;
+                                res.redirect(leagueUrl);
+                            }
+                            else {
+                                res.status(200).render("showTeam", {
+                                    title: "League Wizard - Standings",
+                                    league: foundLeague,
+                                    team: foundTeam,
+                                    moment: moment
+                                });
+                            }
+                        }
+                    });
+                    
                 }
             }
         });
