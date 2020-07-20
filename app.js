@@ -66,9 +66,9 @@ const app  = express(),
     app.use(expressCspHeader({
       directives: {
         'default-src': [SELF, NONCE, '*.google.com'],
-        'script-src': [SELF, NONCE, 'code.jquery.com'],
-        'style-src': [SELF, NONCE],
-        'img-src': [SELF, NONCE],
+        'script-src': [SELF, NONCE, 'code.jquery.com', 'cdn.datatables.net'],
+        'style-src': [SELF, NONCE, 'cdn.datatables.net'],
+        'img-src': [SELF, NONCE, 'cdn.datatables.net'],
         'font-src': [SELF, NONCE, '*.fontawesome.com']
       }
     }));
@@ -159,37 +159,9 @@ const app  = express(),
                                 await foundTeam2.save();
                             }
                         });
-                        // sort according to league rules
-                        foundLeague.teams.sort(function(teamA, teamB){
-                            var teamApoints = teamA.won * 3 + teamA.draw;
-                            var teamBpoints = teamB.won * 3 + teamB.draw;
-                            var teamAGD = teamA.goalsfor - teamA.goalsagainst;
-                            var teamBGD = teamB.goalsfor - teamB.goalsagainst;
-                            if (teamApoints > teamBpoints) {
-                                return -1;
-                            } else if (teamApoints < teamBpoints) {
-                                return 1;
-                            } else if (teamAGD > teamBGD) {
-                                return -1;
-                            } else if (teamAGD <teamBGD) {
-                                return 1;
-                            } else if (teamA.goalsfor > teamB.goalsfor) {
-                                return -1;
-                            }
-                            else if (teamA.goalsfor < teamB.goalsfor) {
-                                return 1;
-                            }
-                            else return 0;
-                        });
-                        
-                        // update positions and each team and save them
-                        for (var i = 0; i < foundLeague.teams.length; i++) {
-                            foundLeague.teams[i].position = i + 1;
-                            await foundLeague.teams[i].save();
-                        }
                         
                         //save changes in league and redirect
-                        foundLeague.save(function(err) {
+                        await foundLeague.save(function(err) {
                             if (err) {
                                 res.render("error", {error: err});
                             } else {
