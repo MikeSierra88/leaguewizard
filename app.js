@@ -181,52 +181,108 @@ const app  = express(),
     });
     
 // team routes
-    app.get("/leagues/:leagueid/teams/:teamid", (req, res) => {
-        League.findById(req.params.leagueid).populate("teams").populate("matches").exec(function(err, foundLeague) {
+
+    app.get("/leagues/:leagueid/teams/new", (req, res) => {
+        League.findById(req.params.leagueid).exec(function(err, foundLeague) {
             if (err) {
                 res.render("error", {error: err});
-            } 
-            else {
+            } else {
                 if (foundLeague === undefined || foundLeague === null) {
                     res.redirect("/leagues");
                 } 
                 else {
-                    Team.findById(req.params.teamid).exec(function(err, foundTeam){
-                        if (err) {
-                            res.render("error", {error: err});
-                        } else {
-                            if (foundTeam === undefined || foundTeam === null) {
-                                console.log("Team not found");
-                                var leagueUrl = "/leagues/" + foundLeague._id;
-                                res.redirect(leagueUrl);
-                            }
-                            else {
-                                res.status(200).render("showTeam", {
-                                    title: "League Wizard - Standings",
-                                    league: foundLeague,
-                                    team: foundTeam,
-                                    moment: moment
-                                });
-                            }
-                        }
+                    res.status(200).render("newTeam", {
+                    title: "League Wizard - Add team to league: " + foundLeague.name,
+                    league: foundLeague
                     });
-                    
                 }
             }
         });
     });
+
     
-    app.get("/leagues/:leagueid/teams/new", (req, res) => {
-        
-        res.status(200).render("newTeam", {
-            title: "League Wizard - Add team to league"
-        });
+    app.get("/leagues/:leagueid/teams/:teamid", (req, res) => {
+        if (req.params.leagueid.match(/^[0-9a-fA-F]{24}$/) && req.body.league.match(/^[0-9a-fA-F]{24}$/)) {
+            // Yes, it's a valid ObjectId, proceed with `findById` call.
+            League.findById(req.params.leagueid).populate("teams").populate("matches").exec(function(err, foundLeague) {
+                if (err) {
+                    res.render("error", {error: err});
+                } 
+                else {
+                    if (foundLeague === undefined || foundLeague === null) {
+                        res.redirect("/leagues");
+                    } 
+                    else {
+                        Team.findById(req.params.teamid).exec(function(err, foundTeam){
+                            if (err) {
+                                res.render("error", {error: err});
+                            } else {
+                                if (foundTeam === undefined || foundTeam === null) {
+                                    console.log("Team not found");
+                                    var leagueUrl = "/leagues/" + foundLeague._id;
+                                    res.redirect(leagueUrl);
+                                }
+                                else {
+                                    res.status(200).render("showTeam", {
+                                        title: "League Wizard - Standings",
+                                        league: foundLeague,
+                                        team: foundTeam,
+                                        moment: moment
+                                    });
+                                }
+                            }
+                        });
+                        
+                    }
+                }
+            });
+        } else {
+            res.redirect("/leagues");
+        }
         
     });
     
+    
     app.post("/leagues/:leagueid/teams", (req, res) => {
-        
-       res.status(200).send("new team POST reached");
+        if (req.params.leagueid === req.body.league) {
+            var newTeam = new Team({
+                league: req.body.league,
+                name: req.body.name,
+                footballTeam: req.body.footballTeam
+            });
+            
+            League.findById(req.params.leagueid).exec(function(err, foundLeague) {
+                if (err) {
+                    res.render("error", {error: err});
+                } 
+                else {
+                    if (foundLeague === undefined || foundLeague === null) {
+                        res.redirect("/leagues");
+                    } 
+                    else {
+                        newTeam.save(function(err, savedTeam) {
+                            if (err) {
+                                res.render("error", {error: err});
+                            } 
+                            else {
+                                foundLeague.teams.push(savedTeam._id);
+                                foundLeague.save(function(err) {
+                                    if (err) {
+                                        res.render("error", {error: err});
+                                    } 
+                                });
+                            }
+                        });
+                        
+                    }
+                }
+            });
+            
+            var redirectUrl = "/leagues/" + req.params.leagueid;
+            res.redirect(redirectUrl);
+        } else {
+            res.redirect("/leagues");
+        }
        
     });
 
