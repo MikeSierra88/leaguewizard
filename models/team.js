@@ -8,7 +8,6 @@ var teamSchema = new mongoose.Schema({
     },
     name: {type: String, required: true},
     footballTeam: {type: String, required: true},
-    position: {type: Number},
     played: {type: Number, default: 0},
     won: {type: Number, default: 0},
     draw: {type: Number, default: 0},

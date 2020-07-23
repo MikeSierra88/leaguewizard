@@ -8,7 +8,7 @@
     <p><%= team.footballTeam %></p>
     
     <h2>Current position</h2>
-    <p><%= team.position %></p>
+    <p>TBD</p>
     
     <h2>Matches played</h2>
     
@@ -22,6 +22,8 @@
                 <th>Goals against</th>
                 <th>Result</th>
                 <th>Date</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +40,12 @@
                     <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
                     <td><%= result %></td>
                     <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                    <td>
+                        <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
+                        <form id="deleteMatchForm" action="<%=formAction%>" method="POST">
+                        <button type="Submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 <% } else if (match.awayTeam.equals(team._id)) { %>
                     <% var opposition = league.teams.filter(function(aTeam){return aTeam._id.equals(match.homeTeam);})[0]; %>
@@ -51,6 +59,12 @@
                     <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
                     <td><%= result %></td>
                     <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                    <td>
+                        <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
+                        <form id="deleteMatchForm" action="<%=formAction%>" method="POST">
+                        <button type="Submit">Delete</button>
+                        </form>
+                    </td>
                 </tr> 
                 <% } %>
             <% }); %>
@@ -66,14 +80,22 @@
             </tr>
         </thead>
         <tbody>
+            <% league.teams.forEach((leagueTeam) => { %>
+                <% if (!(leagueTeam._id.equals(team._id))) { %>
             <tr>
-                <td>TName</td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
+                <td><%= leagueTeam.name %></td>
+                <td id="home<%=leagueTeam._id%>">2</td>
+                <td id="away<%=leagueTeam._id%>">2</td>
+            </tr>    
+                <% } %>
+            <% }); %>
+            
         </tbody>
     </table>
     
     <a href="/leagues/<%=league._id%>">Back to league</a>
     
+    <span id="variableJSON1" hidden> <%= JSON.stringify(league); %> </span>
+    <span id="variableJSON2" hidden> <%= JSON.stringify(team); %> </span>
+    <script src="/javascript/showteam.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>

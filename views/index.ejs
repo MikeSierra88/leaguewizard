@@ -1,7 +1,8 @@
 <%- include('partials/header'); -%>
     
     <h1>League Wizard</h1>
-    
-    <a href="/leagues/5f14a578d2c15551e717d8d5">Show league</a>
-    
+    <% leagues.forEach((league) => { %>
+    <p><a href="/leagues/<%=league._id%>">Show league: <%=league.name%></a></p>
+    <% }); %>
+    <p><a href="/leagues/new">Add new league</a></p>
 <%- include('partials/footer'); -%>

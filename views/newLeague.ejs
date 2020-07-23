@@ -1,0 +1,11 @@
+<%- include('partials/header'); -%>
+    <h1>Add new league</h1>
+    <form id="addLeagueForm" action="/leagues" method="POST">
+        <div>
+            <label for="leagueName">New league name</label>
+            <input type="text" id="leagueName" name="name" placeholder="Enter league name...">
+        </div>
+        
+        <button type="submit">Submit</button>
+    </form>
+<%- include('partials/footer'); -%>

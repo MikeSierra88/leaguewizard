@@ -1,3 +1,4 @@
+/* global $ */
 var league = JSON.parse($("#variableJSON").text());
 $("#variableJSON").remove();
 

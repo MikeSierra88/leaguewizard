@@ -1,48 +1,54 @@
 <%- include('partials/header'); -%>
     <h1>League standings</h1>
+    <div>
+        <table id="leagueTable" class="nowrap">
+            <thead>
+                <tr>
+                    <th id="position_header" data-priority="1">Position</th>
+                    <th data-priority="1">Name</th>
+                    <th data-priority="2">Team</th>
+                    <th data-priority="1">Played</th>
+                    <th data-priority="1">Won</th>
+                    <th data-priority="1">Draw</th>
+                    <th data-priority="1">Lost</th>
+                    <th data-priority="3">GF</th>
+                    <th data-priority="3">GA</th>
+                    <th data-priority="1">GD</th>
+                    <th data-priority="1">Points</th>
+                    <th data-priority="1"></th>
+                    <th data-priority="1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% league.teams.forEach((team) => { %>
+                <tr>
+                    <td class="leaguePos"></td>
+                    <td><%= team.name %></td>
+                    <td><%= team.footballTeam %></td>
+                    <td><%= team.played %></td>
+                    <td><%= team.won %></td>
+                    <td><%= team.draw %></td>
+                    <td><%= team.lost %></td>
+                    <td><%= team.goalsfor %></td>
+                    <td><%= team.goalsagainst %></td>
+                    <td><%= (team.goalsfor - team.goalsagainst) %></td>
+                    <td><%= (team.won * 3 + team.draw) %></td>
+                    <td>
+                        <a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a>
+                    </td>
+                    <td>Remove</td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        
+        <p><a href="/leagues/<%= league._id %>/matches/new">Add match</a></p>
+        
+        <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
+        
+        <a href="/">Back to index</a>
+    </div>
     
-    <table id="leagueTable" class="nowrap">
-        <thead>
-            <tr>
-                <th id="position_header" data-priority="1">Position</th>
-                <th data-priority="1">Name</th>
-                <th data-priority="2">Team</th>
-                <th data-priority="1">Played</th>
-                <th data-priority="1">Won</th>
-                <th data-priority="1">Draw</th>
-                <th data-priority="1">Lost</th>
-                <th data-priority="3">GF</th>
-                <th data-priority="3">GA</th>
-                <th data-priority="1">GD</th>
-                <th data-priority="1">Points</th>
-                <th data-priority="1"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <% league.teams.forEach((team) => { %>
-            <tr>
-                <td class="leaguePos"></td>
-                <td><%= team.name %></td>
-                <td><%= team.footballTeam %></td>
-                <td><%= team.played %></td>
-                <td><%= team.won %></td>
-                <td><%= team.draw %></td>
-                <td><%= team.lost %></td>
-                <td><%= team.goalsfor %></td>
-                <td><%= team.goalsagainst %></td>
-                <td><%= (team.goalsfor - team.goalsagainst) %></td>
-                <td><%= (team.won * 3 + team.draw) %></td>
-                <td><a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a></td>
-            </tr>
-            <% }); %>
-        </tbody>
-    </table>
-    
-    <p><a href="/leagues/<%= league._id %>/matches/new">Add match</a></p>
-    
-    <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
-    
-    <a href="/">Back to index</a>
     
     <span id="variableJSON" hidden> <%= JSON.stringify(league); %> </span>
     <script src="/javascript/leaguetable.js" nonce="<%=nonce%>" defer></script>
