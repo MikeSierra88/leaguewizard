@@ -40,6 +40,7 @@
                     <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
                     <td><%= result %></td>
                     <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                    <td><a href="/leagues/<%=league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
                     <td>
                         <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
                         <form id="deleteMatchForm" action="<%=formAction%>" method="POST">
@@ -52,16 +53,17 @@
                 <tr>
                     <td>A</td>
                     <td><%=opposition.name%></td>
-                    <td>Borussia Dortmund</td>
+                    <td><%=opposition.footballTeam%></td>
                     <td><%=match.awayScore%></td>
                     <td><%=match.homeScore%></td>
                     <% var result; %>
                     <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
                     <td><%= result %></td>
                     <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                    <td><a href="/leagues/<%=league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
                     <td>
                         <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
-                        <form id="deleteMatchForm" action="<%=formAction%>" method="POST">
+                        <form id="deleteMatchForm<%=match._id%>" action="<%=formAction%>" method="POST">
                         <button type="Submit">Delete</button>
                         </form>
                     </td>

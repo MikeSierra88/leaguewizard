@@ -17,6 +17,7 @@
                     <th data-priority="1">Points</th>
                     <th data-priority="1"></th>
                     <th data-priority="1"></th>
+                    <th data-priority="1"></th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +37,13 @@
                     <td>
                         <a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a>
                     </td>
-                    <td>Remove</td>
+                    <td><a href="/leagues/<%=league._id%>/teams/<%=team._id%>/edit">Edit</a></td>
+                    <td>
+                        <% var formAction = "/leagues/" + league._id + "/teams/" + team._id + "?_method=DELETE" %>
+                        <form id="deleteTeamForm<%=team._id%>" action="<%=formAction%>" method="POST">
+                            <button type="Submit">Delete team</button>
+                        </form>
+                    </td>
                 </tr>
                 <% }); %>
             </tbody>
@@ -47,6 +54,13 @@
         <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
         
         <a href="/">Back to index</a>
+        
+        <p>
+            <% var formAction = "/leagues/" + league._id + "?_method=DELETE" %>
+            <form id="deleteLeagueForm" action="<%=formAction%>" method="POST">
+                <button type="Submit">Delete league</button>
+            </form>
+        </p>
     </div>
     
     

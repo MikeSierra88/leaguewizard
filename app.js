@@ -87,7 +87,11 @@ app.use(function(req, res, next) {
  * Routes Definitions
  */
 
-// match routes
+/**
+ * MATCH ROUTES
+ */
+ 
+// NEW MATCH FORM
 app.get("/leagues/:leagueid/matches/new", (req, res) => {
     League.findById(req.params.leagueid).populate("teams").exec(function(err, foundLeague) {
         if (err) {
@@ -107,6 +111,29 @@ app.get("/leagues/:leagueid/matches/new", (req, res) => {
     });
 });
 
+// EDIT MATCH FORM
+app.get("/leagues/:leagueid/matches/:matchid/edit", (req, res) => {
+   Match.findById(req.params.matchid, (err, foundMatch) => {
+      if (err) {
+          res.render("error", { error: err });
+      } else {
+          League.findById(req.params.leagueid).populate("teams").exec(function(err, foundLeague) {
+                if (err) {
+                    res.render("error", { error: err });
+                } else {
+                    res.status(200).render("editMatch", {
+                      title: "League Wizard - Edit Match",
+                      match: foundMatch,
+                      league: foundLeague
+                    });
+                }
+            });
+          
+      }
+   });
+});
+
+// CREATE MATCH
 app.post("/leagues/:leagueid/matches", async function(req, res) {
     if (req.body.homeTeam != req.body.awayTeam) {
         var newMatch = new Match({
@@ -194,19 +221,24 @@ app.post("/leagues/:leagueid/matches", async function(req, res) {
 
 });
 
-// remove match
+// UPDATE MATCH
+app.put("/leagues/:leagueid/matches/:matchid", (req, res) => {
+    // TODO LOGIC
+    // GOT TO UPDATE TEAMS TOO!
+    res.json(req.body);
+});
 
+// DELETE MATCH
 app.delete("/leagues/:leagueid/matches/:matchid", (req, res) => {
-    
-    
     Match.findByIdAndRemove(req.params.matchid).exec(function(err, foundMatch) {
         if (err) {
             res.render("error", { error: err });
         } else {
-            League.findById(req.params.leagueid).populate("teams").exec(function(err, foundLeague){
+            League.findById(req.params.leagueid).exec(function(err, foundLeague){
                 if (err) {
                     res.render("error", { error: err });
                 } else {
+                    // remove match ID from the League
                     foundLeague.matches.splice(foundLeague.matches.indexOf(req.params.matchid), 1);
                     // find home team to update
                     Team.findById(foundMatch.homeTeam).exec(async function(err, foundTeam) {
@@ -263,11 +295,13 @@ app.delete("/leagues/:leagueid/matches/:matchid", (req, res) => {
             });
         }
     });
-    
 });
 
-// team routes
+/**
+ * TEAM ROUTES
+ */
 
+// NEW TEAM FORM
 app.get("/leagues/:leagueid/teams/new", (req, res) => {
     League.findById(req.params.leagueid).exec(function(err, foundLeague) {
         if (err) {
@@ -287,7 +321,7 @@ app.get("/leagues/:leagueid/teams/new", (req, res) => {
     });
 });
 
-
+// SHOW TEAM
 app.get("/leagues/:leagueid/teams/:teamid", (req, res) => {
 
     League.findById(req.params.leagueid).populate("teams").populate("matches").exec(function(err, foundLeague) {
@@ -326,7 +360,21 @@ app.get("/leagues/:leagueid/teams/:teamid", (req, res) => {
 
 });
 
+// EDIT TEAM FORM
+app.get("/leagues/:leagueid/teams/:teamid/edit", (req, res) => {
+    Team.findById(req.params.teamid, (err, foundTeam) => {
+       if (err) {
+           res.render("error", { error: err });
+       } else {
+           res.status(200).render("editTeam", {
+                    title: "League Wizard - Edit team",
+                    team: foundTeam
+                });
+       }
+    });
+});
 
+// CREATE TEAM
 app.post("/leagues/:leagueid/teams", (req, res) => {
     if (req.params.leagueid === req.body.league) {
         var newTeam = new Team({
@@ -368,30 +416,125 @@ app.post("/leagues/:leagueid/teams", (req, res) => {
     else {
         res.redirect("/leagues");
     }
-
 });
 
-// league routes
+// UPDATE TEAM
+app.put("/leagues/:leagueid/teams/:teamid", (req, res) => {
+   Team.findByIdAndUpdate(req.params.teamid, {
+       name: req.body.name,
+       footballTeam: req.body.footballTeam
+   }, function(err) {
+       if (err) {
+            res.render("error", { error: err });
+       } else {
+           var redirectUrl = "/leagues/" + req.params.leagueid + "/teams/" + req.params.teamid;
+           res.redirect(redirectUrl);
+       }
+   });
+});
 
+// DELETE TEAM
+app.delete("/leagues/:leagueid/teams/:teamid", (req, res) => {
+    // find the league and populate the matches array with Match objects
+    League.findById(req.params.leagueid).populate("matches").exec(async function(err, foundLeague) {
+        if (err) {
+                res.render("error", { error: err });
+            }
+        else {
+            await Team.findByIdAndRemove(req.params.teamid, async function (err, removedTeam) {
+                if (err) {
+                    res.render("error", { error: err });
+                } else {
+                    // loop through matches in the league and check for removed team's matches
+                    foundLeague.matches.forEach(async function(match) {
+                        console.log(match);
+                        if (match.awayTeam.equals(req.params.teamid)) {
+                            // remove away match
+                            await Team.findById(match.homeTeam, async function(err, foundTeam) {
+                                if (err) {
+                                    res.render("error", { error: err });
+                                }
+                                else {
+                                    // remove stats from the team staying in the league
+                                    foundTeam.played -= 1;
+                                    foundTeam.goalsfor -= match.homeScore;
+                                    foundTeam.goalsagainst -= match.awayScore;
+                                    if (match.homeScore > match.awayScore) {
+                                        foundTeam.won -= 1;
+                                    }
+                                    else if (match.homeScore < match.awayScore) {
+                                        foundTeam.lost -= 1;
+                                    }
+                                    else {
+                                        foundTeam.draw -= 1;
+                                    }
+                                    await foundTeam.save();
+                                }
+                            });
+                            // remove Match from database and its reference from the League
+                            await Match.findByIdAndRemove(match._id, function (err, removedMatch) {
+                                if (err) {
+                                    res.render("error", { error: err });
+                                } else {
+                                    foundLeague.matches.splice(foundLeague.matches.indexOf(removedMatch._id), 1);
+                                }
+                            });
+                        } else if (match.homeTeam.equals(req.params.teamid)) {
+                            // remove home match
+                            await Team.findById(match.awayTeam, async function(err, foundTeam) {
+                                if (err) {
+                                    res.render("error", { error: err });
+                                }
+                                else {
+                                    // remove stats from the team staying in the league
+                                    foundTeam.played -= 1;
+                                    foundTeam.goalsfor -= match.awayScore;
+                                    foundTeam.goalsagainst -= match.homeScore;
+                                    if (match.homeScore < match.awayScore) {
+                                        foundTeam.won -= 1;
+                                    }
+                                    else if (match.homeScore > match.awayScore) {
+                                        foundTeam.lost -= 1;
+                                    }
+                                    else {
+                                        foundTeam.draw -= 1;
+                                    }
+                                    await foundTeam.save();
+                                }
+                            });
+                            // remove Match from database and its reference from the League
+                            await Match.findByIdAndRemove(match._id, function (err, removedMatch) {
+                                if (err) {
+                                    res.render("error", { error: err });
+                                } else {
+                                    foundLeague.matches.splice(foundLeague.matches.indexOf(removedMatch._id), 1);
+                                }
+                            });
+                        }
+                    });
+                    // remove reference of Team from League
+                    foundLeague.teams.splice(foundLeague.teams.indexOf(req.params.teamid), 1); 
+                    await foundLeague.save();
+                
+                    var redirectUrl = "/leagues/" + req.params.leagueid;
+                    res.redirect(redirectUrl);
+                }
+            });
+        }
+    });
+});
+
+/**
+ * LEAGUE ROUTES
+ */
+
+// leagues aggregate
+// for now, redirects to index
 app.get("/leagues", (req, res) => {
     res.redirect("/");
 });
 
-app.post("/leagues", (req, res) => {
-    var newLeague = new League({
-        name: req.body.name
-    });
-    newLeague.save(function(err, savedLeague) {
-        if (err) {
-            res.render("error", { error: err });
-        }
-        else {
-            var redirectUrl = "/leagues/" + savedLeague._id;
-            res.redirect(redirectUrl);
-        }
-    });
-});
-
+// NEW LEAGUE FORM
 app.get("/leagues/new", (req, res) => {
 
     res.status(200).render("newLeague", {
@@ -400,6 +543,7 @@ app.get("/leagues/new", (req, res) => {
 
 });
 
+// SHOW LEAGUE
 app.get("/leagues/:id", (req, res) => {
     League.findById(req.params.id).populate("teams").populate("matches").exec(function(err, foundLeague) {
         if (err) {
@@ -420,6 +564,40 @@ app.get("/leagues/:id", (req, res) => {
 
         }
     });
+});
+
+// CREATE LEAGUE
+app.post("/leagues", (req, res) => {
+    var newLeague = new League({
+        name: req.body.name
+    });
+    newLeague.save(function(err, savedLeague) {
+        if (err) {
+            res.render("error", { error: err });
+        }
+        else {
+            var redirectUrl = "/leagues/" + savedLeague._id;
+            res.redirect(redirectUrl);
+        }
+    });
+});
+
+// DELETE LEAGUE
+app.delete("/leagues/:leagueid", (req, res) => {
+   League.findByIdAndRemove(req.params.leagueid, (err, removedLeague) => {
+      if (err) {
+            res.render("error", { error: err });
+        }
+        else {
+            removedLeague.teams.forEach(async function(team) {
+                await Team.findByIdAndRemove(team._id);  
+            }); 
+            removedLeague.matches.forEach(async function(match) {
+                await Match.findByIdAndRemove(match._id); 
+            });
+            res.redirect("/leagues");
+        }
+   });
 });
 
 // index route
