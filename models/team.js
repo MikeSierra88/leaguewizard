@@ -8,12 +8,16 @@ var teamSchema = new mongoose.Schema({
     },
     name: {type: String, required: true},
     footballTeam: {type: String, required: true},
-    played: {type: Number, default: 0},
-    won: {type: Number, default: 0},
-    draw: {type: Number, default: 0},
-    lost: {type: Number, default: 0},
-    goalsfor: {type: Number, default: 0},
-    goalsagainst: {type: Number, default: 0}
+    // played: {type: Number, default: 0},
+    // won: {type: Number, default: 0},
+    // draw: {type: Number, default: 0},
+    // lost: {type: Number, default: 0},
+    // goalsfor: {type: Number, default: 0},
+    // goalsagainst: {type: Number, default: 0}
+    matches: [{
+        type:mongoose.Schema.Types.ObjectID,
+        ref: "Match"
+    }]
 });
 
 module.exports = new mongoose.model("Team", teamSchema);
