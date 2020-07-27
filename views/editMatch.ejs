@@ -1,8 +1,9 @@
 <%- include('partials/header'); -%>
     <%= match %>
     <h1>Edit match</h1>
-    <form id="editMatchForm" action="/leagues/<%=league._id%>/matches/<%=match._id%>?_method=PUT" method="POST">
+    <form id="editMatchForm" action="/leagues/<%=league._id%>/matches?_method=PUT" method="POST">
         <input type="hidden" id="leagueId" name="league" value="<%=league._id%>">
+        <input type="hidden" id="matchId" name="matchId" value="<%=match._id%>">
         <div>
             
             <input type="hidden" id="homeTeam" name="homeTeam">

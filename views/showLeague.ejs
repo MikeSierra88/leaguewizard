@@ -26,14 +26,14 @@
                     <td class="leaguePos"></td>
                     <td id="teamName_<%=team._id%>"><%= team.name %></td>
                     <td id="teamFifa_<%=team._id%>"><%= team.footballTeam %></td>
-                    <td id="teamPlayed_<%=team._id%>"><%= team.played %></td>
-                    <td id="teamWon_<%=team._id%>"><%= team.won %></td>
-                    <td id="teamDraw_<%=team._id%>"><%= team.draw %></td>
-                    <td id="teamLost_<%=team._id%>"><%= team.lost %></td>
-                    <td id="teamGF_<%=team._id%>"><%= team.goalsfor %></td>
-                    <td id="teamGA_<%=team._id%>"><%= team.goalsagainst %></td>
-                    <td id="teamGD_<%=team._id%>"><%= (team.goalsfor - team.goalsagainst) %></td>
-                    <td id="teamPoints_<%=team._id%>"><%= (team.won * 3 + team.draw) %></td>
+                    <td id="teamPlayed_<%=team._id%>"></td>
+                    <td id="teamWon_<%=team._id%>"></td>
+                    <td id="teamDraw_<%=team._id%>"></td>
+                    <td id="teamLost_<%=team._id%>"></td>
+                    <td id="teamGF_<%=team._id%>"></td>
+                    <td id="teamGA_<%=team._id%>"></td>
+                    <td id="teamGD_<%=team._id%>"></td>
+                    <td id="teamPoints_<%=team._id%>"></td>
                     <td>
                         <a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a>
                     </td>
@@ -87,8 +87,13 @@
                         <td><%=match.awayScore%></td>
                         <% result = league.teams.filter((team => team._id.equals(match.awayTeam))); %>
                         <td><%=result[0].name%></td>
-                        <td><a href="">Edit</a></td>
-                        <td><button>Delete</button></td>
+                        <td><a href="/leagues/<%=league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
+                        <td>
+                            <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
+                            <form id="deleteMatchForm<%=match._id%>" action="<%=formAction%>" method="POST">
+                            <button type="Submit">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }); %>
             </tbody>
