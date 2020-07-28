@@ -4,20 +4,25 @@
  * Required External Modules
  */
 
-const express = require('express'),
-    path = require('path'),
-    bodyParser = require('body-parser'),
-    createError = require('http-errors'),
-    mongoose = require('mongoose'),
-    cookieParser = require('cookie-parser'),
-    methodOverride = require('method-override'),
-    indexRouter = require('./routes/routes'),
-    leagueRouter = require('./routes/leagues'),
-    {
+const express               = require('express'),
+      path                  = require('path'),
+      bodyParser            = require('body-parser'),
+      createError           = require('http-errors'),
+      mongoose              = require('mongoose'),
+      passport              = require('passport'),
+      LocalStrategy         = require('passport-local'),
+      passportLocalMongoose = require('passport-local-mongoose'),
+      User                  = require('./models/user'),
+      cookieParser          = require('cookie-parser'),
+      methodOverride        = require('method-override'),
+      indexRouter           = require('./routes/routes'),
+      leagueRouter          = require('./routes/leagues'),
+      authRouter            = require('./routes/auth'),
+      {
         expressCspHeader,
         SELF,
         NONCE
-    } = require('express-csp-header');
+      } = require('express-csp-header');
 
 /**
  * App Variables
@@ -51,6 +56,21 @@ db.once('open', function() {
     // require('./models/seedData');
 });
 
+// initialize express-session
+const SESSION_SECRET = process.env.SESSION_SECRET;
+app.use(require("express-session")({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+// initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // view engine setup
 
 app.set("views", path.join(__dirname, "views"));
@@ -67,8 +87,8 @@ app.use(methodOverride("_method"));
 app.use(expressCspHeader({
     directives: {
         'default-src': [SELF, NONCE, '*.google.com'],
-        'script-src': [SELF, NONCE, 'code.jquery.com', 'cdn.datatables.net'],
-        'style-src': [SELF, NONCE, 'cdn.datatables.net'],
+        'script-src': [SELF, NONCE, 'code.jquery.com', 'cdn.datatables.net', 'cdn.jsdelivr.net', '*.bootstrapcdn.com'],
+        'style-src': [SELF, NONCE, 'cdn.datatables.net', '*.bootstrapcdn.com'],
         'img-src': [SELF, NONCE, 'cdn.datatables.net'],
         'font-src': [SELF, NONCE, '*.fontawesome.com']
     }
@@ -86,7 +106,7 @@ app.use(function(req, res, next) {
  */
  
 app.use("/leagues", leagueRouter);
-
+app.use(authRouter);
 app.use("/", indexRouter);
 
 /**

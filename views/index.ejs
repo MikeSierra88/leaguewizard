@@ -1,8 +1,51 @@
 <%- include('partials/header'); -%>
+<%- include('partials/navbar'); -%>
+
+    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+      <div class="container">
+        <h1 class="display-4">League Wizard</h1>
+      </div>
+    </div>
+    <div class="container-sm">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-3">
+                <% leagues.forEach((league) => { %>
+                <div class="col mb-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><%=league.name%></h5>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><%= league.teams.length %> teams</li>
+                        <li class="list-group-item"><%= league.matches.length %> matches</li>
+                      </ul>
+                      <div class="card-body floaty-card-row">
+                          <div>
+                              <a href="/leagues/<%=league._id%>">Details</a>
+                          </div>
+                          <% if (currentUser) { %>
+                            <div>
+                                <% var formAction = "/leagues/" + league._id + "?_method=DELETE" %>
+                                <form class="form-inline delete-league-form" id="deleteLeague<%=league._id%>" action="<%=formAction%>" method="POST">
+                                    <button class="btn btn-danger btn-sm" type="Submit">Delete league</button>
+                                </form>
+                            </div>
+                          <% } %>
+                      </div>
+                    </div>
+                </div>
+                    
+                <% }); %>
+            </div>
+            
+        </div>
+        <div class="container">
+            <pp>
+        </div>
+        
+        
+    </div>
     
-    <h1>League Wizard</h1>
-    <% leagues.forEach((league) => { %>
-    <p><a href="/leagues/<%=league._id%>">Show league: <%=league.name%></a></p>
-    <% }); %>
-    <p><a href="/leagues/new">Add new league</a></p>
+    
+    
 <%- include('partials/footer'); -%>

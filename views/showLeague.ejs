@@ -54,13 +54,6 @@
         <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
         
         <a href="/">Back to index</a>
-        
-        <p>
-            <% var formAction = "/leagues/" + league._id + "?_method=DELETE" %>
-            <form id="deleteLeagueForm" action="<%=formAction%>" method="POST">
-                <button type="Submit">Delete league</button>
-            </form>
-        </p>
     </div>
     
     <div>

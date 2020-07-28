@@ -1,0 +1,51 @@
+  <div class="container">
+    <nav class="navbar navbar-expand-md navbar-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <!-- Only show this if not logged in -->
+        <li class="nav-item active">
+          <a class="nav-link" href='/leagues'>Index <span class="sr-only">(current)</span></a>
+        </li>
+        <!-- Only show this if logged in -->
+        <% if (currentUser) {%>
+        <li class="nav-item dropdown">
+          <!--<a class="nav-link" href='/leagues'>My Leagues <span class="sr-only">(current)</span></a>-->
+          <a class="nav-link dropdown-toggle" href="/leagues" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            My leagues
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+            <% if (leagues) { leagues.forEach((league) => { %>
+              <a class="dropdown-item" href="/leagues/<%=league._id%>"><%=league.name%></a>
+            <% })}; %>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/leagues/new">Create new league</a>
+        </li>
+        <% } %>
+      </ul>
+      <ul class="navbar-nav ml-auto nav-flex-icons">
+        <% if (currentUser) {%>
+        <!-- Only show this if logged in -->
+        <li class="nav-item">
+          <span class="navbar-text">
+            Logged in as: <%=currentUser.username%>
+          </span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Log in</a>
+          </li>
+        <% }%>
+      </ul>
+    </div>
+  </nav>
+  </div>
+  <script src="/javascript/navbar.js" nonce="<%=nonce%>" defer></script>
