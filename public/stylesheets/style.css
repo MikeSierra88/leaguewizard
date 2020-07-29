@@ -1,5 +1,6 @@
 body {
-    background: #bbd3b9;
+    background: #d6e5d7;
+    color: #113321;
 }
 
 
@@ -8,13 +9,25 @@ td {
     text-align: center;
 }
 
-.card {
+.league-card {
     width: 18rem;
 }
 
 .floaty-card-row {
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
+}
+
+.floaty-row-center {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.floaty-row-left {
+    display: flex;
+    justify-content: flex-start;
     flex-direction: row;
 }
 
@@ -27,7 +40,12 @@ td {
     font-weight: 500;
 }
 
+.nav-container {
+    background: #9dbf8e;
+}
+
 .navbar {
+    background: #9dbf8e;
     padding-left: 0;
     padding-right: 0;
 }
@@ -62,6 +80,12 @@ td {
     z-index: -1;
 }
 
-#leagueTable {
-    width: 70%;
+
+.table {
+    background: white;
 }
+
+#footer {
+    background: #9dbf8e;
+}
+

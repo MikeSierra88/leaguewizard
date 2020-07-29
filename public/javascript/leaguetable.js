@@ -29,7 +29,6 @@ league.matches.forEach((match) => {
     } else { 
         homeTeam.draw++; awayTeam.draw++; 
     }
-    console.log(homeTeam);
 });
 
 $(document).ready(function(){
@@ -50,6 +49,7 @@ $(document).ready(function(){
         $(selector).html(team.goalsFor - team.goalsAgainst);
         selector = "#teamPoints_" + team._id;
         $(selector).html((Number(team.won) * 3) + (team.draw));
+        
     });
     
     $('#leagueTable').DataTable({
@@ -60,9 +60,20 @@ $(document).ready(function(){
         "responsive": true,
         "drawCallback": function(settings) {
             $(".leaguePos").each(function(i){
-                $(this).html(i+1);
+                var pos = "" + (i+1)
+                var _href = $(this).siblings().find(".team-details").attr("href");
+                $(this).html(pos);
+                $(this).siblings().find(".team-details").attr("href", _href + pos);
             })
         }
     });
     
+    $('#allMatchesTable').DataTable({
+        "order": [[0, 'desc'], [1, 'asc']],
+        "paging": false,
+        "searching": true,
+        "info": false,
+        "responsive": true,
+        "ordering": true
+    });
 });

@@ -1,23 +1,59 @@
 <%- include('partials/header'); -%>
-    <h1>League standings</h1>
-    <div>
-        <table id="leagueTable" class="nowrap">
-            <thead>
+<%- include('partials/navbar'); -%>
+
+    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+      <div class="container">
+        <h1 class="display-4"><%=league.name%> - Standings</h1>
+      </div>
+    </div>
+    <div class="container">
+        <div class="floaty-card-row">
+            <span>
+                <% if (currentUser) { %>
+                <!-- Add Match Button -->
+                <span role="button" class="btn btn-primary" 
+                    data-toggle="modal" data-target="#matchModal"
+                    data-purpose="new"
+                    data-edittype="match"
+                    data-league="<%=league._id%>">
+                        Add match
+                </span>
+                <!-- Add Team Button -->
+                <span role="button" class="btn btn-primary" 
+                    data-toggle="modal" data-target="#teamModal"
+                    data-purpose="new"
+                    data-league="<%=league._id%>">
+                        Add team
+                </span>
+                <% } %>
+            </span>
+            <span>
+                <% if (currentUser) { %>
+                    <a class="btn btn-outline-secondary" href="#">Edit league</a>
+                <% } %>
+                <a class="btn btn-secondary" href="/">Back to index</a>
+            </span>
+        </div>
+    </div>
+    <div class="container mb-5">
+        <table id="leagueTable" class="table table-bordered table-hover">
+            <thead class="thead-light">
                 <tr>
                     <th id="position_header" data-priority="1">Position</th>
                     <th data-priority="1">Name</th>
                     <th data-priority="2">Team</th>
                     <th data-priority="1">Played</th>
-                    <th data-priority="1">Won</th>
-                    <th data-priority="1">Draw</th>
-                    <th data-priority="1">Lost</th>
+                    <th data-priority="1">W</th>
+                    <th data-priority="1">D</th>
+                    <th data-priority="1">L</th>
                     <th data-priority="3">GF</th>
                     <th data-priority="3">GA</th>
                     <th data-priority="1">GD</th>
                     <th data-priority="1">Points</th>
                     <th data-priority="1"></th>
-                    <th data-priority="1"></th>
-                    <th data-priority="1"></th>
+                    <% if (currentUser) { %>
+                        <th data-priority="1"></th>
+                    <% } %>
                 </tr>
             </thead>
             <tbody>
@@ -35,64 +71,103 @@
                     <td id="teamGD_<%=team._id%>"></td>
                     <td id="teamPoints_<%=team._id%>"></td>
                     <td>
-                        <a href="/leagues/<%=league._id%>/teams/<%=team._id%>">Details</a>
+                        <a class="team-details" href="/leagues/<%=league._id%>/teams/<%=team._id%>/">Details</a>
                     </td>
-                    <td><a href="/leagues/<%=league._id%>/teams/<%=team._id%>/edit">Edit</a></td>
-                    <td>
-                        <% var formAction = "/leagues/" + league._id + "/teams/" + team._id + "?_method=DELETE" %>
-                        <form id="deleteTeamForm<%=team._id%>" action="<%=formAction%>" method="POST">
-                            <button type="Submit">Delete team</button>
-                        </form>
+                    <% if (currentUser) { %>
+                    <td class="floaty-row-center">
+                        <!-- Edit Team Button -->
+                        <span role="button" class="btn btn-outline-primary btn-sm" 
+                            data-toggle="modal" data-target="#teamModal"
+                            data-purpose="edit"
+                            data-league="<%=team.league._id%>"
+                            data-team="<%=team._id%>"
+                            data-teamname="<%=team.name%>"
+                            data-fifaname="<%=team.footballTeam%>">
+                                <i class="far fa-edit"></i>
+                        </span>
+                        <!-- Delete Team Button -->
+                        <span role="button" class="btn btn-danger btn-sm ml-2" 
+                            data-toggle="modal" data-target="#deleteConfirmModal"
+                            data-deletetype="team"
+                            data-league="<%=league._id%>"
+                            data-team="<%=team._id%>"
+                            data-teamname="<%=team.name%>">
+                                <i class="fas fa-trash-alt"></i>
+                        </span>
                     </td>
+                    <% } %>
                 </tr>
                 <% }); %>
             </tbody>
         </table>
-        
-        <p><a href="/leagues/<%= league._id %>/matches/new">Add match</a></p>
-        
-        <p><a href="/leagues/<%= league._id %>/teams/new">Add team</a></p>
-        
-        <a href="/">Back to index</a>
     </div>
     
-    <div>
-        <h2>Show all matches</h2>
-        <table>
-            <thead>
+    <div class="container all-matches-container">
+        <h2>Played matches</h2>
+        <table id="allMatchesTable" class="table table-bordered table-hover">
+            <thead class="thead-light">
                 <tr>
                     <th>Date</th>
                     <th>Home</th>
                     <th>Score</th>
                     <th>Score</th>
                     <th>Away</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <% if (currentUser) { %>
+                    <th></th>
+                    <% } %>
                 </tr>
             </thead>
             <tbody>
                 <% league.matches.forEach((match) => { %>
                     <tr>
                         <td><%=moment(match.date).format('YYYY. MM. DD')%></td>
-                        <% var result = league.teams.filter((team => team._id.equals(match.homeTeam))); %>
-                        <td><%=result[0].name%></td>
+                        <% var homeTeam = league.teams.filter((team => team._id.equals(match.homeTeam)))[0]; %>
+                        <td><%=homeTeam.name%></td>
                         <td><%=match.homeScore%></td>
                         <td><%=match.awayScore%></td>
-                        <% result = league.teams.filter((team => team._id.equals(match.awayTeam))); %>
-                        <td><%=result[0].name%></td>
-                        <td><a href="/leagues/<%=league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
-                        <td>
-                            <% var formAction = "/leagues/" + league._id + "/matches/" + match._id + "?_method=DELETE" %>
-                            <form id="deleteMatchForm<%=match._id%>" action="<%=formAction%>" method="POST">
-                            <button type="Submit">Delete</button>
-                            </form>
+                        <% var awayTeam = league.teams.filter((team => team._id.equals(match.awayTeam)))[0]; %>
+                        <td><%=awayTeam.name%></td>
+                        <% if (currentUser) { %>
+                        <td class="floaty-row-center">
+                            <!-- Edit Match Button -->
+                            <span role="button" class="btn btn-outline-primary btn-sm" 
+                                data-toggle="modal" data-target="#matchModal"
+                                data-purpose="edit"
+                                data-edittype="match"
+                                data-league="<%=match.league%>"
+                                data-match="<%=match._id%>"
+                                data-hometeam="<%=homeTeam._id%>"
+                                data-homescore="<%=match.homeScore%>"
+                                data-awayscore="<%=match.awayScore%>"
+                                data-awayteam="<%=awayTeam._id%>"
+                                data-date="<%=match.date%>">
+                                    <i class="far fa-edit"></i>
+                            </span>
+                            <!-- Delete Match Button -->
+                            <span role="button" class="btn btn-danger btn-sm ml-2" 
+                                data-toggle="modal" data-target="#deleteConfirmModal"
+                                data-deletetype="match"
+                                data-league="<%=match.league%>"
+                                data-match="<%=match._id%>"
+                                data-hometeamname="<%=homeTeam.name%>"
+                                data-awayteamname="<%=awayTeam.name%>"
+                                data-homescore="<%=match.homeScore%>"
+                                data-awayscore="<%=match.awayScore%>"
+                                data-matchdate="<%=moment(match.date).format('YYYY. MM. DD')%>">
+                                    <i class="fas fa-trash-alt"></i>
+                            </span>
                         </td>
+                        <% } %>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
     </div>
     
+    <!-- Edit team and match modals -->
+    <%- include('partials/modals'); -%>
+    
     <span id="variableJSON" hidden> <%= JSON.stringify(league); %> </span>
     <script src="/javascript/leaguetable.js" nonce="<%=nonce%>" defer></script>
+    <script src="/javascript/modals.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>

@@ -8,10 +8,10 @@
     </div>
     <div class="container-sm">
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-3">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                 <% leagues.forEach((league) => { %>
                 <div class="col mb-4">
-                    <div class="card">
+                    <div class="card league-card">
                       <div class="card-body">
                         <h5 class="card-title"><%=league.name%></h5>
                       </div>
@@ -25,10 +25,14 @@
                           </div>
                           <% if (currentUser) { %>
                             <div>
-                                <% var formAction = "/leagues/" + league._id + "?_method=DELETE" %>
-                                <form class="form-inline delete-league-form" id="deleteLeague<%=league._id%>" action="<%=formAction%>" method="POST">
-                                    <button class="btn btn-danger btn-sm" type="Submit">Delete league</button>
-                                </form>
+                              <!-- Delete League Button -->
+                              <span role="button" class="btn btn-danger btn-sm ml-2" 
+                                  data-toggle="modal" data-target="#deleteConfirmModal"
+                                  data-deletetype="league"
+                                  data-league="<%=league._id%>"
+                                  data-leaguename="<%=league.name%>">
+                                      <i class="fas fa-trash-alt"></i>
+                              </span>
                             </div>
                           <% } %>
                       </div>
@@ -46,6 +50,8 @@
         
     </div>
     
+    <!-- Delete confirm modal -->
+    <%- include('partials/modals'); -%>
     
-    
+    <script src="/javascript/modals.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>

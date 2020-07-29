@@ -1,102 +1,212 @@
 <%- include('partials/header'); -%>
-    <h1>Team details</h1>
-    
-    <h2>Name</h2>
-    <p><%= team.name %></p>
-    
-    <h2>Team</h2>
-    <p><%= team.footballTeam %></p>
-    
-    <h2>Current position</h2>
-    <p>TBD</p>
-    
-    <h2>Matches played</h2>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>H/A</th>
-                <th>Against</th>
-                <th>Team</th>
-                <th>Goals for</th>
-                <th>Goals against</th>
-                <th>Result</th>
-                <th>Date</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <% team.matches.forEach((match) => { %>
-                <% if (match.homeTeam._id.equals(team._id)) { %>
-                    <% var opposition = team.league.teams.filter(function(aTeam){return aTeam._id.equals(match.awayTeam);})[0]; %>
-                <tr>
-                    <td>H</td>
-                    <td><%=match.awayTeam.name%></td>
-                    <td><%=match.awayTeam.footballTeam%></td>
-                    <td><%=match.homeScore%></td>
-                    <td><%=match.awayScore%></td>
-                    <% var result; %>
-                    <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
-                    <td><%= result %></td>
-                    <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
-                    <td><a href="/leagues/<%=team.league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
-                    <td>
-                        <% var formAction = "/leagues/" + team.league._id + "/matches/" + match._id + "?_method=DELETE" %>
-                        <form id="deleteMatchForm" action="<%=formAction%>" method="POST">
-                        <button type="Submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <% } else if (match.awayTeam._id.equals(team._id)) { %>
-                    <% var opposition = team.league.teams.filter(function(aTeam){return aTeam._id.equals(match.homeTeam);})[0]; %>
-                <tr>
-                    <td>A</td>
-                    <td><%=match.homeTeam.name%></td>
-                    <td><%=match.homeTeam.footballTeam%></td>
-                    <td><%=match.awayScore%></td>
-                    <td><%=match.homeScore%></td>
-                    <% var result; %>
-                    <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
-                    <td><%= result %></td>
-                    <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
-                    <td><a href="/leagues/<%=team.league._id%>/matches/<%=match._id%>/edit">Edit</a></td>
-                    <td>
-                        <% var formAction = "/leagues/" + team.league._id + "/matches/" + match._id + "?_method=DELETE" %>
-                        <form id="deleteMatchForm<%=match._id%>" action="<%=formAction%>" method="POST">
-                        <button type="Submit">Delete</button>
-                        </form>
-                    </td>
-                </tr> 
+<%- include('partials/navbar'); -%>
+
+
+
+    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+      <div class="container">
+        <h1 class="display-4"><%=team.name%> - Team details</h1>
+      </div>
+    </div>
+    <div class="container mb-2">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">FIFA Team</h5>
+                        <h4><%= team.footballTeam %></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">League position</h5>
+                        <h4><%= leaguePos %></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-2">
+        <div class="floaty-card-row">
+            <span>
+                <% if (currentUser) { %>
+                    <!-- Add Match Button -->
+                    <span role="button" class="btn btn-primary" 
+                        data-toggle="modal" data-target="#matchModal"
+                        data-purpose="new"
+                        data-edittype="match"
+                        data-league="<%=team.league._id%>">
+                            Add match
+                    </span>
                 <% } %>
-            <% }); %>
-        </tbody>
-    </table>
-    <h2>Remaining matches</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Against</th>
-                <th>Home</th>
-                <th>Away</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% team.league.teams.forEach((leagueTeam) => { %>
-                <% if (!(leagueTeam._id.equals(team._id))) { %>
-            <tr>
-                <td><%= leagueTeam.name %></td>
-                <td id="home<%=leagueTeam._id%>">2</td>
-                <td id="away<%=leagueTeam._id%>">2</td>
-            </tr>    
+            </span>
+            <span>
+                <% if (currentUser) { %>
+                    <!-- Edit Team Button -->
+                    <span role="button" class="btn btn-outline-secondary" 
+                        data-toggle="modal" data-target="#editTeamModal"
+                        data-edittype="team"
+                        data-league="<%=team.league._id%>"
+                        data-team="<%=team._id%>"
+                        data-teamname="<%=team.name%>"
+                        data-fifaname="<%=team.footballTeam%>">
+                            Edit team
+                    </span>
                 <% } %>
-            <% }); %>
-            
-        </tbody>
-    </table>
+                <a class="btn btn-secondary" href="/leagues/<%= team.league._id %>">Back to league</a>
+            </span>
+        </div>
+    </div>
     
-    <a href="/leagues/<%=team.league._id%>">Back to league</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-7">
+                <h2>Matches played</h2>
     
+                <table id="teamMatches" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col" data-toggle="tooltip" title="Home/Away">H/A</th>
+                            <th scope="col" data-toggle="tooltip" title="Opponent">Opp</th>
+                            <th scope="col">Team</th>
+                            <th scope="col" data-toggle="tooltip" title="Goals for">GF</th>
+                            <th scope="col" data-toggle="tooltip" title="Goals against">GA</th>
+                            <th scope="col" data-toggle="tooltip" title="Result">R</th>
+                            <th scope="col">Date</th>
+                            <% if (currentUser) { %>
+                            <th></th>
+                            <% } %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% team.matches.forEach((match) => { %>
+                            <% if (match.homeTeam._id.equals(team._id)) { %>
+                                <% var opposition = team.league.teams.filter(function(aTeam){return aTeam._id.equals(match.awayTeam);})[0]; %>
+                            <tr>
+                                <td>H</td>
+                                <td><%=match.awayTeam.name%></td>
+                                <td><%=match.awayTeam.footballTeam%></td>
+                                <td><%=match.homeScore%></td>
+                                <td><%=match.awayScore%></td>
+                                <% var result; %>
+                                <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
+                                <td><%= result %></td>
+                                <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                                <% if (currentUser) { %>
+                                <td class="floaty-card-row">
+                                    <!-- Edit Match Button -->
+                                    <span role="button" class="btn btn-outline-primary btn-sm" 
+                                        data-toggle="modal" data-target="#matchModal"
+                                        data-purpose="edit"
+                                        data-edittype="match"
+                                        data-league="<%=match.league%>"
+                                        data-match="<%=match._id%>"
+                                        data-hometeam="<%=match.homeTeam._id%>"
+                                        data-homescore="<%=match.homeScore%>"
+                                        data-awayscore="<%=match.awayScore%>"
+                                        data-awayteam="<%=match.awayTeam._id%>"
+                                        data-date="<%=match.date%>">
+                                            <i class="far fa-edit"></i>
+                                    </span>
+                                    <!-- Delete Match Button -->
+                                    <span role="button" class="btn btn-danger btn-sm ml-2" 
+                                        data-toggle="modal" data-target="#deleteConfirmModal"
+                                        data-deletetype="match"
+                                        data-league="<%=match.league%>"
+                                        data-match="<%=match._id%>"
+                                        data-hometeamname="<%=match.homeTeam.name%>"
+                                        data-awayteamname="<%=match.awayTeam.name%>"
+                                        data-homescore="<%=match.homeScore%>"
+                                        data-awayscore="<%=match.awayScore%>"
+                                        data-matchdate="<%=moment(match.date).format('YYYY. MM. DD')%>">
+                                            <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </td>
+                                <% } %>
+                            </tr>
+                            <% } else if (match.awayTeam._id.equals(team._id)) { %>
+                                <% var opposition = team.league.teams.filter(function(aTeam){return aTeam._id.equals(match.homeTeam);})[0]; %>
+                            <tr>
+                                <td>A</td>
+                                <td><%=match.homeTeam.name%></td>
+                                <td><%=match.homeTeam.footballTeam%></td>
+                                <td><%=match.awayScore%></td>
+                                <td><%=match.homeScore%></td>
+                                <% var result; %>
+                                <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
+                                <td><%= result %></td>
+                                <td><%= moment(match.date).format('YYYY. MM. DD') %></td>
+                                <% if (currentUser) { %>
+                                <td class="floaty-card-row">
+                                    <!-- Edit Match Button -->
+                                    <span role="button" class="btn btn-outline-primary btn-sm" 
+                                        data-toggle="modal" data-target="#matchModal"
+                                        data-purpose="edit"
+                                        data-edittype="match"
+                                        data-league="<%=match.league%>"
+                                        data-match="<%=match._id%>"
+                                        data-hometeam="<%=match.homeTeam._id%>"
+                                        data-homescore="<%=match.homeScore%>"
+                                        data-awayscore="<%=match.awayScore%>"
+                                        data-awayteam="<%=match.awayTeam._id%>"
+                                        data-date="<%=match.date%>">
+                                            <i class="far fa-edit"></i>
+                                    </span>
+                                    <!-- Delete Match Button -->
+                                    <span role="button" class="btn btn-danger btn-sm ml-2" 
+                                        data-toggle="modal" data-target="#deleteConfirmModal"
+                                        data-deletetype="match"
+                                        data-league="<%=match.league%>"
+                                        data-match="<%=match._id%>"
+                                        data-hometeamname="<%=match.homeTeam.name%>"
+                                        data-awayteamname="<%=match.awayTeam.name%>"
+                                        data-homescore="<%=match.homeScore%>"
+                                        data-awayscore="<%=match.awayScore%>"
+                                        data-matchdate="<%=moment(match.date).format('YYYY. MM. DD')%>">
+                                            <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </td>
+                                <% } %>
+                            </tr> 
+                            <% } %>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xl-4 offset-xl-1">
+                <h2 class="mb-5">Remaining matches</h2>
+                <table id="matchesRemaining" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Against</th>
+                            <th>Home</th>
+                            <th>Away</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% team.league.teams.forEach((leagueTeam) => { %>
+                            <% if (!(leagueTeam._id.equals(team._id))) { %>
+                        <tr>
+                            <td><%= leagueTeam.name %></td>
+                            <td id="home<%=leagueTeam._id%>">2</td>
+                            <td id="away<%=leagueTeam._id%>">2</td>
+                        </tr>    
+                            <% } %>
+                        <% }); %>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Delete confirm modal -->
+    <%- include('partials/modals'); -%>
+
     <span id="variableJSON2" hidden> <%= JSON.stringify(team); %> </span>
     <script src="/javascript/showteam.js" nonce="<%=nonce%>" defer></script>
+    <script src="/javascript/modals.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>

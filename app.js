@@ -80,15 +80,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride("_method"));
+
+// static folders
+app.use(express.static(path.join(__dirname, 'public')));
+app.use("/bootstrap", express.static(path.join(__dirname, '/node_modules/bootstrap/dist')));
+app.use("/jquery", express.static(path.join(__dirname, '/node_modules/jquery/dist')));
+app.use("/popper", express.static(path.join(__dirname, '/node_modules/popper.js/dist')));
+
 
 // CSP header
 app.use(expressCspHeader({
     directives: {
         'default-src': [SELF, NONCE, '*.google.com'],
-        'script-src': [SELF, NONCE, 'code.jquery.com', 'cdn.datatables.net', 'cdn.jsdelivr.net', '*.bootstrapcdn.com'],
-        'style-src': [SELF, NONCE, 'cdn.datatables.net', '*.bootstrapcdn.com'],
+        'script-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com'],
+        'style-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com'],
         'img-src': [SELF, NONCE, 'cdn.datatables.net'],
         'font-src': [SELF, NONCE, '*.fontawesome.com']
     }

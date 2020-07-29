@@ -13,7 +13,7 @@ middlewareObj.isLoggedIn = function(req, res, next){
 
 middlewareObj.userRegisterValidation = async function(req,res,next){
     await check('username').trim().escape().isLength({ min: 3}).run(req);
-    await check('password').trim().escape().matches(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/, "g").run(req);
+    await check('password').trim().escape().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g").run(req);
     
     var result = validationResult(req);
     if (!result.isEmpty()) {

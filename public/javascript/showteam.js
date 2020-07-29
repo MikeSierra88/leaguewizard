@@ -12,4 +12,22 @@ $(document).ready(function(){
             $(counterId).html((parseInt($(counterId).html(), 10)-1))
         }
     });
+    
+    $('#teamMatches').DataTable({
+        "order": [[6, 'desc'], [1, 'asc']],
+        "paging": false,
+        "searching": true,
+        "info": false,
+        "responsive": false,
+        "ordering": true
+    });
+    
+    $('#matchesRemaining').DataTable({
+        "order": [[0, 'asc']],
+        "paging": false,
+        "searching": false,
+        "info": false,
+        "responsive": false,
+        "ordering": true
+    });
 });

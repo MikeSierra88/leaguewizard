@@ -13,7 +13,8 @@ router.get("/", (req, res) => {
         else {
             res.status(200).render("index", {
                 title: "League Wizard",
-                leagues: leagues
+                leagues: leagues,
+                pageType: "index"
             });
         }
     });
