@@ -3,6 +3,31 @@ var { param, check, validationResult } = require('express-validator');
 
 var middlewareObj = {};
 
+// reCAPTCHA middleware for login
+middlewareObj.captchaPassed = function(req,res,next){
+  if(req.body['g-recaptcha-response'] === undefined || 
+      req.body['g-recaptcha-response'] === '' || 
+      req.body['g-recaptcha-response'] === null)
+  {
+    return res.json({"responseError" : "something goes wrong"});
+  }
+  
+  var secretKey = process.env.LEAGUE_RECAPTCHA_SECRET;
+  var verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.LEAGUE_RECAPTCHA_SECRET + "&response=" + req.body['g-recaptcha-response'];
+  /*global fetch*/
+  fetch(verificationURL, {method: 'post'})
+    .then(response => response.json())
+    .then(google_response => {
+      console.log(google_response);
+      if (google_response.success) {
+        next();
+      } else {
+        res.redirect("/login");
+      }
+    })
+    .catch(error => res.render("error", { error: error }));
+};
+
 // Auth middleware to check if user is logged in
 middlewareObj.isLoggedIn = function(req, res, next){
   if (req.isAuthenticated()){

@@ -11,26 +11,26 @@ var router = express.Router();
 
 // Registration routes - to be disabled when up and working
 
-  // Render register page
-router.get("/register", function(req, res){
-  res.render("register", {
-    title: "League Wizard - Login"
-  });
-});
+//   // Render register page
+// router.get("/register", function(req, res){
+//   res.render("register", {
+//     title: "League Wizard - Login"
+//   });
+// });
 
-  // Register logic
-router.post("/register", middleware.userRegisterValidation, function(req, res){
-  var newUser = new User({username: req.body.username});
-  User.register(newUser, req.body.password, 
-    function(err, user){
-      if (err) {
-        res.render("error", {error: err});
-      }
-      passport.authenticate("local")(req, res, function(){
-        res.redirect("/leagues");
-      });
-    });
-});
+//   // Register logic
+// router.post("/register", middleware.userRegisterValidation, function(req, res){
+//   var newUser = new User({username: req.body.username});
+//   User.register(newUser, req.body.password, 
+//     function(err, user){
+//       if (err) {
+//         res.render("error", {error: err});
+//       }
+//       passport.authenticate("local")(req, res, function(){
+//         res.redirect("/leagues");
+//       });
+//     });
+// });
 
 // Login routes
   // Show login form
@@ -42,7 +42,7 @@ router.get("/login", function(req, res){
 
   // Login logic
 router.post("/login",
-  //middleware.captchaPassed,
+  middleware.captchaPassed,
   middleware.userLoginValidation,
   passport.authenticate("local", {
       successRedirect: "/leagues",
