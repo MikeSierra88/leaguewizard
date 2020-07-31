@@ -1,60 +1,60 @@
 // app.js
 
-/**
- * AWS Variables
- */
+// /**
+//  * AWS Variables
+//  */
  
-var AWS        = require('aws-sdk'),
-    region     = "eu-central-1",
-    secretName = process.env.AWS_SECRET_NAME,
-    secret,
-    decodedBinarySecret;
+// var AWS        = require('aws-sdk'),
+//     region     = "eu-central-1",
+//     secretName = process.env.AWS_SECRET_NAME,
+//     secret,
+//     decodedBinarySecret;
 
-/**
- * AWS Secret Manager
- */
+// /**
+//  * AWS Secret Manager
+//  */
  
-// Create a Secrets Manager client
-var client = new AWS.SecretsManager({
-    region: region
-});
+// // Create a Secrets Manager client
+// var client = new AWS.SecretsManager({
+//     region: region
+// });
 
-client.getSecretValue({SecretId: secretName}, function(err, data) {
-    if (err) {
-        if (err.code === 'DecryptionFailureException')
-            // Secrets Manager can't decrypt the protected secret text using the provided KMS key.
-            // Deal with the exception here, and/or rethrow at your discretion.
-            throw err;
-        else if (err.code === 'InternalServiceErrorException')
-            // An error occurred on the server side.
-            // Deal with the exception here, and/or rethrow at your discretion.
-            throw err;
-        else if (err.code === 'InvalidParameterException')
-            // You provided an invalid value for a parameter.
-            // Deal with the exception here, and/or rethrow at your discretion.
-            throw err;
-        else if (err.code === 'InvalidRequestException')
-            // You provided a parameter value that is not valid for the current state of the resource.
-            // Deal with the exception here, and/or rethrow at your discretion.
-            throw err;
-        else if (err.code === 'ResourceNotFoundException')
-            // We can't find the resource that you asked for.
-            // Deal with the exception here, and/or rethrow at your discretion.
-            throw err;
-    }
-    else {
-        // Decrypts secret using the associated KMS CMK.
-        // Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if ('SecretString' in data) {
-            secret = data.SecretString;
-        } else {
-            let buff = new Buffer(data.SecretBinary, 'base64');
-            decodedBinarySecret = buff.toString('ascii');
-        }
-    }
+// client.getSecretValue({SecretId: secretName}, function(err, data) {
+//     if (err) {
+//         if (err.code === 'DecryptionFailureException')
+//             // Secrets Manager can't decrypt the protected secret text using the provided KMS key.
+//             // Deal with the exception here, and/or rethrow at your discretion.
+//             throw err;
+//         else if (err.code === 'InternalServiceErrorException')
+//             // An error occurred on the server side.
+//             // Deal with the exception here, and/or rethrow at your discretion.
+//             throw err;
+//         else if (err.code === 'InvalidParameterException')
+//             // You provided an invalid value for a parameter.
+//             // Deal with the exception here, and/or rethrow at your discretion.
+//             throw err;
+//         else if (err.code === 'InvalidRequestException')
+//             // You provided a parameter value that is not valid for the current state of the resource.
+//             // Deal with the exception here, and/or rethrow at your discretion.
+//             throw err;
+//         else if (err.code === 'ResourceNotFoundException')
+//             // We can't find the resource that you asked for.
+//             // Deal with the exception here, and/or rethrow at your discretion.
+//             throw err;
+//     }
+//     else {
+//         // Decrypts secret using the associated KMS CMK.
+//         // Depending on whether the secret is a string or binary, one of these fields will be populated.
+//         if ('SecretString' in data) {
+//             secret = data.SecretString;
+//         } else {
+//             let buff = new Buffer(data.SecretBinary, 'base64');
+//             decodedBinarySecret = buff.toString('ascii');
+//         }
+//     }
     
-    const CREDENTIALS = JSON.parse(secret);
-    process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
+//     const CREDENTIALS = JSON.parse(secret);
+//     process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
     
     /**
      * Required External Modules
@@ -88,7 +88,7 @@ client.getSecretValue({SecretId: secretName}, function(err, data) {
      */
     
     const app  = express(),
-          port = 8082;
+          port = 8080; // prod: 8082
     
     /**
      *  App Configuration
@@ -96,7 +96,7 @@ client.getSecretValue({SecretId: secretName}, function(err, data) {
     // connect to database using mongoose
     
     // production DB
-    const LEAGUEDB_URI = CREDENTIALS.LEAGUEDB + '?retryWrites=true&w=majority';
+    // const LEAGUEDB_URI = CREDENTIALS.LEAGUEDB + '?retryWrites=true&w=majority';
     
     // development DB
     const LEAGUEDB_URI = process.env.LEAGUEDB + '?retryWrites=true&w=majority';
@@ -120,8 +120,8 @@ client.getSecretValue({SecretId: secretName}, function(err, data) {
     
     // initialize express-session
     app.use(require("express-session")({
-      secret: CREDENTIALS.LEAGUE_SESSION_SECRET, // production secret
-    //   secret: process.env.SESSION_SECRET;     // development secret
+    //   secret: CREDENTIALS.LEAGUE_SESSION_SECRET, // production secret
+      secret: process.env.SESSION_SECRET,     // development secret
       resave: false,
       saveUninitialized: false
     }));
@@ -214,4 +214,6 @@ client.getSecretValue({SecretId: secretName}, function(err, data) {
     
     console.log("app launched successfully");
 
-});
+
+// uncomment in production
+// });

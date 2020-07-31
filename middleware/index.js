@@ -60,4 +60,39 @@ middlewareObj.userLoginValidation = async function(req,res,next){
     next();
 };
 
+middlewareObj.teamValidation = async function(req, res, next) {
+  await check('name').trim().escape().run(req);
+  await check('footballTeam').trim().escape().run(req);
+  
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+}
+
+middlewareObj.leagueValidation = async function(req, res, next) {
+  await check('name').trim().escape().run(req);
+  
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+}
+
+middlewareObj.matchValidation = async function(req, res, next) {
+  await check('homeScore').trim().escape().isInt().run(req);
+  await check('awayScore').trim().escape().isInt().run(req);
+  
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+}
+
 module.exports = middlewareObj;

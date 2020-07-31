@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-md navbar-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+      <span class=""><i class="fas fa-bars"></i></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
@@ -25,7 +25,12 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/leagues/new">Create new league</a>
+          <!-- Delete League Button -->
+          <span role="button" class="nav-link" 
+              data-toggle="modal" data-target="#leagueModal"
+              data-purpose="new">
+                  Create new league
+          </span>
         </li>
         <% } %>
       </ul>

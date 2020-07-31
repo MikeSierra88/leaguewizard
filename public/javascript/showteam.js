@@ -18,7 +18,7 @@ $(document).ready(function(){
         "paging": false,
         "searching": true,
         "info": false,
-        "responsive": false,
+        "responsive": true,
         "ordering": true
     });
     

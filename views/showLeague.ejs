@@ -29,7 +29,13 @@
             </span>
             <span>
                 <% if (currentUser) { %>
-                    <a class="btn btn-outline-secondary" href="#">Edit league</a>
+                    <span role="button" class="btn btn-outline-secondary" 
+                        data-toggle="modal" data-target="#leagueModal"
+                        data-purpose="edit"
+                        data-league="<%=league._id%>"
+                        data-leaguename="<%=league.name%>">
+                            Edit league
+                    </span>
                 <% } %>
                 <a class="btn btn-secondary" href="/">Back to index</a>
             </span>
@@ -39,18 +45,17 @@
         <table id="leagueTable" class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
-                    <th id="position_header" data-priority="1">Position</th>
-                    <th data-priority="1">Name</th>
-                    <th data-priority="2">Team</th>
-                    <th data-priority="1">Played</th>
-                    <th data-priority="1">W</th>
-                    <th data-priority="1">D</th>
-                    <th data-priority="1">L</th>
-                    <th data-priority="3">GF</th>
-                    <th data-priority="3">GA</th>
-                    <th data-priority="1">GD</th>
-                    <th data-priority="1">Points</th>
-                    <th data-priority="1"></th>
+                    <th id="position_header" data-priority="1">Pos</th>
+                    <th data-priority="1" class="no-order">Name</th>
+                    <th data-priority="5" class="no-order">Team</th>
+                    <th data-priority="1" title="Points">Pts</th>
+                    <th data-priority="2" title="Played" class="no-order">Pld</th>
+                    <th data-priority="3" title="Wins" class="no-order">W</th>
+                    <th data-priority="3" title="Draws" class="no-order">D</th>
+                    <th data-priority="3" title="Losses" class="no-order">L</th>
+                    <th data-priority="4" title="Goals For">GF</th>
+                    <th data-priority="4" title="Goals Against">GA</th>
+                    <th data-priority="2" title="Goal Difference">GD</th>
                     <% if (currentUser) { %>
                         <th data-priority="1"></th>
                     <% } %>
@@ -59,9 +64,10 @@
             <tbody>
                 <% league.teams.forEach((team) => { %>
                 <tr>
-                    <td class="leaguePos"></td>
-                    <td id="teamName_<%=team._id%>"><%= team.name %></td>
+                    <td class="leaguePos" data-teamid="<%=team._id%>"></td>
+                    <td id="teamName_<%=team._id%>"><a class="team-details-<%=team._id%>" href="/leagues/<%=league._id%>/teams/<%=team._id%>/"><%= team.name %></a></td>
                     <td id="teamFifa_<%=team._id%>"><%= team.footballTeam %></td>
+                    <td id="teamPoints_<%=team._id%>"></td>
                     <td id="teamPlayed_<%=team._id%>"></td>
                     <td id="teamWon_<%=team._id%>"></td>
                     <td id="teamDraw_<%=team._id%>"></td>
@@ -69,10 +75,6 @@
                     <td id="teamGF_<%=team._id%>"></td>
                     <td id="teamGA_<%=team._id%>"></td>
                     <td id="teamGD_<%=team._id%>"></td>
-                    <td id="teamPoints_<%=team._id%>"></td>
-                    <td>
-                        <a class="team-details" href="/leagues/<%=league._id%>/teams/<%=team._id%>/">Details</a>
-                    </td>
                     <% if (currentUser) { %>
                     <td class="floaty-row-center">
                         <!-- Edit Team Button -->
@@ -107,13 +109,12 @@
         <table id="allMatchesTable" class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
-                    <th>Date</th>
-                    <th>Home</th>
-                    <th>Score</th>
-                    <th>Score</th>
-                    <th>Away</th>
+                    <th data-priority="1">Date</th>
+                    <th data-priority="1">Home</th>
+                    <th data-priority="2">Result</th>
+                    <th data-priority="1">Away</th>
                     <% if (currentUser) { %>
-                    <th></th>
+                    <th data-priority="3"></th>
                     <% } %>
                 </tr>
             </thead>
@@ -123,8 +124,7 @@
                         <td><%=moment(match.date).format('YYYY. MM. DD')%></td>
                         <% var homeTeam = league.teams.filter((team => team._id.equals(match.homeTeam)))[0]; %>
                         <td><%=homeTeam.name%></td>
-                        <td><%=match.homeScore%></td>
-                        <td><%=match.awayScore%></td>
+                        <td><%=match.homeScore%> - <%=match.awayScore%></td>
                         <% var awayTeam = league.teams.filter((team => team._id.equals(match.awayTeam)))[0]; %>
                         <td><%=awayTeam.name%></td>
                         <% if (currentUser) { %>
@@ -164,7 +164,7 @@
         </table>
     </div>
     
-    <!-- Edit team and match modals -->
+    <!-- Modal dialogs -->
     <%- include('partials/modals'); -%>
     
     <span id="variableJSON" hidden> <%= JSON.stringify(league); %> </span>

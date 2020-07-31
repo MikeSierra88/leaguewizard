@@ -21,6 +21,7 @@ var express = require('express'),
 // CREATE MATCH
 router.post("/:leagueid/matches",
     middleware.isLoggedIn,
+    middleware.matchValidation,
     async function(req, res) {
         if (req.body.homeTeam != req.body.awayTeam) {
             var newMatch = new Match({
@@ -98,8 +99,8 @@ router.post("/:leagueid/matches",
 // UPDATE MATCH
 router.put("/:leagueid/matches",
     middleware.isLoggedIn,
+    middleware.matchValidation,
     (req, res) => {
-        console.log(req.body);
         Match.findByIdAndUpdate(req.body.matchId, {
             homeTeam: req.body.homeTeam,
             awayTeam: req.body.awayTeam,
@@ -220,6 +221,7 @@ router.get("/:leagueid/teams/:teamid/:leaguepos", (req, res) => {
 // CREATE TEAM
 router.post("/:leagueid/teams",
     middleware.isLoggedIn,
+    middleware.teamValidation,
     (req, res) => {
         if (req.params.leagueid === req.body.league) {
             var newTeam = new Team({
@@ -266,6 +268,7 @@ router.post("/:leagueid/teams",
 // UPDATE TEAM
 router.put("/:leagueid/teams/:teamid",
     middleware.isLoggedIn,
+    middleware.teamValidation,
     (req, res) => {
         Team.findByIdAndUpdate(req.params.teamid, {
             name: req.body.name,
@@ -406,6 +409,24 @@ router.post("/",
                 res.redirect(redirectUrl);
             }
         });
+});
+
+// UPDATE LEAGUE
+router.put("/:leagueid",
+    middleware.isLoggedIn,
+    (req, res) => {
+        League.findByIdAndUpdate(req.params.leagueid, {
+            name: req.body.name
+        }, function(err){
+            if (err) {
+                res.render("error", { error: err });
+            }
+            else {
+                var redirectUrl = "/leagues/" + req.params.leagueid;
+                res.redirect(redirectUrl);
+            }
+        });
+    
 });
 
 // DELETE LEAGUE

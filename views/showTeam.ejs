@@ -62,19 +62,19 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-xl-7">
+            <div class="col-xl-7 order-last order-xl-first">
                 <h2>Matches played</h2>
     
                 <table id="teamMatches" class="table table-bordered table-hover">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col" data-toggle="tooltip" title="Home/Away">H/A</th>
-                            <th scope="col" data-toggle="tooltip" title="Opponent">Opp</th>
-                            <th scope="col">Team</th>
-                            <th scope="col" data-toggle="tooltip" title="Goals for">GF</th>
-                            <th scope="col" data-toggle="tooltip" title="Goals against">GA</th>
-                            <th scope="col" data-toggle="tooltip" title="Result">R</th>
-                            <th scope="col">Date</th>
+                            <th scope="col" data-priority="1" data-toggle="tooltip" title="Home/Away">H/A</th>
+                            <th scope="col" data-priority="1" data-toggle="tooltip" title="Opponent">Opp</th>
+                            <th scope="col" data-priority="4">Team</th>
+                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Score">GF</th>
+                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Goals against">GA</th>
+                            <th scope="col" data-priority="2" data-toggle="tooltip" title="Result">R</th>
+                            <th scope="col" data-priority="4">Date</th>
                             <% if (currentUser) { %>
                             <th></th>
                             <% } %>
@@ -203,7 +203,7 @@
     </div>
     
     
-    <!-- Delete confirm modal -->
+    <!-- Modal dialogs -->
     <%- include('partials/modals'); -%>
 
     <span id="variableJSON2" hidden> <%= JSON.stringify(team); %> </span>

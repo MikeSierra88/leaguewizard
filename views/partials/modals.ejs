@@ -28,6 +28,40 @@
   </div>
 </div>
 
+<!-- New league / edit league modal -->
+
+<div class="modal fade" id="leagueModal" tabindex="-1" role="dialog" aria-labelledby="leagueModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="leagueModalLongTitle">Add new league</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <form id="leagueModalForm" action="" method="POST">
+      <input type="hidden" id="leagueModalLeagueId" name="league" value="">
+      <div class="modal-body">
+        <div class="form-row mb-2">
+            <label for="leagueModalLeagueName" class="col-sm-3 col-form-label">League name</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="leagueModalLeagueName" name="name">
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer floaty-card-row">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <span>
+            <button type="submit" class="btn btn-primary" type="submit">Save</button>
+        </span>
+                
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <% if (pageType == "teamShow" || pageType == "leagueShow") { %>
 <!-- New team / edit team modal -->
 

@@ -27,6 +27,25 @@ $(document).ready(function(){
        }
    });
    
+   // League modal handler
+   
+   $('#leagueModal').on('show.bs.modal', function (event) {
+       var button = $(event.relatedTarget);
+       if (button.data('purpose') == "edit") {
+           $('#leagueModalLongTitle').text("Edit league name");
+           $('input[id=leagueModalLeagueId]').val(button.data('league'));
+           $('#leagueModalLeagueName').val(button.data('leaguename'));
+           var formActionLeague = "/leagues/" + button.data('league') + "?_method=PUT";
+           $("#leagueModalForm").attr('action', formActionLeague);
+       } else if (button.data('purpose') == "new") {
+           $('#leagueModalLongTitle').text("Add new league");
+           $('input[id=leagueModalLeagueId]').val("");
+           $('#leagueModalLeagueName').val("");
+           var formActionLeague = "/leagues";
+           $("#leagueModalForm").attr('action', formActionLeague);
+       }
+   });
+   
    // Team modal handler
    
    $('#teamModal').on('show.bs.modal', function (event) {
@@ -46,7 +65,6 @@ $(document).ready(function(){
            $('#teamModalTeamName').val("");
            $('#teamModalTeamFIFA').val("");
            var formActionTeam = "/leagues/" + button.data('league') + "/teams/";
-           console.log(formActionTeam);
            $("#teamModalForm").attr('action', formActionTeam);
        }
    });
@@ -88,7 +106,6 @@ $(document).ready(function(){
             $("input[id=matchModalMatchId]").val('');
             $("#matchModalHomeScore").val('');
             $("#matchModalAwayScore").val('');
-            console.log(button.data('league'));
             $("#matchModalMatchDate").val(new Date().toISOString().substr(0,10));
             var formActionMatch = "/leagues/" + button.data('league') + "/matches";
             $("#modalMatchForm").attr('action', formActionMatch);
