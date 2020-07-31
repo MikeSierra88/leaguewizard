@@ -1,60 +1,72 @@
 // app.js
 
-// /**
-//  * AWS Variables
-//  */
- 
-// var AWS        = require('aws-sdk'),
-//     region     = "eu-central-1",
-//     secretName = process.env.AWS_SECRET_NAME,
-//     secret,
-//     decodedBinarySecret;
-
-// /**
-//  * AWS Secret Manager
-//  */
- 
-// // Create a Secrets Manager client
-// var client = new AWS.SecretsManager({
-//     region: region
-// });
-
-// client.getSecretValue({SecretId: secretName}, function(err, data) {
-//     if (err) {
-//         if (err.code === 'DecryptionFailureException')
-//             // Secrets Manager can't decrypt the protected secret text using the provided KMS key.
-//             // Deal with the exception here, and/or rethrow at your discretion.
-//             throw err;
-//         else if (err.code === 'InternalServiceErrorException')
-//             // An error occurred on the server side.
-//             // Deal with the exception here, and/or rethrow at your discretion.
-//             throw err;
-//         else if (err.code === 'InvalidParameterException')
-//             // You provided an invalid value for a parameter.
-//             // Deal with the exception here, and/or rethrow at your discretion.
-//             throw err;
-//         else if (err.code === 'InvalidRequestException')
-//             // You provided a parameter value that is not valid for the current state of the resource.
-//             // Deal with the exception here, and/or rethrow at your discretion.
-//             throw err;
-//         else if (err.code === 'ResourceNotFoundException')
-//             // We can't find the resource that you asked for.
-//             // Deal with the exception here, and/or rethrow at your discretion.
-//             throw err;
-//     }
-//     else {
-//         // Decrypts secret using the associated KMS CMK.
-//         // Depending on whether the secret is a string or binary, one of these fields will be populated.
-//         if ('SecretString' in data) {
-//             secret = data.SecretString;
-//         } else {
-//             let buff = new Buffer(data.SecretBinary, 'base64');
-//             decodedBinarySecret = buff.toString('ascii');
-//         }
-//     }
+if (process.env.LEAGUE_ENV == "prod") {
     
-//     const CREDENTIALS = JSON.parse(secret);
-//     process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
+    // /**
+    //  * AWS Variables
+    //  */
+     
+    var AWS        = require('aws-sdk'),
+        region     = "eu-central-1",
+        secretName = process.env.AWS_SECRET_NAME,
+        secret,
+        decodedBinarySecret;
+    
+    /**
+     * AWS Secret Manager
+     */
+     
+    // Create a Secrets Manager client
+    var client = new AWS.SecretsManager({
+        region: region
+    });
+    
+    client.getSecretValue({SecretId: secretName}, function(err, data) {
+        if (err) {
+            if (err.code === 'DecryptionFailureException')
+                // Secrets Manager can't decrypt the protected secret text using the provided KMS key.
+                // Deal with the exception here, and/or rethrow at your discretion.
+                throw err;
+            else if (err.code === 'InternalServiceErrorException')
+                // An error occurred on the server side.
+                // Deal with the exception here, and/or rethrow at your discretion.
+                throw err;
+            else if (err.code === 'InvalidParameterException')
+                // You provided an invalid value for a parameter.
+                // Deal with the exception here, and/or rethrow at your discretion.
+                throw err;
+            else if (err.code === 'InvalidRequestException')
+                // You provided a parameter value that is not valid for the current state of the resource.
+                // Deal with the exception here, and/or rethrow at your discretion.
+                throw err;
+            else if (err.code === 'ResourceNotFoundException')
+                // We can't find the resource that you asked for.
+                // Deal with the exception here, and/or rethrow at your discretion.
+                throw err;
+        }
+        else {
+            // Decrypts secret using the associated KMS CMK.
+            // Depending on whether the secret is a string or binary, one of these fields will be populated.
+            if ('SecretString' in data) {
+                secret = data.SecretString;
+            } else {
+                let buff = new Buffer(data.SecretBinary, 'base64');
+                decodedBinarySecret = buff.toString('ascii');
+            }
+        }
+        
+        const CREDENTIALS = JSON.parse(secret);
+        process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
+        
+        runServer(process.env.LEAGUE_ENV);
+    });
+    
+} else {
+    // Run server in development environment
+    runServer(process.env.LEAGUE_ENV);
+}
+    
+function runServer(environment) {
     
     /**
      * Required External Modules
@@ -86,20 +98,21 @@
     /**
      * App Variables
      */
-    
     const app  = express(),
-          port = 8080; // prod: 8082
+          port = parseInt(process.env.LEAGUE_PORT); // prod: 8082
     
     /**
      *  App Configuration
      */
     // connect to database using mongoose
+    const LEAGUEDB_URI = (environment == "prod") ? CREDENTIALS.LEAGUEDB + '?retryWrites=true&w=majority' : process.env.LEAGUEDB + '?retryWrites=true&w=majority'; 
+    const SESSION_SECRET = (environment == "prod") ? CREDENTIALS.LEAGUE_SESSION_SECRET : process.env.SESSION_SECRET ;
     
-    // production DB
-    // const LEAGUEDB_URI = CREDENTIALS.LEAGUEDB + '?retryWrites=true&w=majority';
-    
-    // development DB
-    const LEAGUEDB_URI = process.env.LEAGUEDB + '?retryWrites=true&w=majority';
+    if (environment == "prod") {
+        
+    }
+    // // development DB
+    // const LEAGUEDB_URI = process.env.LEAGUEDB + '?retryWrites=true&w=majority';
 
     mongoose.set('useUnifiedTopology', true);
     mongoose.set('useNewUrlParser', true);
@@ -213,7 +226,5 @@
     });
     
     console.log("app launched successfully");
-
-
-// uncomment in production
-// });
+    
+}
