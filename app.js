@@ -1,5 +1,5 @@
 // app.js
-
+console.log("Starting server in environment: " + process.env.LEAGUE_ENV);
 if (process.env.LEAGUE_ENV == "prod") {
     
     // /**
@@ -58,15 +58,15 @@ if (process.env.LEAGUE_ENV == "prod") {
         const CREDENTIALS = JSON.parse(secret);
         process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
         
-        runServer(process.env.LEAGUE_ENV);
+        runServer(process.env.LEAGUE_ENV, CREDENTIALS);
     });
     
 } else {
     // Run server in development environment
-    runServer(process.env.LEAGUE_ENV);
+    runServer(process.env.LEAGUE_ENV, "");
 }
     
-function runServer(environment) {
+function runServer(environment, CREDENTIALS) {
     
     /**
      * Required External Modules
@@ -134,7 +134,7 @@ function runServer(environment) {
     // initialize express-session
     app.use(require("express-session")({
     //   secret: CREDENTIALS.LEAGUE_SESSION_SECRET, // production secret
-      secret: process.env.SESSION_SECRET,     // development secret
+      secret: SESSION_SECRET,     // development secret
       resave: false,
       saveUninitialized: false
     }));
