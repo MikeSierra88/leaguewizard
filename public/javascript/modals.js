@@ -109,6 +109,22 @@ $(document).ready(function(){
             $("#matchModalMatchDate").val(new Date().toISOString().substr(0,10));
             var formActionMatch = "/leagues/" + button.data('league') + "/matches";
             $("#modalMatchForm").attr('action', formActionMatch);
+        } else if (button.data('purpose') == "newFromTable") {
+            $("#matchModalLongTitle").text("Add new match");
+            // Get teams from data
+            $("input[id=matchModalHomeTeam]").val(button.data('hometeam'));
+            $("#matchModalHomeTeamName").val(button.data('hometeam'));
+            $("#matchModalHomeTeamFIFA").val(button.data('hometeam'));
+            $("input[id=matchModalAwayTeam]").val(button.data('awayteam'));
+            $("#matchModalAwayTeamName").val(button.data('awayteam'));
+            $("#matchModalAwayTeamFIFA").val(button.data('awayteam'));
+            $("input[id=matchModalLeagueId]").val(button.data('league'));
+            $("input[id=matchModalMatchId]").val('');
+            $("#matchModalHomeScore").val('');
+            $("#matchModalAwayScore").val('');
+            $("#matchModalMatchDate").val(new Date().toISOString().substr(0,10));
+            var formActionMatch = "/leagues/" + button.data('league') + "/matches";
+            $("#modalMatchForm").attr('action', formActionMatch);
         }
         
     });

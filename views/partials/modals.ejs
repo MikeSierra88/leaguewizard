@@ -123,17 +123,17 @@
         <input type="hidden" id="matchModalAwayTeam" name="awayTeam">
         <div class="modal-body">
             <div class="container-fluid">
-                <div class="form-group row mb-2">
-                    <div class="col-sm-4 floaty-row-left">
-                        <label for="matchModalHomeTeamName" class="col-form-label text-nowrap col-sm-5 mr-2">Home team</label>
-                        <select id="matchModalHomeTeamName" class="form-control col-sm-7">
+                <div class="form-group row mb-4">
+                    <div class="col-sm-4 floaty-row-left mb-1">
+                        <label for="matchModalHomeTeamName" class="col-form-label text-nowrap mr-2 no-horizontal-padding">Home team</label>
+                        <select id="matchModalHomeTeamName" class="form-control">
                             <option value="" disabled selected hidden></option>
                             <% leagueTeams.forEach((team) => { %>
                                 <option value="<%=team._id%>"><%=team.name%></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class="col-sm-4 floaty-row-left">
+                    <div class="col-sm-4 floaty-row-left mb-1">
                         <label for="matchModalHomeTeamFIFA" class="col-form-label mr-2">as</label>
                         <select id="matchModalHomeTeamFIFA" class="form-control">
                             <option value="" disabled selected hidden></option>
@@ -148,16 +148,16 @@
                     </div>
                 </div>
                 <div class="form-group row mb-4">
-                    <div class="col-sm-4 floaty-row-left">
-                        <label for="matchModalAwayTeamName" class="col-form-label text-nowrap col-sm-5 mr-2">Away team</label>
-                        <select id="matchModalAwayTeamName" class="form-control col-sm-7">
+                    <div class="col-sm-4 floaty-row-left mb-1">
+                        <label for="matchModalAwayTeamName" class="col-form-label text-nowrap mr-2 no-horizontal-padding">Away team</label>
+                        <select id="matchModalAwayTeamName" class="form-control">
                             <option value="" disabled selected hidden></option>
                             <% leagueTeams.forEach((team) => { %>
                                 <option value="<%=team._id%>"><%=team.name%></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class="col-sm-4 floaty-row-left">
+                    <div class="col-sm-4 floaty-row-left mb-1">
                         <label for="matchModalAwayTeamFIFA" class="col-form-label mr-2">as</label>
                         <select id="matchModalAwayTeamFIFA" class="form-control">
                             <option value="" disabled selected hidden></option>

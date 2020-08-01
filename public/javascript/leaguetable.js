@@ -76,10 +76,14 @@ $(document).ready(function(){
     
     $('#allMatchesTable').DataTable({
         "order": [[0, 'desc'], [1, 'asc']],
-        "paging": false,
+        "paging": true,
         "searching": true,
         "info": false,
         "responsive": true,
-        "ordering": true
+        "ordering": true,
+        "columnDefs": [
+            { "orderable": false, "targets": ["no-order"] },
+            { "targets": ["no-wrap"], "class": "nowrap" }
+            ]
     });
 });

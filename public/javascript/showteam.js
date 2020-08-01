@@ -14,12 +14,16 @@ $(document).ready(function(){
     });
     
     $('#teamMatches').DataTable({
-        "order": [[6, 'desc'], [1, 'asc']],
-        "paging": false,
+        "order": [[5, 'desc'], [1, 'asc']],
+        "paging": true,
         "searching": true,
         "info": false,
         "responsive": true,
-        "ordering": true
+        "ordering": true,
+        "columnDefs": [
+            { "targets": ["no-order"], "orderable": false },
+            { "targets": ["no-wrap"], "class": "nowrap" }
+            ]
     });
     
     $('#matchesRemaining').DataTable({
@@ -29,5 +33,17 @@ $(document).ready(function(){
         "info": false,
         "responsive": false,
         "ordering": true
+    });
+    
+    $('.remaining-match-clickable-cell').each(function(){
+        console.log($(this))
+        if ( parseInt( $(this).text() ) > 0 ) {
+            console.log("inside");
+            $(this).attr("data-toggle", "modal");
+            $(this).attr("data-target", "#matchModal");
+            $(this).attr("data-purpose", "newFromTable");
+            $(this).attr("role", "button");
+        }
+        
     });
 });

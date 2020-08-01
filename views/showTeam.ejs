@@ -70,11 +70,10 @@
                         <tr>
                             <th scope="col" data-priority="1" data-toggle="tooltip" title="Home/Away">H/A</th>
                             <th scope="col" data-priority="1" data-toggle="tooltip" title="Opponent">Opp</th>
-                            <th scope="col" data-priority="4">Team</th>
-                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Score">GF</th>
-                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Goals against">GA</th>
+                            <th scope="col" data-priority="4" data-toggle="tooltip" title="Opposing football team">Team</th>
+                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Score" class="no-order">Score</th>
                             <th scope="col" data-priority="2" data-toggle="tooltip" title="Result">R</th>
-                            <th scope="col" data-priority="4">Date</th>
+                            <th scope="col" data-priority="4" class="no-wrap">Date</th>
                             <% if (currentUser) { %>
                             <th></th>
                             <% } %>
@@ -88,8 +87,7 @@
                                 <td>H</td>
                                 <td><%=match.awayTeam.name%></td>
                                 <td><%=match.awayTeam.footballTeam%></td>
-                                <td><%=match.homeScore%></td>
-                                <td><%=match.awayScore%></td>
+                                <td><span class="font-weight-bold"><%=match.homeScore%></span> - <%= match.awayScore %></td>
                                 <% var result; %>
                                 <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
                                 <td><%= result %></td>
@@ -132,8 +130,7 @@
                                 <td>A</td>
                                 <td><%=match.homeTeam.name%></td>
                                 <td><%=match.homeTeam.footballTeam%></td>
-                                <td><%=match.awayScore%></td>
-                                <td><%=match.homeScore%></td>
+                                <td><%=match.homeScore%> - <span class="font-weight-bold"><%=match.awayScore%></span></td>
                                 <% var result; %>
                                 <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
                                 <td><%= result %></td>
@@ -144,7 +141,6 @@
                                     <span role="button" class="btn btn-outline-primary btn-sm" 
                                         data-toggle="modal" data-target="#matchModal"
                                         data-purpose="edit"
-                                        data-edittype="match"
                                         data-league="<%=match.league%>"
                                         data-match="<%=match._id%>"
                                         data-hometeam="<%=match.homeTeam._id%>"
@@ -190,8 +186,24 @@
                             <% if (!(leagueTeam._id.equals(team._id))) { %>
                         <tr>
                             <td><%= leagueTeam.name %></td>
+                            <% if (currentUser) { %>
+                            <td class="remaining-match-clickable-cell" 
+                                id="home<%=leagueTeam._id%>" 
+                                data-league="<%= team.league._id %>" 
+                                data-hometeam="<%= team._id %>" 
+                                data-awayteam="<%= leagueTeam._id %>">
+                                    2
+                            </td>
+                            <td class="remaining-match-clickable-cell" id="away<%=leagueTeam._id%>" 
+                                data-league="<%= team.league._id %>"
+                                data-hometeam="<%= leagueTeam._id %>" 
+                                data-awayteam="<%= team._id %>">
+                                    2
+                            </td>
+                            <% }  else { %> 
                             <td id="home<%=leagueTeam._id%>">2</td>
                             <td id="away<%=leagueTeam._id%>">2</td>
+                            <% } %>
                         </tr>    
                             <% } %>
                         <% }); %>

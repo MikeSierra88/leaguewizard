@@ -3,7 +3,17 @@ body {
     color: #113321;
 }
 
+.display-4 {
+    font-size: 3rem;
+    font-size: 6vw;
+    font-weight: 500;
+}
 
+@media screen and (min-width: 768px) {
+  .display-4 {
+     font-size: 46px;
+  }
+}
 
 td {
     text-align: center;
@@ -31,14 +41,28 @@ td {
     flex-direction: row;
 }
 
+.league-floaty-row-right {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
+@media screen and (min-width: 465px) {
+  .league-floaty-row-right {
+     flex-direction: row;
+  }
+}
+
+.no-horizontal-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .delete-league-form {
     display: inline;
 }
 
-.display-4 {
-    font-size: 3rem;
-    font-weight: 500;
-}
+
 
 .nav-container {
     background: #9dbf8e;
@@ -85,6 +109,9 @@ td {
     background: white;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
 
 #footer {
     background: #9dbf8e;
