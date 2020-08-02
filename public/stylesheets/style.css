@@ -41,15 +41,37 @@ td {
     flex-direction: row;
 }
 
+.league-floaty-row-left {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
 .league-floaty-row-right {
     display: flex;
     justify-content: flex-end;
     flex-direction: column;
 }
 
-@media screen and (min-width: 465px) {
+.league-floaty-row-left > .btn, .league-floaty-row-right > .btn {
+    width: 125px;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+}
+
+@media screen and (min-width: 576px) {
+  .league-floaty-row-left {
+     flex-direction: row;
+  }
+  
   .league-floaty-row-right {
      flex-direction: row;
+  }
+  
+  .league-floaty-row-left > .btn, .league-floaty-row-right > .btn {
+    width: 125px;
+    margin-left: 0.25rem;
+    margin-bottom: 0;
   }
 }
 

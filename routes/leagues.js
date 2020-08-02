@@ -220,8 +220,9 @@ router.get("/:leagueid/teams/:teamid/:leaguepos", (req, res) => {
 
 // CREATE TEAM
 router.post("/:leagueid/teams",
-    middleware.isLoggedIn,
-    middleware.teamValidation,
+    [middleware.isLoggedIn,
+    middleware.isLeagueCreator,
+    middleware.teamValidation],
     (req, res) => {
         if (req.params.leagueid === req.body.league) {
             var newTeam = new Team({
@@ -267,8 +268,9 @@ router.post("/:leagueid/teams",
 
 // UPDATE TEAM
 router.put("/:leagueid/teams/:teamid",
-    middleware.isLoggedIn,
-    middleware.teamValidation,
+    [middleware.isLoggedIn,
+    middleware.isLeagueCreator,
+    middleware.teamValidation],
     (req, res) => {
         Team.findByIdAndUpdate(req.params.teamid, {
             name: req.body.name,
@@ -286,7 +288,8 @@ router.put("/:leagueid/teams/:teamid",
 
 // DELETE TEAM
 router.delete("/:leagueid/teams/:teamid",
-    middleware.isLoggedIn,
+    [middleware.isLoggedIn,
+    middleware.isLeagueCreator],
     (req, res) => {
         // remove team from database
         Team.findByIdAndRemove(req.params.teamid, async function(err, removedTeam) {
@@ -349,19 +352,8 @@ router.get("/", (req, res) => {
 });
 
 // NEW LEAGUE FORM
-router.get("/new",
-    middleware.isLoggedIn,
-    (req, res) => {
-        League.find({}).exec(function(err, leagues) {
-            if (err) {
-                res.render("error", { error: err });
-            }
-            res.status(200).render("newLeague", {
-                title: "League Wizard - Add new league",
-                leagues: leagues
-            });
-        });
-});
+
+// Now handled through modal dialog
 
 // SHOW LEAGUE
 router.get("/:id", (req, res) => {
@@ -395,10 +387,12 @@ router.get("/:id", (req, res) => {
 
 // CREATE LEAGUE
 router.post("/",
-    middleware.isLoggedIn,
+    [middleware.isLoggedIn,
+    middleware.leagueValidation],
     (req, res) => {
         var newLeague = new League({
-            name: req.body.name
+            name: req.body.name,
+            creator: req.user._id
         });
         newLeague.save(function(err, savedLeague) {
             if (err) {
@@ -413,7 +407,9 @@ router.post("/",
 
 // UPDATE LEAGUE
 router.put("/:leagueid",
-    middleware.isLoggedIn,
+    [middleware.isLoggedIn,
+    middleware.isLeagueCreator,
+    middleware.leagueValidation],
     (req, res) => {
         League.findByIdAndUpdate(req.params.leagueid, {
             name: req.body.name
@@ -431,7 +427,8 @@ router.put("/:leagueid",
 
 // DELETE LEAGUE
 router.delete("/:leagueid",
-    middleware.isLoggedIn,
+    [middleware.isLoggedIn,
+    middleware.isLeagueCreator],
     (req, res) => {
         League.findByIdAndRemove(req.params.leagueid, (err, removedLeague) => {
             if (err) {

@@ -30,7 +30,7 @@
     </div>
     <div class="container mb-2">
         <div class="floaty-card-row">
-            <span>
+            <span class="league-floaty-row-left">
                 <% if (currentUser) { %>
                     <!-- Add Match Button -->
                     <span role="button" class="btn btn-primary" 
@@ -42,7 +42,7 @@
                     </span>
                 <% } %>
             </span>
-            <span>
+            <span class="league-floaty-row-right">
                 <% if (currentUser) { %>
                     <!-- Edit Team Button -->
                     <span role="button" class="btn btn-outline-secondary" 
@@ -55,7 +55,7 @@
                             Edit team
                     </span>
                 <% } %>
-                <a class="btn btn-secondary" href="/leagues/<%= team.league._id %>">Back to league</a>
+                <a class="btn btn-secondary" href="/leagues/<%= team.league._id %>">Back</a>
             </span>
         </div>
     </div>
