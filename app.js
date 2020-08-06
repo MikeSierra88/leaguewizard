@@ -89,6 +89,7 @@ function runServer(environment, CREDENTIALS) {
           indexRouter           = require('./routes/routes'),
           leagueRouter          = require('./routes/leagues'),
           authRouter            = require('./routes/auth'),
+          userRouter            = require('./routes/users'),
           {
             expressCspHeader,
             SELF,
@@ -99,7 +100,7 @@ function runServer(environment, CREDENTIALS) {
      * App Variables
      */
     const app  = express(),
-          port = parseInt(process.env.LEAGUE_PORT); // prod: 8082
+          port = parseInt(process.env.LEAGUE_PORT);
     
     /**
      *  App Configuration
@@ -112,7 +113,6 @@ function runServer(environment, CREDENTIALS) {
         
     }
     // // development DB
-    // const LEAGUEDB_URI = process.env.LEAGUEDB + '?retryWrites=true&w=majority';
 
     mongoose.set('useUnifiedTopology', true);
     mongoose.set('useNewUrlParser', true);
@@ -133,8 +133,7 @@ function runServer(environment, CREDENTIALS) {
     
     // initialize express-session
     app.use(require("express-session")({
-    //   secret: CREDENTIALS.LEAGUE_SESSION_SECRET, // production secret
-      secret: SESSION_SECRET,     // development secret
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false
     }));
@@ -143,7 +142,7 @@ function runServer(environment, CREDENTIALS) {
     app.use(logger('dev'));
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use(new LocalStrategy(User.authenticate()));
+    passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
     
@@ -190,6 +189,7 @@ function runServer(environment, CREDENTIALS) {
      */
      
     app.use("/leagues", leagueRouter);
+    app.use("/users", userRouter);
     app.use(authRouter);
     app.use("/", indexRouter);
     

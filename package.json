@@ -1,6 +1,6 @@
 {
   "name": "leaguewizard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "FIFA Office League Web App",
   "main": "app.js",
   "scripts": {
@@ -36,6 +36,7 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.24",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.4.11",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1",

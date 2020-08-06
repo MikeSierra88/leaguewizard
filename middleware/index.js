@@ -41,17 +41,20 @@ middlewareObj.isLoggedIn = function(req, res, next) {
 
 // Auth middleware to check if user is creator of the league
 middlewareObj.isLeagueCreator = function(req, res, next) {
+  // If user is superuser, skip ownership check
   if ( mongoose.Types.ObjectId(process.env.LEAGUE_SUPERUSER).equals(req.user._id) ) {
     next();
   } else {
+    // Find league based on id from url
     League.findById(req.params.leagueid, function(err, foundLeague) {
       if (err) {
         res.render("error", { error: err });
       } else {
+        // Check if user is creator of the league
         if (foundLeague.creator._id.equals(req.user._id)) {
           next();
         } else {
-          res.send("UNAUTHORIZED");
+          res.status(401).send("UNAUTHORIZED");
           // res.redirect("/login");
         }
       }
@@ -59,8 +62,18 @@ middlewareObj.isLeagueCreator = function(req, res, next) {
   }
 };
 
+
+// Auth middleware to sanitize and validate registration data
 middlewareObj.userRegisterValidation = async function(req, res, next) {
-  await check('username').trim().escape().isLength({ min: 3 }).run(req);
+  
+  // fields are not empty
+  await check('email').exists().run(req);
+  await check('password').exists().run(req);
+  await check('playername').exists().run(req);
+  
+  // sanitize all and check email and password format
+  await check('email').normalizeEmail().isEmail().run(req);
+  await check('playername').trim().escape().run(req);
   await check('password').trim().escape().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g").run(req);
 
   var result = validationResult(req);
@@ -71,16 +84,47 @@ middlewareObj.userRegisterValidation = async function(req, res, next) {
   next();
 };
 
+// Auth middleware to sanitize and validate login data
 middlewareObj.userLoginValidation = async function(req, res, next) {
-  await check('username').trim().escape().run(req);
+  
+  // fields are not empty
+  await check('email').exists().run(req);
+  await check('password').exists().run(req);
+  
+  // sanitize all and check email and password format
+  await check('email').normalizeEmail().isEmail().run(req);
   await check('password').trim().escape().run(req);
 
   var result = validationResult(req);
   if (!result.isEmpty()) {
     console.log(result);
     return res.status(422).json({ errors: result.array() });
+  } else {
+    
+    // Find user in database
+    User.findOne({ email: req.body.email }, function(err, user) {
+      if (err) {
+        return res.render("error", { error: err });
+      } else if (!user) {
+        // If user not found based on email address, notify user
+        return res.status(401).send({ 
+          msg: 'The email address ' + req.body.email + 
+                ' is not associated with any account. Double-check your email address and try again.'
+        });
+      } else if (!user.isVerified) { 
+        // Make sure the user has been verified
+        return res.status(401).send({ 
+          type: 'not-verified', 
+          msg: 'Your account has not been verified.' 
+        });
+      } else {
+        next();
+      }
+      
+    });
+    
+    
   }
-  next();
 };
 
 middlewareObj.teamValidation = async function(req, res, next) {
