@@ -1,0 +1,20 @@
+<%- include('../partials/header'); -%>
+<%- include('../partials/navbar'); -%>
+
+<div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+  <div class="container">
+    <h1 class="display-4">League Wizard</h1>
+  </div>
+</div>
+
+<div class="container">
+    <form id="emailTest" action="/emailtest" method="post">
+        <div class="form-group form-inline">
+            <label for="email" >Email address:</label>
+            <input type="email" class="form-control ml-2" id="email" name="email" value="">
+        </div>
+        <button class="btn btn-primary" type="submit">Email</button>
+    </form>
+</div>
+
+<%- include('../partials/footer'); -%>

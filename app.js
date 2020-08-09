@@ -57,6 +57,7 @@ if (process.env.LEAGUE_ENV == "prod") {
         
         const CREDENTIALS = JSON.parse(secret);
         process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
+        process.env.LEAGUE_SMTP = CREDENTIALS.LEAGUE_SMTP;
         
         runServer(process.env.LEAGUE_ENV, CREDENTIALS);
     });
@@ -80,9 +81,6 @@ function runServer(environment, CREDENTIALS) {
           mongoose              = require('mongoose'),
           logger                = require('morgan'),
           passport              = require('passport'),
-          LocalStrategy         = require('passport-local'),
-          passportLocalMongoose = require('passport-local-mongoose'),
-          fetch                 = require('isomorphic-fetch'),
           User                  = require('./models/user'),
           cookieParser          = require('cookie-parser'),
           methodOverride        = require('method-override'),
@@ -135,7 +133,10 @@ function runServer(environment, CREDENTIALS) {
     app.use(require("express-session")({
       secret: SESSION_SECRET,
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
+      cookie: { httpOnly: true,
+      secure: true
+      }
     }));
     
     // initialize passport

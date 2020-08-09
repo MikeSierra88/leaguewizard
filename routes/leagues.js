@@ -21,6 +21,7 @@ var express = require('express'),
 // CREATE MATCH
 router.post("/:leagueid/matches",
     middleware.isLoggedIn,
+    middleware.isLeagueCreator,
     middleware.matchValidation,
     async function(req, res) {
         if (req.body.homeTeam != req.body.awayTeam) {
@@ -99,6 +100,7 @@ router.post("/:leagueid/matches",
 // UPDATE MATCH
 router.put("/:leagueid/matches",
     middleware.isLoggedIn,
+    middleware.isLeagueCreator,
     middleware.matchValidation,
     (req, res) => {
         Match.findByIdAndUpdate(req.body.matchId, {
@@ -121,6 +123,7 @@ router.put("/:leagueid/matches",
 // DELETE MATCH
 router.delete("/:leagueid/matches/:matchid",
     middleware.isLoggedIn,
+    middleware.isLeagueCreator,
     (req, res) => {
         Match.findByIdAndRemove(req.params.matchid).exec(function(err, removedMatch) {
             if (err) {
@@ -204,7 +207,7 @@ router.get("/:leagueid/teams/:teamid/:leaguepos", (req, res) => {
                         res.render("error", { error: err });
                     }
                     res.status(200).render("showTeam", {
-                        title: "League Wizard - Standings",
+                        title: "Standings - League Wizard",
                         team: foundTeam,
                         leaguePos: req.params.leaguepos,
                         leagues: leagues,
@@ -372,7 +375,7 @@ router.get("/:id", (req, res) => {
                         res.render("error", { error: err });
                     }
                     res.status(200).render("showLeague", {
-                        title: "League Wizard - Standings",
+                        title: "Standings - League Wizard",
                         league: foundLeague,
                         leagues: leagues,
                         pageType: "leagueShow",

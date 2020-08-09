@@ -1,0 +1,22 @@
+<%- include('../partials/header'); -%>
+<%- include('../partials/navbar'); -%>
+
+<div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+  <div class="container">
+    <h1 class="display-4">League Wizard</h1>
+  </div>
+</div>
+
+<div class="container">
+    <h5>Your email address is not verified. Please click the link in the email you received.</h5>
+    <p>If you didn't receive the email or the link expired, check your email address below and click "Resend confirmation email".</p>
+    <form id="resendEmailForm" action="/resend" method="post">
+        <div class="form-group form-inline">
+            <label for="email" >Email address:</label>
+            <input type="email" class="form-control ml-2" id="email" name="email" value="<%= unverifiedUserEmail %>">
+        </div>
+        <button class="btn btn-primary" type="submit">Resend email</button>
+    </form>
+</div>
+
+<%- include('../partials/footer'); -%>

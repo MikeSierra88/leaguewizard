@@ -20,6 +20,24 @@ router.get("/", (req, res) => {
     });
 });
 
+// dashboard route
+router.get("/dashboard", 
+    middleware.isLoggedIn,
+    function(req, res) {
+        League.find({ creator: req.user._id }).exec(function(err, leagues) {
+            if (err) {
+                res.render("error", { error: err });
+            }
+            else {
+                res.status(200).render("users/dashboard", {
+                    title: "Dashboard - League Wizard",
+                    leagues: leagues
+                });
+            }
+        });
+    }
+);
+
 // catchall route
 
 router.get("*", (req, res) => {

@@ -1,15 +1,12 @@
 var express = require('express'),
-    AWS = require('aws-sdk'),
     User    = require('../models/user'),
     Token   = require('../models/token'),
     passport = require('passport'),
     crypto = require('crypto'),
     nodemailer = require('nodemailer'),
     middleware = require('../middleware');
-    
-// input validator and sanitizer
 
-AWS.config.update({region: 'eu-central-1'});
+const SMTP_OPTIONS = JSON.parse(process.env.LEAGUE_SMTP);
 
 var router = express.Router();
 
@@ -20,7 +17,7 @@ var router = express.Router();
   // Render register page
 router.get("/register", function(req, res){
   res.render("auth/register", {
-    title: "League Wizard - Login"
+    title: "Login - League Wizard"
   });
 });
 
@@ -46,15 +43,11 @@ router.post("/register",
               res.render("error", {error: err});
             } else {
               console.log('send email using nodemailer');
-              var transporter = nodemailer.createTransport({
-                SES: new AWS.SES({
-                  apiVersion: '2010-12-01'
-                })
-              });
+              var transporter = nodemailer.createTransport(SMTP_OPTIONS);
               transporter.sendMail({
                 from: 'noreply@leaguewizard.xyz',
                 to: user.email,
-                subject: 'LeagueWizard - Account Verification',
+                subject: 'Account Verification - League Wizard',
                 text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' 
                 + req.headers.host + '\/confirmation\/' + token.token + '.\n'
               }, (err, info) => {
@@ -64,7 +57,7 @@ router.post("/register",
                   console.log(info.envelope);
                   console.log(info.messageId);
                   res.render("auth/emailSent", {
-                    title: "League Wizard - Verify Email"
+                    title: "Verify Email - League Wizard"
                   });
                 }
               });
@@ -74,6 +67,33 @@ router.post("/register",
       });
   }
 );
+
+// EMAIL TEST
+
+// router.get("/emailtest", function(req, res) {
+//   res.render("auth/emailTest", {
+//     title: "Email test"
+//   });
+// });
+
+// router.post("/emailtest", function(req, res) {
+//   var transporter = nodemailer.createTransport(SMTP_OPTIONS);
+//   transporter.sendMail({
+//     from: 'noreply@leaguewizard.xyz',
+//     to: req.body.email,
+//     subject: 'Account Verification - League Wizard',
+//     text: 'Hello,\n\n' + 'This is a test email'
+//   }, (err, info) => {
+//       if (err) {
+//       res.render("error", {error: err});
+//     } else {
+//       console.log(info.envelope);
+//       console.log(info.messageId);
+//       res.status(200).send("EMAIL POST ROUTE FINISHED");
+//     }
+//   });
+  
+// });
 
 // Email verification routes
 
@@ -105,26 +125,71 @@ router.get("/confirmation/:tokenid",
               } else {
                 foundToken.remove();
                 res.render("auth/verified", {
-                  title: "League Wizard - Successful verification"
-                })
+                  title: "Successful verification - League Wizard"
+                });
               }
             });
           }
         });
       }
-    })
+    });
 });
 
 
-  // TBD: resend token
-  // router.post("/resend", function(req, res) {});
+  // resend token
+router.post("/resend", 
+  middleware.userResendValidation,
+  function(req, res) {
+    User.findOne( {email: req.body.email}, function(err, foundUser) {
+      if (err) {
+        res.status(500).render("error", {error: err});
+      } else if (!foundUser) {
+        return res.status(400).send({ msg: 'We were unable to find a user with that email.' }); 
+      } else if (foundUser.isVerified) {
+        return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+      } else {
+        // if there is an existing token for the user, remove it
+        Token.findOneAndRemove({ _userId: foundUser._id });
+        // Create a verification token, save it, and send email
+        var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex') });
+        // Save the token
+        token.save(function (err) {
+            if (err) { 
+              return res.status(500).render("error", {error: err}); 
+            } else {
+              // Create nodemailer transporter using AWS SES
+              var transporter = nodemailer.createTransport(SMTP_OPTIONS);  
+                // Send the email
+              transporter.sendMail({
+                from: 'noreply@leaguewizard.xyz',
+                to: foundUser.email,
+                subject: 'Account Verification - League Wizard',
+                text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' 
+                + req.headers.host + '\/confirmation\/' + token.token + '.\n'
+              }, (err, info) => {
+                  if (err) {
+                  res.status(500).render("error", {error: err});
+                } else {
+                  console.log(info.envelope);
+                  console.log(info.messageId);
+                  res.render("auth/emailSent", {
+                    title: "Verify Email - League Wizard"
+                  });
+                }
+              });
+            }
+        });
+      }
+    });
+  }
+);
 
 
 // Login routes
   // Show login form
 router.get("/login", function(req, res){
   res.render("auth/login", {
-    title: "League Wizard - Login"
+    title: "Login - League Wizard"
   });
 });
 

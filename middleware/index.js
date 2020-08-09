@@ -1,8 +1,9 @@
 // Middlewares
 var { param, check, validationResult } = require('express-validator'),
   mongoose = require('mongoose'),
-  League = require('../models/league'),
-  User = require('../models/user');
+  fetch    = require('isomorphic-fetch'),
+  League   = require('../models/league'),
+  User     = require('../models/user');
 
 var middlewareObj = {};
 
@@ -14,9 +15,7 @@ middlewareObj.captchaPassed = function(req, res, next) {
     return res.json({ "responseError": "something goes wrong" });
   }
 
-  var secretKey = process.env.LEAGUE_RECAPTCHA_SECRET;
   var verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.LEAGUE_RECAPTCHA_SECRET + "&response=" + req.body['g-recaptcha-response'];
-  /*global fetch*/
   fetch(verificationURL, { method: 'post' })
     .then(response => response.json())
     .then(google_response => {
@@ -84,6 +83,23 @@ middlewareObj.userRegisterValidation = async function(req, res, next) {
   next();
 };
 
+// Auth middleware to sanitize and validate token resend data
+middlewareObj.userResendValidation = async function(req, res, next) {
+  
+  // fields are not empty
+  await check('email').exists().run(req);
+  
+  // sanitize all and check email and password format
+  await check('email').normalizeEmail().isEmail().run(req);
+
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+};
+
 // Auth middleware to sanitize and validate login data
 middlewareObj.userLoginValidation = async function(req, res, next) {
   
@@ -113,9 +129,9 @@ middlewareObj.userLoginValidation = async function(req, res, next) {
         });
       } else if (!user.isVerified) { 
         // Make sure the user has been verified
-        return res.status(401).send({ 
-          type: 'not-verified', 
-          msg: 'Your account has not been verified.' 
+        return res.render("auth/notVerified", {
+          title: "Email not verified - League Wizard",
+          unverifiedUserEmail: user.email
         });
       } else {
         next();
