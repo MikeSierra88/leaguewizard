@@ -14,8 +14,10 @@ var tokenSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now,
-        expires: 43200 // verification token expires after 12 hours
     }
 });
+
+// verification token expires after 12 hours
+tokenSchema.index({ "createdAt": 1 }, { expireAfterSeconds: 43200 });
 
 module.exports = mongoose.model("Token", tokenSchema);

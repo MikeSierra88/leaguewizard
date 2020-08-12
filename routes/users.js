@@ -16,7 +16,8 @@ router.get("/:userid",
                 else {
                     res.status(200).render("users/profile", {
                         title: "My Profile - League Wizard",
-                        leagues: leagues
+                        leagues: leagues,
+                        pageType: "userProfile"
                     });
                 }
             });
@@ -24,6 +25,28 @@ router.get("/:userid",
             res.redirect("/")
         }
     }
+);
+
+// POST change password
+router.post("/:userid/change-password", 
+  middleware.isLoggedIn,
+  middleware.passwordChangeValidation,
+  function(req, res) {
+    User.findById( req.params.userid, function(err, foundUser) {
+      if (err) {
+        res.render("error", {error: err});
+      } else {
+          foundUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err) {
+              if (err) {
+                  res.render("error", {error: err});
+              } else {
+                  var redirectUrl = "/users/" + req.params.userid;
+                  res.redirect(redirectUrl);
+              }
+          })
+      }
+    });
+  }
 );
 
 module.exports = router;

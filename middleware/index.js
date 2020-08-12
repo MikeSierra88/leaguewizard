@@ -83,6 +83,65 @@ middlewareObj.userRegisterValidation = async function(req, res, next) {
   next();
 };
 
+// Auth middleware to sanitize and validate change password entry
+middlewareObj.passwordChangeValidation = async function(req, res, next) {
+  // fields are not empty
+  await check('oldPassword').exists().run(req);
+  await check('newPassword').exists().run(req);
+  await check('confirmNewPassword').exists().run(req);
+  
+  // sanitize all and check email and password format
+  await check('oldPassword').trim().escape().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g").run(req);
+  await check('newPassword').trim().escape()
+          .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g")
+          .custom((value, { req }) => {
+            if (value !== req.body.confirmNewPassword) {
+              throw new Error("Passwords don't match");
+            } else {
+              return true;
+            }
+          })
+          .run(req);
+
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+};
+
+// Auth middleware to sanitize and validate reset password entry
+middlewareObj.passwordResetValidation = async function(req, res, next) {
+  // fields are not empty
+  await check('email').exists().run(req);
+  await check('newPassword').exists().run(req);
+  await check('confirmNewPassword').exists().run(req);
+  
+  // sanitize all and check email and password format
+  await check('email').normalizeEmail()
+          .isEmail()
+          .run(req);
+  await check('newPassword').trim().escape()
+          .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g")
+          // check if matches confirmation
+          .custom((value, { req }) => {
+            if (value !== req.body.confirmNewPassword) {
+              throw new Error("Passwords don't match");
+            } else {
+              return true;
+            }
+          })
+          .run(req);
+
+  var result = validationResult(req);
+  if (!result.isEmpty()) {
+    console.log(result);
+    return res.status(422).json({ errors: result.array() });
+  }
+  next();
+};
+
 // Auth middleware to sanitize and validate token resend data
 middlewareObj.userResendValidation = async function(req, res, next) {
   

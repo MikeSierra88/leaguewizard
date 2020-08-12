@@ -24,14 +24,22 @@ router.get("/", (req, res) => {
 router.get("/dashboard", 
     middleware.isLoggedIn,
     function(req, res) {
-        League.find({ creator: req.user._id }).exec(function(err, leagues) {
+        League.find({ creator: req.user._id }).exec(function(err, myLeagues) {
             if (err) {
                 res.render("error", { error: err });
             }
             else {
-                res.status(200).render("users/dashboard", {
-                    title: "Dashboard - League Wizard",
-                    leagues: leagues
+                League.find().exec(function(err, allLeagues) {
+                    if (err) {
+                        res.render("error", { error: err });
+                    } else {
+                        res.status(200).render("users/dashboard", {
+                            title: "Dashboard - League Wizard",
+                            allLeagues: allLeagues,
+                            myLeagues: myLeagues,
+                            pageType: "dashboard"
+                        });
+                    }
                 });
             }
         });

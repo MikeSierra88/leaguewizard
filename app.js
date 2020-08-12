@@ -133,10 +133,7 @@ function runServer(environment, CREDENTIALS) {
     app.use(require("express-session")({
       secret: SESSION_SECRET,
       resave: false,
-      saveUninitialized: false,
-      cookie: { httpOnly: true,
-      secure: true
-      }
+      saveUninitialized: false
     }));
     
     // initialize passport
