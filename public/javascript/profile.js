@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function(){
     var $pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/;
     
@@ -57,5 +58,40 @@ $(document).ready(function(){
         
     });
     
+    $('#inviteEmailForm').submit(function(event) {
+       
+       // prevent default submit
+       event.preventDefault();
+       // Execute AJAX POST
+       ajaxPostInvite();
         
+    });
+    function ajaxPostInvite() {
+        // FORM DATA
+        var formData = {
+            inviteEmail: $('#inviteEmail').val()
+        }
+        
+        // AJAX POST
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/send-invite",
+            data: JSON.stringify(formData),
+            dataType: "json",
+            success: function(result) {
+                console.log(result.message);
+                $('#inviteEmailFeedback').text('Invitation Email Sent');
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+        
+        resetInviteForm();
+    }
+    
+    function resetInviteForm() {
+        $('#inviteEmail').val('');
+    }
 });

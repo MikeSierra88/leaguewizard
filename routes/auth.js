@@ -4,7 +4,8 @@ var express = require('express'),
     passport = require('passport'),
     crypto = require('crypto'),
     nodemailer = require('nodemailer'),
-    middleware = require('../middleware');
+    middleware = require('../middleware'),
+    { body, validationResult } = require('express-validator');;
 
 const SMTP_OPTIONS = JSON.parse(process.env.LEAGUE_SMTP);
 
@@ -14,57 +15,112 @@ var router = express.Router();
 
 // Registration routes - to be disabled when up and working
 
-  // Render register page
-router.get("/register", function(req, res){
-  res.render("auth/register", {
-    title: "Login - League Wizard"
+  // Render register page --- Closed for now, invite only
+// router.get("/register/", function(req, res){
+//   res.render("auth/register", {
+//     title: "Sign up - League Wizard"
+//   });
+// });
+
+  // Render register page using invite link
+router.get("/register/:tokenid", function(req, res){
+  Token.findOne({ token: req.params.tokenid }, function(err, foundToken) {
+      if (err) {
+        res.render("error", {error: err});
+      } else if (!foundToken || foundToken.tokenType !== "invite") {
+        res.json({message: "Invite not found in database"});
+      } else {
+        res.render("auth/invite-register", {
+        title: "Sign up - League Wizard",
+        pageType: "registerForm",
+        token: foundToken.token,
+        inviteEmail: foundToken.inviteEmail
   });
+      }
+  });
+  
 });
 
-  // Register logic
+//
+//  OPEN REGISTRATION --- CLOSED FOR NOW, only invitation below
+//
+//   // Register logic
+// router.post("/register", 
+//   middleware.userRegisterValidation, 
+//   function (req, res) {
+//     var newUser = new User( {
+//       email: req.body.email,
+//       playerName: req.body.playername
+//     } );
+//     User.register(newUser, req.body.password, 
+//       function (err, user) {
+//         if (err) {
+//           res.render("error", {error: err});
+//         } else {
+//           var token = new Token({
+//             _userId: user._id,
+//             token: crypto.randomBytes(16).toString('hex'),
+//             tokenType: 'verifyEmail'
+//           });
+//           token.save(function(err) {
+//             if (err) {
+//               res.render("error", {error: err});
+//             } else {
+//               console.log('send email using nodemailer');
+//               var transporter = nodemailer.createTransport(SMTP_OPTIONS);
+//               transporter.sendMail({
+//                 from: 'noreply@leaguewizard.xyz',
+//                 to: user.email,
+//                 subject: 'Account Verification - League Wizard',
+//                 text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttps:\/\/' 
+//                 + req.headers.host + '\/confirmation\/' + token.token + '.\n'
+//               }, (err, info) => {
+//                   if (err) {
+//                   res.render("error", {error: err});
+//                 } else {
+//                   console.log(info.envelope);
+//                   console.log(info.messageId);
+//                   res.render("auth/emailSent", {
+//                     title: "Verify Email - League Wizard"
+//                   });
+//                 }
+//               });
+//             }
+//           });
+//         }
+//       });
+//   }
+// );  
+
+// Invite-only registration logic -- instantly verified email address
 router.post("/register", 
   middleware.userRegisterValidation, 
   function (req, res) {
-    var newUser = new User( {
-      email: req.body.email,
-      playerName: req.body.playername
-    } );
-    User.register(newUser, req.body.password, 
-      function (err, user) {
-        if (err) {
+    Token.findOne({ token: req.body.token }, function(err, foundToken) {
+       if (err) {
           res.render("error", {error: err});
+        } else if (!foundToken || foundToken.tokenType !== "invite") {
+          res.json({message: "Invite not found in database"});
+        } else if (!(foundToken.inviteEmail == req.body.email)) { 
+          res.json({message: "Invite not valid for this email address"});
         } else {
-          var token = new Token({
-            _userId: user._id,
-            token: crypto.randomBytes(16).toString('hex')
-          });
-          token.save(function(err) {
-            if (err) {
-              res.render("error", {error: err});
-            } else {
-              console.log('send email using nodemailer');
-              var transporter = nodemailer.createTransport(SMTP_OPTIONS);
-              transporter.sendMail({
-                from: 'noreply@leaguewizard.xyz',
-                to: user.email,
-                subject: 'Account Verification - League Wizard',
-                text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttps:\/\/' 
-                + req.headers.host + '\/confirmation\/' + token.token + '.\n'
-              }, (err, info) => {
-                  if (err) {
-                  res.render("error", {error: err});
-                } else {
-                  console.log(info.envelope);
-                  console.log(info.messageId);
-                  res.render("auth/emailSent", {
-                    title: "Verify Email - League Wizard"
-                  });
-                }
-              });
+          var newUser = new User( {
+            email: req.body.email,
+            playerName: req.body.playername,
+            isVerified: true
+          } );
+          User.register(newUser, req.body.password, 
+            function (err, user) {
+              if (err) {
+                res.render("error", {error: err});
+              } else {
+                Token.findOneAndRemove({ token: req.body.token });
+                res.redirect("/login");
+              }
             }
-          });
+          );
         }
-      });
+    });
   }
 );
 
@@ -104,7 +160,7 @@ router.get("/confirmation/:tokenid",
     Token.findOne({ token: req.params.tokenid }, function(err, foundToken) {
       if (err) {
         res.render("error", {error: err});
-      } else if (!foundToken) {
+      } else if (!foundToken && foundToken.tokenType == 'verifyEmail') {
         return res.status(401).send({ 
           msg: 'The given token is invalid.'
         });
@@ -151,7 +207,7 @@ router.post("/resend",
         // if there is an existing token for the user, remove it
         Token.findOneAndRemove({ _userId: foundUser._id });
         // Create a verification token, save it, and send email
-        var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex') });
+        var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex'), tokenType: 'verifyEmail' });
         // Save the token
         token.save(function (err) {
             if (err) { 
@@ -192,7 +248,14 @@ router.get("/forgot-password", function(req, res) {
 });
 
 // POST send password reset email
-router.post("/forgot-password", function(req, res) {
+router.post("/forgot-password", 
+  // express-validator check email address validity
+  [ body('email').isEmail() ],
+  function(req, res) {
+  var validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    res.status(400).json({ errors: validationErrors.array() });
+  }
   User.findOne( {email: req.body.email}, function(err, foundUser) {
     if (err) { 
       return res.status(500).render("error", {error: err}); 
@@ -208,7 +271,7 @@ router.post("/forgot-password", function(req, res) {
       // remove any existing token(s) for the user
       Token.deleteMany({ _userId: foundUser._id });
       // Create a verification token, save it, and send email
-      var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex') });
+      var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex'), tokenType: 'resetPassword' });
       // Save the token
       token.save(function (err) {
           if (err) { 
@@ -247,7 +310,7 @@ router.get("/password-reset/:token",
     Token.findOne({ token: req.params.token }, function(err, foundToken) {
       if (err) {
         res.render("error", {error: err});
-      } else if (!foundToken) {
+      } else if (!foundToken && foundToken.tokenType == 'resetPassword') {
         return res.status(401).send({ 
           msg: 'The given token is invalid.'
         });
@@ -273,6 +336,10 @@ router.post("/password-reset",
     Token.findOneAndRemove({ token: req.body.token}, function(err, foundToken) {
       if (err) {
         res.render("error", {error: err});
+      }  else if (!foundToken && foundToken.tokenType == 'verifyEmail') {
+        return res.status(401).send({ 
+          msg: 'The given token is invalid.'
+        });
       } else {
         User.findById(foundToken._userId, function(err, foundUser) {
           if (err) {
@@ -280,7 +347,7 @@ router.post("/password-reset",
           } else {
             if (req.body.email !== foundUser.email) {
               res.status(401).send({ 
-                msg: 'The given email address does not match password reset request.'
+                msg: 'The given email address does not match the password reset request.'
               });
             } else {
               foundUser.setPassword(req.body.newPassword, function() {
@@ -296,6 +363,66 @@ router.post("/password-reset",
   }
 );
 
+// AJAX POST send invite email
+router.post("/send-invite",
+  middleware.isLoggedIn,
+  // express-validator check email address validity
+  [ body('inviteEmail').isEmail() ],
+  function(req, res) {
+    var validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      res.status(400).json({ errors: validationErrors.array() });
+    }
+    User.findById(req.user._id, function(err, foundUser) {
+        if (err) { 
+          return res.status(500).render("error", {error: err}); 
+        } else {
+          User.findOne({email: req.body.inviteEmail}, function(err, userExists) {
+              if (err) { 
+                return res.status(500).render("error", {error: err}); 
+              } else if (userExists) {
+                res.json({
+                  message: "Email already in use",
+                  success: false
+                });
+              } else {
+                var token = new Token({ _userId: foundUser._id, token: crypto.randomBytes(16).toString('hex'), tokenType: 'invite', inviteEmail: req.body.inviteEmail });
+                // Save the token
+                token.save(function (err) {
+                    if (err) { 
+                      return res.status(500).render("error", {error: err}); 
+                    } else {
+                      // Create nodemailer transporter using AWS SES
+                      var transporter = nodemailer.createTransport(SMTP_OPTIONS);  
+                        // Send the email
+                      transporter.sendMail({
+                        from: 'noreply@leaguewizard.xyz',
+                        to: req.body.inviteEmail,
+                        subject: 'Invitation - League Wizard',
+                        text: 'Hello,\n\n' + 'You have been invited by ' + foundUser.playerName 
+                              + ' to join LeagueWizard: \nhttps:\/\/' 
+                        + req.headers.host + '\/register\/' + token.token + '.\n'
+                      }, (err, info) => {
+                          if (err) {
+                          res.status(500).render("error", {error: err});
+                        } else {
+                          console.log(info.envelope);
+                          console.log(info.messageId);
+                          res.json({
+                              message: "Invite sent to " + req.body.inviteEmail,
+                              success: true
+                          });
+                        }
+                      });
+                    }
+                });
+              }
+          });
+        }
+    });
+    
+  }
+);
 
 
 // Login routes
@@ -311,7 +438,7 @@ router.post("/login",
   middleware.captchaPassed,
   middleware.userLoginValidation,
   passport.authenticate("local", {
-      successRedirect: "/leagues",
+      successRedirect: "/dashboard",
       failureRedirect: "/login"
     }), 
   // This could be omitted. Left here to show that login logic is in middleware.

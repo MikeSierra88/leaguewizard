@@ -2,15 +2,14 @@
 <%- include('../partials/navbar'); -%>
     <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
       <div class="container">
-        <h1 class="display-4">League Wizard - Register</h1>
+        <h1 class="display-4">League Wizard - User profile</h1>
       </div>
     </div>
     <div class="container mb-4">
-      <h1>Profile</h1>
       <div class="container-fluid mb-4 shadow-sm p-3 mb-5 bg-white rounded">
         <h5>Player name</h5>
         <p><%= currentUser.playerName %></p>
-        <a href="#">Change player name</a>
+        <a class="btn btn-link" href="#">Change player name</a>
       </div>
       <div class="container-fluid shadow-sm p-3 mb-5 bg-white rounded">
         <h5>Change password</h5>
@@ -47,7 +46,24 @@
           <button id="changePasswordSubmitButton" class="btn btn-primary" disabled>Change password</button>
         </form>
       </div>
+      <div class="container-fluid shadow-sm p-3 mb-5 bg-white rounded">
+        <h5>Invite a friend</h5>
+        <form id="inviteEmailForm" class="needs-validation">
+          <div class="form-row mb-4 position-relative">
+            <label for="inviteEmail" class="col-form-label col-lg-2">Email address:</label>
+            <input type="email" class="form-control col-lg-10 position-relative" id="inviteEmail" name="inviteEmail" 
+                    placeholder="Enter your friend's email address..." required>
+          </div>
+          <div class="form-row">
+            <button id="inviteEmailSubmitButton" class="btn btn-primary">Send invite</button><span class="ml-4 align-self-center" id="inviteEmailFeedback"></span>
+          </div>
+            
+          
+        </form>
+      </div>
+      
     </div>
+    
 
 <script src="/javascript/profile.js" nonce="<%=nonce%>" defer></script>
 <%- include('../partials/footer'); -%>

@@ -1,4 +1,6 @@
+'use strict';
 var mongoose              = require('mongoose'),
+    League                 = require("./league"),
     passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new mongoose.Schema({
@@ -11,7 +13,11 @@ var userSchema = new mongoose.Schema({
    isVerified: {
        type: Boolean,
        default: false
-   }
+   },
+   favoriteLeagues: [{
+       type: mongoose.Schema.Types.ObjectID,
+       ref: "League"
+   }]
 });
 
 userSchema.plugin(passportLocalMongoose, {

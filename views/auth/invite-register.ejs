@@ -1,0 +1,51 @@
+<%- include('../partials/header'); -%>
+<%- include('../partials/navbar'); -%>
+    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
+      <div class="container">
+        <h1 class="display-4">League Wizard - Register</h1>
+      </div>
+    </div>
+<div class="container">
+    <form id="registerForm" action="/register" method="POST" class="needs-validation" novalidate>
+        <input type="hidden" name="token" value="<%= token %>">
+        <input type="hidden" name="email" value="<%= inviteEmail%>">
+        <div class="form-group">
+            <div class="form-row mb-4">
+                <label for="email" class="col-form-label col-lg-2">Email address:</label>
+                <input type="email" class="form-control col-lg-10" value="<%= inviteEmail %>" id="emailDisplay" disabled="true">
+            </div>
+            <div class="form-row mb-4  position-relative">
+            <label for="password" class="col-form-label col-lg-2">Password:</label>
+            <input class="form-control col-lg-10" 
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$" 
+              type="password" id="password" name="password" 
+              placeholder="Enter password..." required />
+            <div class="valid-feedback feedback-icon"><i class="fa fa-check"></i></div>
+            <div class="invalid-feedback feedback-icon"><i class="fa fa-times"></i></div>
+            <div class="invalid-tooltip">Minimum 8 (maximum 64) characters, must contain at least one uppercase, one lowercase letter and one number.</div>
+          </div>
+          <div class="form-row mb-4 position-relative">
+            <label for="confirmPassword" class="col-form-label col-lg-2">Confirm password:</label>
+            <input class="form-control col-lg-10 position-relative" 
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$" 
+              type="password" id="confirmPassword" name="confirmPassword" 
+              placeholder="Confirm password..." required />
+            <div class="valid-feedback feedback-icon"><i class="fa fa-check"></i></div>
+            <div class="invalid-feedback feedback-icon"><i class="fa fa-times"></i></div>
+            <div class="invalid-tooltip">Passwords don't match</div>
+          </div>
+            <div class="form-row mb-4 position-relative">
+                <label for="playername" class="col-form-label col-lg-2">Player name:</label>
+                <input type="text" class="form-control col-lg-10 position-relative" name="playername" placeholder="Player name" id="playername" required>
+                <div class="valid-feedback feedback-icon"><i class="fa fa-check"></i></div>
+                <div class="invalid-feedback feedback-icon"><i class="fa fa-times"></i></div>
+                <div class="invalid-tooltip">Player name must be at least 3 characters!</div>
+            </div>
+            <button id="registerButton" class="btn btn-primary" type="submit" disabled="true">Sign up</button>
+        </div>
+</form>
+</div>
+
+<script src="/javascript/registerForm.js" nonce="<%=nonce%>" defer></script>
+
+<%- include('../partials/footer'); -%>

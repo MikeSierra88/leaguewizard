@@ -1,3 +1,4 @@
+'use strict';
 // app.js
 console.log("Starting server in environment: " + process.env.LEAGUE_ENV);
 if (process.env.LEAGUE_ENV == "prod") {
@@ -84,10 +85,7 @@ function runServer(environment, CREDENTIALS) {
           User                  = require('./models/user'),
           cookieParser          = require('cookie-parser'),
           methodOverride        = require('method-override'),
-          indexRouter           = require('./routes/routes'),
-          leagueRouter          = require('./routes/leagues'),
-          authRouter            = require('./routes/auth'),
-          userRouter            = require('./routes/users'),
+          router                = require('./routes/routes'),
           {
             expressCspHeader,
             SELF,
@@ -169,7 +167,8 @@ function runServer(environment, CREDENTIALS) {
             'script-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com', '*.google.com'],
             'style-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com'],
             'img-src': [SELF, NONCE, 'cdn.datatables.net'],
-            'font-src': [SELF, NONCE, '*.fontawesome.com']
+            'font-src': [SELF, NONCE, '*.fontawesome.com'],
+            'connect-src': [SELF, 'leaguewizard.xyz']
         }
     }));
 
@@ -186,10 +185,7 @@ function runServer(environment, CREDENTIALS) {
      * Routers
      */
      
-    app.use("/leagues", leagueRouter);
-    app.use("/users", userRouter);
-    app.use(authRouter);
-    app.use("/", indexRouter);
+    app.use("/", router);
     
     /**
      * Error Handling

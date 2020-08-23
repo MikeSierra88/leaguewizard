@@ -68,12 +68,22 @@ middlewareObj.userRegisterValidation = async function(req, res, next) {
   // fields are not empty
   await check('email').exists().run(req);
   await check('password').exists().run(req);
+  await check('confirmPassword').exists().run(req);
   await check('playername').exists().run(req);
   
   // sanitize all and check email and password format
   await check('email').normalizeEmail().isEmail().run(req);
   await check('playername').trim().escape().run(req);
-  await check('password').trim().escape().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g").run(req);
+  await check('password').trim().escape()
+          .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g")
+          .custom((value, { req }) => {
+            if (value !== req.body.confirmPassword) {
+              throw new Error("Passwords don't match");
+            } else {
+              return true;
+            }
+          })
+          .run(req);
 
   var result = validationResult(req);
   if (!result.isEmpty()) {

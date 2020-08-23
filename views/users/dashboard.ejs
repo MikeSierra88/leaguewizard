@@ -7,16 +7,16 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-3">
+        <div class="col-md-3">
           <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" 
             aria-orientation="vertical">
-            
-            <a class="nav-link active" id="v-pills-activeLeagues-tab" 
-              data-toggle="pill" href="#v-pills-activeLeagues" role="tab" 
-              aria-controls="v-pills-activeLeagues" aria-selected="true">
-                Active leagues
+            <a class="nav-link active" id="v-pills-favLeagues-tab" 
+              data-toggle="pill" href="#v-pills-favLeagues" role="tab" 
+              aria-controls="v-pills-favLeagues" aria-selected="true">
+                Favorite leagues
             </a>
-            <a class="nav-link" id="v-pills-managedLeagues-tab" 
+            
+            <a class="nav-link disabled" id="v-pills-managedLeagues-tab" 
               data-toggle="pill" href="#v-pills-managedLeagues" role="tab" 
               aria-controls="v-pills-managedLeagues" aria-selected="false">
                 Managed leagues
@@ -26,6 +26,11 @@
               aria-controls="v-pills-createdLeagues" aria-selected="false">
                 Owned leagues
             </a>
+            <a class="nav-link" id="v-pills-activeLeagues-tab" 
+              data-toggle="pill" href="#v-pills-activeLeagues" role="tab" 
+              aria-controls="v-pills-activeLeagues" aria-selected="falsee">
+                Active leagues
+            </a>
             <a class="nav-link disabled" id="v-pills-messages-tab" 
               data-toggle="pill" href="#v-pills-messages" role="tab" 
               aria-controls="v-pills-messages" aria-selected="false">
@@ -33,25 +38,43 @@
             </a>
           </div>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
           <div class="tab-content" id="v-pills-tabContent">
-            <div class="tab-pane fade show active" id="v-pills-activeLeagues" 
-              role="tabpanel" aria-labelledby="v-pills-activeLeagues-tab">
-              <h2>Active leagues</h2>
-                <% allLeagues.forEach((league) => { %>
+            <div class="tab-pane fade show active" id="v-pills-favLeagues" 
+              role="tabpanel" aria-labelledby="v-pills-favLeagues-tab">
+              <h2>Favorite leagues</h2>
+                <% allLeagues.forEach((league) => { 
+                      if (currentUser.favoriteLeagues.includes(league._id)) {
+                %>
                 <div class="col mb-4">
                   <div class="card shadow-sm bg-white rounded">
                     <div class="card-body">
-                      <h5 class="card-title"><%= league.name %></h5>
+                      <% if (currentUser.favoriteLeagues.includes(league._id)) { %>
+                          <h5 class="card-title">
+                            <%= league.name %>
+                            <span class="float-right fav-star is-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Remove from favorites" data-toggle="tooltip" data-placement="top">
+                              <i class="fas fa-star"></i>
+                            </span>
+                          </h5>
+                        <% } else { %>
+                        <h5 class="card-title">
+                          <%= league.name %>
+                          <span class="float-right fav-star not-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Add to favorites" data-toggle="tooltip" data-placement="top">
+                            <i class="far fa-star"></i>
+                          </span>
+                        </h5>
+                        <% } %>
                       <div class="row">
-                        <div class="col-xl-4"><%= league.teams.length %> teams</div>
-                        <div class="col-xl-4"><%= league.matches.length %> matches</div>
-                        <div class="col-xl-4 floaty-row-center"><a class="btn btn-primary" href="/leagues/<%=league._id%>">Details</a></div>
+                        <div class="col-xl-4"><%=  %> teams</div>
+                        <div class="col-xl-4"><%=  %> matches</div>
+                        <div class="col-xl-4 floaty-row-center"><a class="btn btn-primary" href="/leagues/<%=  %>">Details</a></div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <% }); %>
+                <% 
+                      }
+                }); %>
             </div>
             <div class="tab-pane fade" id="v-pills-managedLeagues" role="tabpanel" 
             aria-labelledby="v-pills-managedLeagues-tab">
@@ -67,7 +90,7 @@
                         <div class="col-xl-4"><%= league.matches.length %> matches</div>
                         <div class="col-xl-4 floaty-row-center">
                           <a class="btn btn-primary" href="/leagues/<%=league._id%>">Details</a>
-                          <a class="btn btn-primary ml-2" href="">Admin</a>
+                          <a class="btn btn-primary ml-2 disabled" href="">Admin</a>
                         </div>
                       </div>
                     </div>
@@ -85,20 +108,38 @@
                 <div class="col mb-4">
                   <div class="card shadow-sm bg-white rounded">
                     <div class="card-body">
-                      <h5 class="card-title"><%= league.name %></h5>
+                      <% if (currentUser.favoriteLeagues.includes(league._id)) { %>
+                          <h5 class="card-title">
+                            <%= league.name %>
+                            <span class="float-right fav-star is-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Remove from favorites" data-toggle="tooltip" data-placement="top">
+                              <i class="fas fa-star"></i>
+                            </span>
+                          </h5>
+                        <% } else { %>
+                        <h5 class="card-title">
+                          <%= league.name %>
+                          <span class="float-right fav-star not-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Add to favorites" data-toggle="tooltip" data-placement="top">
+                            <i class="far fa-star"></i>
+                          </span>
+                        </h5>
+                        <% } %>
                       <div class="row">
                         <div class="col-xl-4"><%= league.teams.length %> teams</div>
                         <div class="col-xl-4"><%= league.matches.length %> matches</div>
-                        <div class="col-xl-4 floaty-row-center">
-                          <a class="btn btn-primary" href="/leagues/<%=league._id%>">Details</a>
-                          <a class="btn btn-primary ml-2" href="">Admin</a>
-                          <span role="button" class="btn btn-danger btn-sm ml-2" 
-                              data-toggle="modal" data-target="#deleteConfirmModal"
-                              data-deletetype="league"
-                              data-league="<%=league._id%>"
-                              data-leaguename="<%=league.name%>">
-                                  <i class="fas fa-trash-alt"></i>
+                        <div class="col-xl-4">
+                          <span class="float-md-right">
+                            <a class="btn btn-primary" href="/leagues/<%=league._id%>">Details</a>
+                            <a class="btn btn-primary ml-2 disabled" href="">Admin</a>
+                            <!-- Delete league button -->
+                            <span role="button" class="btn btn-danger btn-sm ml-2" 
+                                data-toggle="modal" data-target="#deleteConfirmModal"
+                                data-deletetype="league"
+                                data-league="<%=league._id%>"
+                                data-leaguename="<%=league.name%>">
+                                    <i class="fas fa-trash-alt"></i>
+                            </span>
                           </span>
+                          
                         </div>
                       </div>
                     </div>
@@ -107,10 +148,46 @@
                 <% }); %>
               </div>
             </div>
+            <div class="tab-pane fade show" id="v-pills-activeLeagues" 
+              role="tabpanel" aria-labelledby="v-pills-activeLeagues-tab">
+              <h2>Active leagues</h2>
+                <% allLeagues.forEach((league) => { %>
+                <div class="col mb-4">
+                  <div class="card shadow-sm bg-white rounded">
+                    <div class="card-body">
+                        
+                        <% if (currentUser.favoriteLeagues.includes(league._id)) { %>
+                          <h5 class="card-title">
+                            <%= league.name %>
+                            <span class="float-right fav-star is-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Remove from favorites" data-toggle="tooltip" data-placement="top">
+                              <i class="fas fa-star"></i>
+                            </span>
+                          </h5>
+                        <% } else { %>
+                        <h5 class="card-title">
+                          <%= league.name %>
+                          <span class="float-right fav-star not-favorite" data-userid="<%= currentUser._id %>" data-leagueid="<%= league._id %>" data-original-title="Add to favorites" data-toggle="tooltip" data-placement="top">
+                            <i class="far fa-star"></i>
+                          </span>
+                        </h5>
+                        <% } %>
+                      
+                      <div class="row">
+                        <div class="col-xl-4"><%= league.teams.length %> teams</div>
+                        <div class="col-xl-4"><%= league.matches.length %> matches</div>
+                        <div class="col-xl-4"><a class="btn btn-primary float-right" href="/leagues/<%=league._id%>">Details</a></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+            </div>
             <!-- TBD: Archived leagues -->
             <!--<div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab"><h2>Archived leagues</h2></div>-->
           </div>
         </div>
       </div>
     </div>
+    
+<script src="/javascript/dashboard.js" nonce="<%=nonce%>" defer></script>
 <%- include('../partials/footer'); -%>

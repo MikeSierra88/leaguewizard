@@ -1,3 +1,4 @@
+'use strict';
 var mongoose              = require('mongoose');
 
 var tokenSchema = new mongoose.Schema({
@@ -14,7 +15,9 @@ var tokenSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now,
-    }
+    },
+    tokenType: String,
+    inviteEmail: String
 });
 
 // verification token expires after 12 hours

@@ -1,3 +1,4 @@
+'use strict';
 const mongoose = require("mongoose"),
       Team     = require("./team"),
       Match    = require("./match"),
@@ -16,21 +17,22 @@ var leagueSchema = new mongoose.Schema({
     creator: {
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
-    }, // LATER DEV
+    }
+    // LATER DEV
     // admins: [{
     //     type: mongoose.Schema.Types.ObjectID,
     //     ref: "User"
     // }],
-    players: [{
-        playerId: {
-            type: mongoose.Schema.Types.ObjectID,
-            ref: "User"
-        },
-        playerTeamId: {
-            type:mongoose.Schema.Types.ObjectID,
-            ref: "Team"
-        }
-    }]
+    // players: [{
+    //     playerId: {
+    //         type: mongoose.Schema.Types.ObjectID,
+    //         ref: "User"
+    //     },
+    //     playerTeamId: {
+    //         type:mongoose.Schema.Types.ObjectID,
+    //         ref: "Team"
+    //     }
+    // }]
 });
 
 module.exports = new mongoose.model("League", leagueSchema)

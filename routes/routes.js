@@ -1,8 +1,14 @@
+'use strict';
 var express    = require('express'),
     router     = express.Router(),
     middleware = require('../middleware'),
     League     = require('../models/league');
 
+// ROUTERS
+var leagueRouter = require('./leagues'),
+    leagueAdminRouter = require("./leagueAdmin"),
+    authRouter   = require('./auth'),
+    userRouter   = require('./users');
 
 // index route
 router.get("/", (req, res) => {
@@ -46,7 +52,19 @@ router.get("/dashboard",
     }
 );
 
-// catchall route
+// IMPORTING ROUTERS
+
+    // LEAGUE HANDLING
+    router.use("/leagues", leagueRouter);
+    router.use("/league-admin", leagueAdminRouter);
+    
+    // USER HANDLING
+    router.use("/users", userRouter);
+    
+    // AUTH HANDLING
+    router.use(authRouter);
+
+// CATCHALL
 
 router.get("*", (req, res) => {
     res.redirect("/");

@@ -154,6 +154,16 @@ td {
     margin-top: 0;
 }
 
+/* Favorites handling */
+.fav-star {
+    color: #ffca28;
+}
+
+.fav-star.is-favorite {
+    
+}
+
+
 #footer {
     background: #9dbf8e;
 }

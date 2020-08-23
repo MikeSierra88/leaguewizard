@@ -1,0 +1,18 @@
+<%- include('../partials/header'); -%>
+<%- include('../partials/navbar'); -%>
+
+<div class="container">
+    <p>League: <%= league %></p>
+    <%= league._id %>
+    <p>Admins: <%= league.toObject().admins[0] %> </p>
+    <h1>HELLO <%=isOwner%></h1>
+    <ul>
+        <% userList.forEach((user) => { %>
+            <li><%= user.playerName %> <%= user._id %></li>
+       <% }) %>
+    </ul>
+</div>
+
+<script src="/javascript/leagueadmin.js" nonce="<%=nonce%>" defer></script>
+
+<%- include('../partials/footer'); -%>
