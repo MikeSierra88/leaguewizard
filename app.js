@@ -81,6 +81,7 @@ function runServer(environment, CREDENTIALS) {
           createError           = require('http-errors'),
           mongoose              = require('mongoose'),
           logger                = require('morgan'),
+          flash                 = require('connect-flash'),
           passport              = require('passport'),
           User                  = require('./models/user'),
           cookieParser          = require('cookie-parser'),
@@ -152,6 +153,8 @@ function runServer(environment, CREDENTIALS) {
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(methodOverride("_method"));
+    
+    app.use(flash());
     
     // static folders
     app.use(express.static(path.join(__dirname, 'public')));

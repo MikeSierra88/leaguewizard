@@ -53,7 +53,7 @@ middlewareObj.isLeagueCreator = function(req, res, next) {
         if (foundLeague.creator._id.equals(req.user._id)) {
           next();
         } else {
-          res.status(401).send("UNAUTHORIZED");
+          res.status(401).json({message: "UNAUTHORIZED"});
           // res.redirect("/login");
         }
       }

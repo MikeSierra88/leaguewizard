@@ -31,7 +31,7 @@ router.get("/register/:tokenid", function(req, res){
         res.json({message: "Invite not found in database"});
       } else {
         res.render("auth/invite-register", {
-        title: "Sign up - League Wizard",
+        title: "Sign up",
         pageType: "registerForm",
         token: foundToken.token,
         inviteEmail: foundToken.inviteEmail
@@ -96,6 +96,9 @@ router.get("/register/:tokenid", function(req, res){
 router.post("/register", 
   middleware.userRegisterValidation, 
   function (req, res) {
+    if (!req.body.token) {
+      res.redirect("/");
+    }
     Token.findOne({ token: req.body.token }, function(err, foundToken) {
        if (err) {
           res.render("error", {error: err});
@@ -181,7 +184,7 @@ router.get("/confirmation/:tokenid",
               } else {
                 foundToken.remove();
                 res.render("auth/verified", {
-                  title: "Successful verification - League Wizard"
+                  title: "Successful verification"
                 });
               }
             });
@@ -229,7 +232,7 @@ router.post("/resend",
                   console.log(info.envelope);
                   console.log(info.messageId);
                   res.render("auth/emailSent", {
-                    title: "Verify Email - League Wizard"
+                    title: "Verify Email"
                   });
                 }
               });
@@ -243,7 +246,7 @@ router.post("/resend",
 // GET Forgot password form
 router.get("/forgot-password", function(req, res) {
   res.render("auth/forgotPassword", {
-    title: "Forgotten password - League Wizard"
+    title: "Forgotten password"
   });
 });
 
@@ -293,7 +296,7 @@ router.post("/forgot-password",
                 console.log(info.envelope);
                 console.log(info.messageId);
                 res.render("auth/resetSent", {
-                  title: "Email Sent - League Wizard"
+                  title: "Email Sent"
                 });
               }
             });
@@ -320,7 +323,7 @@ router.get("/password-reset/:token",
             res.render("error", {error: err});
           } else {
             res.render("auth/resetPassword", {
-              title: "Reset password - League Wizard",
+              title: "Reset password",
               token: foundToken.token
             });
           }
@@ -375,11 +378,11 @@ router.post("/send-invite",
     }
     User.findById(req.user._id, function(err, foundUser) {
         if (err) { 
-          return res.status(500).render("error", {error: err}); 
+          return res.status(400).send({error: err});
         } else {
           User.findOne({email: req.body.inviteEmail}, function(err, userExists) {
               if (err) { 
-                return res.status(500).render("error", {error: err}); 
+                return res.status(400).send({error: err});
               } else if (userExists) {
                 res.json({
                   message: "Email already in use",
@@ -390,7 +393,7 @@ router.post("/send-invite",
                 // Save the token
                 token.save(function (err) {
                     if (err) { 
-                      return res.status(500).render("error", {error: err}); 
+                      return res.status(400).send({error: err});
                     } else {
                       // Create nodemailer transporter using AWS SES
                       var transporter = nodemailer.createTransport(SMTP_OPTIONS);  
@@ -404,7 +407,7 @@ router.post("/send-invite",
                         + req.headers.host + '\/register\/' + token.token + '.\n'
                       }, (err, info) => {
                           if (err) {
-                          res.status(500).render("error", {error: err});
+                          res.status(400).send({error: err});
                         } else {
                           console.log(info.envelope);
                           console.log(info.messageId);
@@ -428,8 +431,10 @@ router.post("/send-invite",
 // Login routes
   // Show login form
 router.get("/login", function(req, res){
+  if (req.user) { return res.redirect("/dashboard") }
   res.render("auth/login", {
-    title: "Login - League Wizard"
+    title: "Login",
+    pageType: "login"
   });
 });
 

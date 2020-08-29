@@ -1,23 +1,33 @@
 'use strict';
-const mongoose = require("mongoose"),
-      Team     = require("./team"),
-      Match    = require("./match"),
-      User     = require("./user");
+const mongoose    = require("mongoose"),
+      idValidator = require('mongoose-id-validator'),
+      Team        = require("./team"),
+      Match       = require("./match"),
+      User        = require("./user");
       
 var leagueSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true
+    },
     teams: [{
-        type:mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
         ref: "Team"
     }],
     matches: [{
-        type:mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
+        ref: "Match"
+    }],
+    matchQueue: [{
+        type: mongoose.Schema.Types.ObjectID,
         ref: "Match"
     }],
     creator: {
         type: mongoose.Schema.Types.ObjectID,
-        ref: "User"
+        ref: "User",
+        required: true
     }
+    
     // LATER DEV
     // admins: [{
     //     type: mongoose.Schema.Types.ObjectID,
@@ -34,5 +44,7 @@ var leagueSchema = new mongoose.Schema({
     //     }
     // }]
 });
+
+leagueSchema.plugin(idValidator);
 
 module.exports = new mongoose.model("League", leagueSchema)

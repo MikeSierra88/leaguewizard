@@ -40,7 +40,7 @@ router.get("/dashboard",
                         res.render("error", { error: err });
                     } else {
                         res.status(200).render("users/dashboard", {
-                            title: "Dashboard - League Wizard",
+                            title: "Dashboard",
                             allLeagues: allLeagues,
                             myLeagues: myLeagues,
                             pageType: "dashboard"

@@ -1,6 +1,7 @@
 /* global $ */
 
 $(document).ready(function(){
+    
     var league = JSON.parse($("#variableJSON").text());
     $("#variableJSON").remove();
     
@@ -61,11 +62,10 @@ $(document).ready(function(){
         "responsive": true,
         "drawCallback": function(settings) {
             $(".leaguePos").each(function(i){
-                var pos = "" + (i+1)
+                var pos = (i+1).toString();
                 $(this).text(pos);
                 var selector = ".team-details-" + $(this).data("teamid");
-                var _href = $(selector).attr("href");
-                _href = _href + pos;
+                var _href = "/leagues/" + league._id + "/teams/" + $(this).data("teamid") + "/" + pos;
                 $(selector).attr("href", _href);
             })
         },
@@ -86,4 +86,5 @@ $(document).ready(function(){
             { "targets": ["no-wrap"], "class": "nowrap" }
             ]
     });
+    
 });

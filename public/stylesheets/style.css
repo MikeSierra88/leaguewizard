@@ -168,3 +168,6 @@ td {
     background: #9dbf8e;
 }
 
+#danger-alert, #success-alert, #info-alert {
+    display: none;
+}

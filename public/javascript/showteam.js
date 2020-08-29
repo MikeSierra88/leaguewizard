@@ -38,7 +38,6 @@ $(document).ready(function(){
     $('.remaining-match-clickable-cell').each(function(){
         console.log($(this))
         if ( parseInt( $(this).text() ) > 0 ) {
-            console.log("inside");
             $(this).attr("data-toggle", "modal");
             $(this).attr("data-target", "#matchModal");
             $(this).attr("data-purpose", "newFromTable");

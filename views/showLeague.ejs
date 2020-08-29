@@ -1,15 +1,10 @@
 <%- include('partials/header'); -%>
 <%- include('partials/navbar'); -%>
 
-    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
-      <div class="container">
-        <h1 class="display-4"><%=league.name%> - Standings</h1>
-      </div>
-    </div>
     <div class="container-md mb-1">
         <div class="floaty-card-row">
             <span class="league-floaty-row-left">
-                <% if ((currentUser) && league.creator._id.equals(currentUser._id)) { %>
+                <% if (currentUser) { %>
                 <!-- Add Match Button -->
                 <span role="button" class="btn btn-primary" 
                     data-toggle="modal" data-target="#matchModal"
@@ -18,6 +13,7 @@
                     data-league="<%=league._id%>">
                         Add match
                 </span>
+                <% if  (league.creator._id.equals(currentUser._id)) { %>
                 <!-- Add Team Button -->
                 <span role="button" class="btn btn-primary" 
                     data-toggle="modal" data-target="#teamModal"
@@ -25,10 +21,12 @@
                     data-league="<%=league._id%>">
                         Add team
                 </span>
+                <% } %> 
                 <% } %>
             </span>
             <span class="league-floaty-row-right">
                 <% if ((currentUser) && league.creator._id.equals(currentUser._id)) { %>
+                <!-- Edit league button -->
                     <span role="button" class="btn btn-outline-secondary" 
                         data-toggle="modal" data-target="#leagueModal"
                         data-purpose="edit"
@@ -56,7 +54,7 @@
                     <th data-priority="4" title="Goals For">GF</th>
                     <th data-priority="4" title="Goals Against">GA</th>
                     <th data-priority="2" title="Goal Difference">GD</th>
-                    <% if (currentUser) { %>
+                    <% if (currentUser && league.creator._id.equals(currentUser._id)) { %>
                         <th data-priority="1"></th>
                     <% } %>
                 </tr>
@@ -113,7 +111,7 @@
                     <th data-priority="1">Home</th>
                     <th data-priority="1" class="no-order">Result</th>
                     <th data-priority="1">Away</th>
-                    <% if (currentUser) { %>
+                    <% if (currentUser && league.creator._id.equals(currentUser._id)) { %>
                     <th data-priority="3"></th>
                     <% } %>
                 </tr>
@@ -165,5 +163,5 @@
     </div>
     
     <span id="variableJSON" hidden> <%= JSON.stringify(league); %> </span>
-    <script src="/javascript/leaguetable.js" nonce="<%=nonce%>" defer></script>
+    <script src="/javascript/showLeague.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>

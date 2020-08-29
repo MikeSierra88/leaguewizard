@@ -1,5 +1,6 @@
 'use strict';
-var mongoose              = require('mongoose');
+var mongoose    = require('mongoose'),
+    idValidator = require('mongoose-id-validator');
 
 var tokenSchema = new mongoose.Schema({
     _userId: {
@@ -22,5 +23,7 @@ var tokenSchema = new mongoose.Schema({
 
 // verification token expires after 12 hours
 tokenSchema.index({ "createdAt": 1 }, { expireAfterSeconds: 43200 });
+
+tokenSchema.plugin(idValidator);
 
 module.exports = mongoose.model("Token", tokenSchema);

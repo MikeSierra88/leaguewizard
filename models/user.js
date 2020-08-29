@@ -1,6 +1,6 @@
 'use strict';
 var mongoose              = require('mongoose'),
-    League                 = require("./league"),
+    League                = require("./league"),
     passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new mongoose.Schema({

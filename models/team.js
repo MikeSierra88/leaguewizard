@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose    = require("mongoose"),
+      idValidator = require('mongoose-id-validator');
 
 var teamSchema = new mongoose.Schema({
     league: {
@@ -19,5 +20,7 @@ var teamSchema = new mongoose.Schema({
         ref: "Match"
     }]
 });
+
+teamSchema.plugin(idValidator);
 
 module.exports = new mongoose.model("Team", teamSchema);

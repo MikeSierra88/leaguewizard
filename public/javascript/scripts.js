@@ -1,1 +1,4 @@
-console.log("JS Connected");
+console.log("scripts.JS Connected");
+$(document).ready(function() {
+    
+});

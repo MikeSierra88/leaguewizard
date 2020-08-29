@@ -8,7 +8,10 @@
   <meta name="author" content="Gabor Meszaros">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <title><%= title %></title>
+  <title><% if (pageType!== "index") { %>
+            <%= title %> - 
+         <% } %>
+         League Wizard</title>
   
   <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" nonce="<%= nonce %>">
   <link rel="stylesheet" type="text/css" href="/datatables/datatables.min.css" nonce="<%= nonce %>">

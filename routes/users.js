@@ -58,7 +58,7 @@ router.post("/:userid/add-favorite/:leagueid",
         // Check if userid matches logged in user
         User.findById(req.params.userid, function(err, foundUser) {
             if (err) {
-                res.json({
+                res.status(400).json({
                     message: "Error: " + err,
                     success: false
                 });
@@ -66,7 +66,7 @@ router.post("/:userid/add-favorite/:leagueid",
                 if (foundUser._id.equals(req.user._id)) {
                     // Check if League is already in favorites
                     if (foundUser.favoriteLeagues.includes(req.params.leagueid)) {
-                        res.json({
+                        res.status(400).json({
                             message: "Already in the favorites",
                             success: false
                         });
@@ -74,12 +74,12 @@ router.post("/:userid/add-favorite/:leagueid",
                         // Check is League exists
                         League.findById(req.params.leagueid, function(err, foundLeague) {
                             if (err) {
-                                res.json({
+                                res.status(400).json({
                                     message: "Error: " + err,
                                     success: false
                                 });
                             } else if (!foundLeague) {
-                                res.json({
+                                res.status(400).json({
                                     message: "League not found",
                                     success: false
                                 });
@@ -88,12 +88,12 @@ router.post("/:userid/add-favorite/:leagueid",
                                 foundUser.favoriteLeagues.push(foundLeague._id);
                                 foundUser.save(function(err) {
                                    if (err) {
-                                        res.json({
+                                        res.status(400).json({
                                             message: "Error: " + err,
                                             success: false
                                         });
                                     } else {
-                                        res.json({
+                                        res.status(200).json({
                                             message: "Added to favorites",
                                             success: true
                                         });
@@ -103,7 +103,7 @@ router.post("/:userid/add-favorite/:leagueid",
                         });
                     }
                 } else {
-                    res.json({
+                    res.status(401).json({
                         message: "Invalid user id",
                         success: false
                     });
@@ -120,19 +120,19 @@ router.post("/:userid/remove-favorite/:leagueid",
         // Look up user based on userid in url
         User.findById(req.params.userid, function(err, foundUser) {
             if (err) {
-                return res.json({
+                return res.status(400).json({
                     message: "Error: " + err,
                     success: false
                 });
             // No associated user found
             } else if (!foundUser) {
-                return res.json({
+                return res.status(401).json({
                     message: "User not found",
                     success: false
                 });
             // leagueid is not in favorites array
             } else if (!foundUser.favoriteLeagues.includes(req.params.leagueid)) {
-                return res.json({
+                return res.status(400).json({
                     message: "League not in favorites",
                     success: false
                 });
@@ -141,12 +141,12 @@ router.post("/:userid/remove-favorite/:leagueid",
                 foundUser.favoriteLeagues.splice(foundUser.favoriteLeagues.indexOf(req.params.leagueid), 1);
                 foundUser.save(function(err) {
                     if (err) {
-                        return res.json({
+                        return res.status(400).json({
                             message: "Error: " + err,
                             success: false
                         });
                     } else {
-                        return res.json({
+                        return res.status(200).json({
                             message: "League removed from favorites",
                             success: true
                         });

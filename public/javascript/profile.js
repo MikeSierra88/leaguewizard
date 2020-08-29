@@ -82,6 +82,10 @@ $(document).ready(function(){
             success: function(result) {
                 console.log(result.message);
                 $('#inviteEmailFeedback').text('Invitation Email Sent');
+                $('#inviteEmailFeedback').fadeIn('fast')
+                setTimeout(function() {
+                    $('#inviteEmailFeedback').fadeOut('slow')
+                }, 3000);
             },
             error: function(err) {
                 console.log(err);

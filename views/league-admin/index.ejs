@@ -1,16 +1,40 @@
 <%- include('../partials/header'); -%>
 <%- include('../partials/navbar'); -%>
 
+
+<!-- CONTENT -->
 <div class="container">
-    <p>League: <%= league %></p>
-    <%= league._id %>
-    <p>Admins: <%= league.toObject().admins[0] %> </p>
-    <h1>HELLO <%=isOwner%></h1>
-    <ul>
-        <% userList.forEach((user) => { %>
-            <li><%= user.playerName %> <%= user._id %></li>
-       <% }) %>
-    </ul>
+    <h5>Match approval queue</h5>
+    <table class="table table-bordered">
+        <thead class="thead thead-light">
+            <th class="col-sm-2">Date</th>
+            <th class="col-sm-2">Added by</th>
+            <th class="col-sm-2">Home player</th>
+            <th class="col-sm-1">Score</th>
+            <th class="col-sm-2">Away player</th>
+            <th class="col-sm-1">Approve</th>
+            <th class="col-sm-1">Reject</th>
+        </thead>
+        <tbody>
+            <% if (league.matchQueue.length == 0) { %>
+                <td colspan="7">Nothing to show here</td>
+            <% } %>
+            <% league.matchQueue.forEach((match) => { %>
+            <tr id="queueRow-<%=match._id%>">
+                <td><%=moment(match.date).format('YYYY. MM. DD')%></td>
+                <td><%= match.addedBy.playerName %></td>
+                <td><%= match.homeTeam.name %></td>
+                <td>
+                    <%= match.homeScore %> - <%= match.awayScore %> 
+                </td>
+                <td><%= match.awayTeam.name %></td>
+                <td><button class="approveMatchBtn" id="approveBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">Approve</button></td>
+                <td><button class="rejectMatchBtn" id="rejectBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">Reject</button></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
 </div>
 
 <script src="/javascript/leagueadmin.js" nonce="<%=nonce%>" defer></script>
