@@ -80,7 +80,6 @@ $(document).ready(function(){
             data: JSON.stringify(formData),
             dataType: "json",
             success: function(result) {
-                console.log(result.message);
                 $('#inviteEmailFeedback').text('Invitation Email Sent');
                 $('#inviteEmailFeedback').fadeIn('fast')
                 setTimeout(function() {

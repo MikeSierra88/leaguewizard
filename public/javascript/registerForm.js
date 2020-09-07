@@ -48,12 +48,12 @@ $(document).ready(function(){
     });
     
     $('#registerForm').on('submit', function(event) {
-        if ( !($('#changePasswordForm')[0].checkValidity()) ) {
+        if ( !($('#registerForm')[0].checkValidity()) ) {
             event.preventDefault();
             event.stopPropagation();
         } else {
             $('#registerButton').attr('disabled', false);
-            $('#changePasswordForm').addClass('was-validated');
+            $('#registerForm').addClass('was-validated');
         }
     });
     

@@ -28,8 +28,16 @@
                     <%= match.homeScore %> - <%= match.awayScore %> 
                 </td>
                 <td><%= match.awayTeam.name %></td>
-                <td><button class="approveMatchBtn" id="approveBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">Approve</button></td>
-                <td><button class="rejectMatchBtn" id="rejectBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">Reject</button></td>
+                <td>
+                    <button class="btn btn-success btn-sm approveMatchBtn" id="approveBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">
+                        <i class="far fa-thumbs-up"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm rejectMatchBtn" id="rejectBtn-<%=match._id%>" data-league-id="<%=match.league%>" data-match-id="<%=match._id%>">
+                        <i class="far fa-thumbs-down"></i>
+                    </button>
+                </td>
             </tr>
             <% }) %>
         </tbody>

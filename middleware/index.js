@@ -12,7 +12,7 @@ middlewareObj.captchaPassed = function(req, res, next) {
   if (req.body['g-recaptcha-response'] === undefined ||
     req.body['g-recaptcha-response'] === '' ||
     req.body['g-recaptcha-response'] === null) {
-    return res.json({ "responseError": "something goes wrong" });
+    return res.status(401).json({ "responseError": "something goes wrong" });
   }
 
   var verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.LEAGUE_RECAPTCHA_SECRET + "&response=" + req.body['g-recaptcha-response'];
@@ -27,7 +27,7 @@ middlewareObj.captchaPassed = function(req, res, next) {
         res.redirect("/login");
       }
     })
-    .catch(error => res.render("error", { error: error }));
+    .catch(error => res.status(401).json({ error: error }));
 };
 
 // Auth middleware to check if user is logged in
@@ -213,8 +213,12 @@ middlewareObj.userLoginValidation = async function(req, res, next) {
 };
 
 middlewareObj.teamValidation = async function(req, res, next) {
-  await check('name').trim().escape().run(req);
-  await check('footballTeam').trim().escape().run(req);
+  await check('name')
+    .not().isEmpty()
+    .trim().escape().run(req);
+  await check('footballTeam')
+    .not().isEmpty()
+    .trim().escape().run(req);
 
   var result = validationResult(req);
   if (!result.isEmpty()) {
@@ -225,7 +229,9 @@ middlewareObj.teamValidation = async function(req, res, next) {
 }
 
 middlewareObj.leagueValidation = async function(req, res, next) {
-  await check('name').trim().escape().run(req);
+  await check('name')
+    .not().isEmpty()
+    .trim().escape().run(req);
 
   var result = validationResult(req);
   if (!result.isEmpty()) {

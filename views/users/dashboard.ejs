@@ -1,6 +1,8 @@
 <%- include('../partials/header'); -%>
 <%- include('../partials/navbar'); -%>
     
+  <div class="main-content">
+    
     <!--CONTENT-->
     <div class="container">
       <div class="row">
@@ -40,6 +42,13 @@
             <div class="tab-pane fade show active" id="v-pills-favLeagues" 
               role="tabpanel" aria-labelledby="v-pills-favLeagues-tab">
               <h2>Favorite leagues</h2>
+              <% if (!(currentUser.favoriteLeagues.length > 0)) { %>
+                <div class="col mb-4">
+                  <div class="card shadow-sm bg-white rounded">
+                    <h5 class="mt-4 mb-4 text-center">No favorite leagues</h5>
+                  </div>
+                </div>
+              <% } %>
                 <% allLeagues.forEach((league) => { 
                       if (currentUser.favoriteLeagues.includes(league._id)) {
                 %>
@@ -62,9 +71,34 @@
                         </h5>
                         <% } %>
                       <div class="row">
-                        <div class="col-xl-4"><%= league.teams.length  %> teams</div>
-                        <div class="col-xl-4"><%= league.matches.length %> matches</div>
-                        <div class="col-xl-4 floaty-row-center"><a class="btn btn-primary" href="/leagues/<%= league._id %>">Details</a></div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.teams.length  %> teams</div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.matches.length %> matches</div>
+                        <div class="col-lg-6">
+                          <span class="float-md-right">
+                            <% if (currentUser._id.equals(league.creator)) { %>
+                            <% if (league.matchQueue.length > 0) { %>
+                            <span>
+                              <span class="badge badge-pill badge-danger" 
+                                    data-toggle="tooltip" title="Matches in approval queue">
+                                <%= league.matchQueue.length %>
+                              </span>
+                            </span>
+                            <% } %>
+                            <a class="btn btn-primary ml-sm-2" href="/league-admin/<%=league._id%>">Admin</a>
+                            <% } %>
+                            <a class="btn btn-primary ml-sm-2" href="/leagues/<%=league._id%>">Details</a>
+                            <% if (currentUser._id.equals(league.creator)) { %>
+                            <!-- Delete league button -->
+                            <span role="button" class="btn btn-danger btn-sm ml-sm-2" 
+                                data-toggle="modal" data-target="#deleteConfirmModal"
+                                data-deletetype="league"
+                                data-league="<%=league._id%>"
+                                data-leaguename="<%=league.name%>">
+                                    <i class="fas fa-trash-alt"></i>
+                            </span>
+                            <% } %>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -101,6 +135,13 @@
               aria-labelledby="v-pills-createdLeagues-tab">
               <h2>Owned leagues</h2>
               <div class="row-cols-1">
+                <% if (!(myLeagues.length > 0)) { %>
+                  <div class="col mb-4">
+                    <div class="card shadow-sm bg-white rounded">
+                      <h5 class="mt-4 mb-4 text-center">You haven't created any leagues yet</h5>
+                    </div>
+                  </div>
+                <% } %>
                 <% myLeagues.forEach((league) => { %>
                 <div class="col mb-4">
                   <div class="card shadow-sm bg-white rounded">
@@ -121,18 +162,21 @@
                         </h5>
                         <% } %>
                       <div class="row">
-                        <div class="col-xl-3"><%= league.teams.length %> teams</div>
-                        <div class="col-xl-3"><%= league.matches.length %> matches</div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.teams.length %> teams</div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.matches.length %> matches</div>
                         
-                        <div class="col-xl-6">
-                          <span class="float-md-right">
+                        <div class="col-lg-6">
+                          <span class="float-right">
                             <% if (league.matchQueue.length > 0) { %>
-                            <span><span class="badge badge-pill badge-danger">!</span> <span class="leagueQueueCount"><%= league.matchQueue.length %></span> in queue</span>
+                            <span class="badge badge-pill badge-danger leagueQueueCount" 
+                                    data-toggle="tooltip" title="Matches in approval queue">
+                                <%= league.matchQueue.length %>
+                              </span>
                             <% } %>
-                            <a class="btn btn-primary ml-2" href="/leagues/<%=league._id%>">Details</a>
-                            <a class="btn btn-primary ml-2" href="/league-admin/<%=league._id%>">Admin</a>
+                            <a class="btn btn-primary ml-sm-2" href="/league-admin/<%=league._id%>">Admin</a>
+                            <a class="btn btn-primary ml-sm-2" href="/leagues/<%=league._id%>">Details</a>
                             <!-- Delete league button -->
-                            <span role="button" class="btn btn-danger btn-sm ml-2" 
+                            <span role="button" class="btn btn-danger btn-sm ml-sm-2" 
                                 data-toggle="modal" data-target="#deleteConfirmModal"
                                 data-deletetype="league"
                                 data-league="<%=league._id%>"
@@ -152,6 +196,13 @@
             <div class="tab-pane fade show" id="v-pills-activeLeagues" 
               role="tabpanel" aria-labelledby="v-pills-activeLeagues-tab">
               <h2>Active leagues</h2>
+                <% if (!(allLeagues.length > 0)) { %>
+                  <div class="col mb-4">
+                    <div class="card shadow-sm bg-white rounded">
+                      <h5 class="mt-4 mb-4 text-center">Nothing to show here</h5>
+                    </div>
+                  </div>
+                <% } %>
                 <% allLeagues.forEach((league) => { %>
                 <div class="col mb-4">
                   <div class="card shadow-sm bg-white rounded">
@@ -174,9 +225,34 @@
                         <% } %>
                       
                       <div class="row">
-                        <div class="col-xl-4"><%= league.teams.length %> teams</div>
-                        <div class="col-xl-4"><%= league.matches.length %> matches</div>
-                        <div class="col-xl-4"><a class="btn btn-primary float-right" href="/leagues/<%=league._id%>">Details</a></div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.teams.length  %> teams</div>
+                        <div class="col-lg-3 mb-2 mb-lg-0"><%= league.matches.length %> matches</div>
+                        <div class="col-lg-6">
+                          <span class="float-right">
+                            <% if (currentUser._id.equals(league.creator)) { %>
+                            <% if (league.matchQueue.length > 0) { %>
+                            <span>
+                              <span class="badge badge-pill badge-danger" 
+                                    data-toggle="tooltip" title="Matches in approval queue">
+                                <%= league.matchQueue.length %>
+                              </span>
+                            </span>
+                            <% } %>
+                            <a class="btn btn-primary ml-sm-2" href="/league-admin/<%=league._id%>">Admin</a>
+                            <% } %>
+                            <a class="btn btn-primary ml-sm-2" href="/leagues/<%=league._id%>">Details</a>
+                            <% if (currentUser._id.equals(league.creator)) { %>
+                            <!-- Delete league button -->
+                            <span role="button" class="btn btn-danger btn-sm ml-sm-2" 
+                                data-toggle="modal" data-target="#deleteConfirmModal"
+                                data-deletetype="league"
+                                data-league="<%=league._id%>"
+                                data-leaguename="<%=league.name%>">
+                                    <i class="fas fa-trash-alt"></i>
+                            </span>
+                            <% } %>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -190,5 +266,6 @@
       </div>
     </div>
     
+    </div>
 <script src="/javascript/dashboard.js" nonce="<%=nonce%>" defer></script>
 <%- include('../partials/footer'); -%>

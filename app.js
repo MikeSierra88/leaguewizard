@@ -77,6 +77,7 @@ function runServer(environment, CREDENTIALS) {
     const express               = require('express'),
           path                  = require('path'),
           cors                  = require('cors'),
+          favicon               = require('serve-favicon'),
           bodyParser            = require('body-parser'),
           createError           = require('http-errors'),
           mongoose              = require('mongoose'),
@@ -162,6 +163,8 @@ function runServer(environment, CREDENTIALS) {
     app.use("/jquery", express.static(path.join(__dirname, '/node_modules/jquery/dist')));
     app.use("/popper", express.static(path.join(__dirname, '/node_modules/popper.js/dist')));
     
+    // favicon
+    app.use(favicon(path.join(__dirname, 'public', 'favicon/favicon.ico')))
     
     // CSP header and CORS
     app.use(expressCspHeader({
@@ -181,6 +184,7 @@ function runServer(environment, CREDENTIALS) {
     app.use(function(req, res, next) {
         res.locals.currentUser = req.user;
         res.locals.nonce = req.nonce;
+        res.locals.version = process.env.npm_package_version;
         next();
     });
     

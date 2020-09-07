@@ -184,7 +184,8 @@ router.get("/confirmation/:tokenid",
               } else {
                 foundToken.remove();
                 res.render("auth/verified", {
-                  title: "Successful verification"
+                  title: "Successful verification",
+                  pageType: "simple"
                 });
               }
             });
@@ -223,7 +224,9 @@ router.post("/resend",
                 from: 'noreply@leaguewizard.xyz',
                 to: foundUser.email,
                 subject: 'Account Verification - League Wizard',
-                text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttps:\/\/' 
+                text: 'Hello,\n\n'
+                  + 'Your previous token has been disabled.\n\n'
+                  + 'Please verify your account by clicking the following link: \nhttps:\/\/' 
                 + req.headers.host + '\/confirmation\/' + token.token + '.\n'
               }, (err, info) => {
                   if (err) {
@@ -232,7 +235,8 @@ router.post("/resend",
                   console.log(info.envelope);
                   console.log(info.messageId);
                   res.render("auth/emailSent", {
-                    title: "Verify Email"
+                    title: "Verify Email",
+                    pageType: "simple"
                   });
                 }
               });
@@ -246,7 +250,8 @@ router.post("/resend",
 // GET Forgot password form
 router.get("/forgot-password", function(req, res) {
   res.render("auth/forgotPassword", {
-    title: "Forgotten password"
+    title: "Forgotten password",
+    pageType: "forgotPassword"
   });
 });
 
@@ -264,11 +269,11 @@ router.post("/forgot-password",
       return res.status(500).render("error", {error: err}); 
     } else if (!foundUser) {
         return res.status(401).send({ 
-          msg: 'User not found'
+          msg: 'User not found.'
         });
     } else if (!foundUser.isVerified) {
         return res.status(401).send({
-          msg: 'User not verified. '
+          msg: 'User not verified yet. Please verify your email address first.'
         });
     } else {
       // remove any existing token(s) for the user
@@ -286,7 +291,7 @@ router.post("/forgot-password",
             transporter.sendMail({
               from: 'noreply@leaguewizard.xyz',
               to: foundUser.email,
-              subject: 'Account Verification - League Wizard',
+              subject: 'League Wizard - Password Reset',
               text: 'Hello,\n\n' + 'Create a new password using the following link: \nhttps:\/\/' 
               + req.headers.host + '\/password-reset\/' + token.token + '.\n'
             }, (err, info) => {
@@ -296,7 +301,8 @@ router.post("/forgot-password",
                 console.log(info.envelope);
                 console.log(info.messageId);
                 res.render("auth/resetSent", {
-                  title: "Email Sent"
+                  title: "Email Sent",
+                  pageType: "simple"
                 });
               }
             });
@@ -324,7 +330,8 @@ router.get("/password-reset/:token",
           } else {
             res.render("auth/resetPassword", {
               title: "Reset password",
-              token: foundToken.token
+              token: foundToken.token,
+              pageType: "registerForm"
             });
           }
         });
@@ -401,7 +408,7 @@ router.post("/send-invite",
                       transporter.sendMail({
                         from: 'noreply@leaguewizard.xyz',
                         to: req.body.inviteEmail,
-                        subject: 'Invitation - League Wizard',
+                        subject: "League Wizard - You're invited!",
                         text: 'Hello,\n\n' + 'You have been invited by ' + foundUser.playerName 
                               + ' to join LeagueWizard: \nhttps:\/\/' 
                         + req.headers.host + '\/register\/' + token.token + '.\n'
@@ -442,12 +449,9 @@ router.get("/login", function(req, res){
 router.post("/login",
   middleware.captchaPassed,
   middleware.userLoginValidation,
-  passport.authenticate("local", {
-      successRedirect: "/dashboard",
-      failureRedirect: "/login"
-    }), 
-  // This could be omitted. Left here to show that login logic is in middleware.
+  passport.authenticate("local"), 
   function(req, res){
+    res.status(200).json({success: true});
 });
 
   // Logout route

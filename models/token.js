@@ -1,12 +1,13 @@
 'use strict';
 var mongoose    = require('mongoose'),
+    User    = require('./user'),
     idValidator = require('mongoose-id-validator');
 
 var tokenSchema = new mongoose.Schema({
     _userId: {
         type: mongoose.Schema.Types.Object,
         required: true,
-        ref: "user"
+        ref: "User"
     },
     token: {
         type: String,

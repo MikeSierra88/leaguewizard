@@ -1,22 +1,20 @@
 <%- include('../partials/header'); -%>
 <%- include('../partials/navbar'); -%>
 
-<div class="container">
-    <form action="/login" method="POST" id="loginForm">
-        <!--<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">-->
-        <!--<input type="hidden" name="action" value="validate_captcha">-->
+<div class="container" id="main-content">
+    <form class="needs-validation" action="/login" method="POST" id="loginForm">
         <div class="form-group">
-                <input type="text" class="form-control" name="email" placeholder="Email address" id="email">
+                <input type="text" class="form-control" name="email" placeholder="Email address" id="email" required>
         </div>
         <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
         </div>
         <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Ld-B7gZAAAAAJet4uF8KxO8kkHIzGey29bfU7qE"></div>
+            <div class="g-recaptcha" data-callback="onloadCallback" data-sitekey="6Ld-B7gZAAAAAJet4uF8KxO8kkHIzGey29bfU7qE"></div>
         </div>
         <div class="form-group">
             <span>
-                <button class="btn btn-primary" type="submit" id="loginbtn">Login</button>
+                <button class="btn btn-primary" type="submit" id="loginbtn" disabled>Login</button>
             </span>
             <span class="float-right">
                     <a href="/forgot-password">Forgot my password</a>
@@ -26,6 +24,8 @@
     </form>
 </div>
 
+<script src="javascript/login.js" defer></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
 <%- include('../partials/footer'); -%>

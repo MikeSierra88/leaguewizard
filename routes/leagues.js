@@ -93,7 +93,8 @@ router.post("/:leagueid/matches",
             }
             res.status(200).json({
                 message: message,
-                success: true
+                success: true,
+                queued: matchQueued
                 });
         })
         .catch(async function(err) {
@@ -196,7 +197,9 @@ router.delete("/:leagueid/matches/:matchid",
 // Now handled through modal dialog
 
 // SHOW TEAM
-router.get("/:leagueid/teams/:teamid/:leaguepos", (req, res) => {
+router.get("/:leagueid/teams/:teamid/:leaguepos", 
+    middleware.isLoggedIn,
+    (req, res) => {
 
     Team.findById(req.params.teamid)
     .populate({
@@ -381,9 +384,9 @@ router.delete("/:leagueid/teams/:teamid",
  */
 
 // leagues aggregate
-// for now, redirects to index
+// redirects to dashboard
 router.get("/", (req, res) => {
-    res.redirect("/");
+    res.redirect("/dashboard");
 });
 
 // NEW LEAGUE FORM
@@ -391,36 +394,40 @@ router.get("/", (req, res) => {
 // Now handled through modal dialog
 
 // SHOW LEAGUE
-router.get("/:id", (req, res) => {
-    League.findById(req.params.id)
-        .select('-matchQueue')
-        .populate("teams")
-        .populate("matches")
-        .then((foundLeague) => {
-            if (foundLeague === undefined || foundLeague === null) {
-                res.redirect("/leagues");
-            } else {
-                League.find({}).exec(function(err, leagues) {
-                    if (err) {
-                        res.render("error", { error: err });
-                    }
-                    res.status(200).render("showLeague", {
-                        title: foundLeague.name + " Standings",
-                        league: foundLeague,
-                        leagues: leagues,
-                        pageType: "leagueShow",
-                        moment: moment
+router.get("/:id", 
+    middleware.isLoggedIn,
+    (req, res) => {
+        
+        League.findById(req.params.id)
+            .select('-matchQueue')
+            .populate("teams")
+            .populate("matches")
+            .then((foundLeague) => {
+                if (foundLeague === undefined || foundLeague === null) {
+                    res.redirect("/leagues");
+                } else {
+                    League.find({}).exec(function(err, leagues) {
+                        if (err) {
+                            res.render("error", { error: err });
+                        }
+                        res.status(200).render("showLeague", {
+                            title: foundLeague.name + " Standings",
+                            league: foundLeague,
+                            leagues: leagues,
+                            pageType: "leagueShow",
+                            moment: moment
+                        });
                     });
-                });
-            }
-        })
-        .catch(err => {
-            res.render("error", { error: err });
-        });
+                }
+            })
+            .catch(err => {
+                res.render("error", { error: err });
+            });
 });
 
 // CREATE LEAGUE
-router.post("/", [middleware.isLoggedIn,
+router.post("/", [
+        middleware.isLoggedIn,
         middleware.leagueValidation
     ],
     (req, res) => {
@@ -444,7 +451,8 @@ router.post("/", [middleware.isLoggedIn,
     });
 
 // UPDATE LEAGUE
-router.put("/:leagueid", [middleware.isLoggedIn,
+router.put("/:leagueid", [
+        middleware.isLoggedIn,
         middleware.isLeagueCreator,
         middleware.leagueValidation
     ],
@@ -467,7 +475,8 @@ router.put("/:leagueid", [middleware.isLoggedIn,
     });
 
 // DELETE LEAGUE
-router.delete("/:leagueid", [middleware.isLoggedIn,
+router.delete("/:leagueid", [
+        middleware.isLoggedIn,
         middleware.isLeagueCreator
     ],
     async (req, res) => {
@@ -479,6 +488,9 @@ router.delete("/:leagueid", [middleware.isLoggedIn,
                 await Team.findByIdAndRemove(team._id);
             });
             removedLeague.matches.forEach(async function(match) {
+                await Match.findByIdAndRemove(match._id);
+            });
+            removedLeague.matchQueue.forEach(async function(match) {
                 await Match.findByIdAndRemove(match._id);
             });
                 

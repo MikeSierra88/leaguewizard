@@ -2,6 +2,7 @@
 /* global $ */
 
 $(document).ready(function(){
+    $("#matchModalMatchDate").attr('max', new Date().toISOString().substr(0,10));
     
     // Delete confirmation modal handler
     
@@ -117,6 +118,7 @@ $(document).ready(function(){
            // set form purpose to edit
            $('#teamModalForm').data('purpose', 'edit');
            $('#teamModalLongTitle').text("Edit team details");
+           console.log(button.data('league'));
            $('input[id=teamModalLeagueId]').val(button.data('league'));
            $('#teamModalTeamName').val(button.data('teamname'));
            $('#teamModalTeamFIFA').val(button.data('fifaname'));
@@ -237,17 +239,24 @@ $(document).ready(function(){
     // AJAX MATCH FORM HANDLING
     $('#modalMatchForm').on('submit', function(event) {
         event.preventDefault();
-        var formData = {
-            matchId:   $("input[id=matchModalMatchId]").val(),
-            league:    $("input[id=matchModalLeagueId]").val(),
-            homeTeam:  $("input[id=matchModalHomeTeam]").val(),
-            awayTeam:  $("input[id=matchModalAwayTeam]").val(),
-            homeScore: $("#matchModalHomeScore").val(),
-            awayScore: $("#matchModalAwayScore").val(),
-            date:      $("#matchModalMatchDate").val()
-        };
-        console.log("Sending AJAX request");
-        ajaxMatch($("#modalMatchForm").attr('action'), formData);
+        if ( !($('#modalMatchForm')[0].checkValidity()) ) {
+            $('#matchModal').modal('toggle');
+                $("#danger-alert-text").text("You entered invalid match data, please check and try again!");
+                $("#danger-alert").fadeTo(3000, 500).slideUp(500, function() {
+                  $("#danger-alert").slideUp(500);
+                });
+        } else {
+            var formData = {
+                matchId:   $("input[id=matchModalMatchId]").val(),
+                league:    $("input[id=matchModalLeagueId]").val(),
+                homeTeam:  $("input[id=matchModalHomeTeam]").val(),
+                awayTeam:  $("input[id=matchModalAwayTeam]").val(),
+                homeScore: $("#matchModalHomeScore").val(),
+                awayScore: $("#matchModalAwayScore").val(),
+                date:      $("#matchModalMatchDate").val()
+            };
+            ajaxMatch($("#modalMatchForm").attr('action'), formData);
+        }
     });
     
     function ajaxMatch(action, formData) {
@@ -256,8 +265,16 @@ $(document).ready(function(){
            url: action,
            data: formData,
            dataType: "json",
-           success: function() {
-               window.location.reload();
+           success: function(result) {
+               if (result.queued) {
+                   $('#matchModal').modal('toggle');
+                   $("#success-alert-text").text(result.message);
+                   $("#success-alert").fadeTo(3000, 500).slideUp(500, function() {
+                      $("#success-alert").slideUp(500);
+                   });
+               } else {
+                   window.location.reload();
+               }
            },
            error: function(result) {
                 $('#matchModal').modal('toggle');
@@ -276,24 +293,50 @@ $(document).ready(function(){
         var id = $("#matchModalHomeTeamName").val();
         $("#matchModalHomeTeamFIFA").val(id);
         $("input[id=matchModalHomeTeam]").val(id);
+        checkTeamValidity();
     });
 
     $("#matchModalHomeTeamFIFA").change(function() {
         var id = $("#matchModalHomeTeamFIFA").val();
         $("#matchModalHomeTeamName").val(id);
         $("input[id=matchModalHomeTeam]").val(id);
+        checkTeamValidity();
     });
 
     $("#matchModalAwayTeamName").change(function() {
         var id = $("#matchModalAwayTeamName").val();
         $("#matchModalAwayTeamFIFA").val(id);
         $("input[id=matchModalAwayTeam]").val(id);
+        checkTeamValidity();
     });
 
     $("#matchModalAwayTeamFIFA").change(function() {
         var id = $("#matchModalAwayTeamFIFA").val();
         $("#matchModalAwayTeamName").val(id);
         $("input[id=matchModalAwayTeam]").val(id);
+        checkTeamValidity();
     });
     
+    function checkTeamValidity() {
+       if ( ($("input[id=matchModalHomeTeam]").val() == $("input[id=matchModalAwayTeam]").val())
+            || !$("input[id=matchModalHomeTeam]").val() || !$("input[id=matchModalAwayTeam]").val() )  {
+            $("#matchModalHomeTeamName").addClass('is-invalid');
+            $("#matchModalHomeTeamName").removeClass('is-valid');
+            $("#matchModalHomeTeamFIFA").addClass('is-invalid');
+            $("#matchModalHomeTeamFIFA").removeClass('is-valid');
+            $("#matchModalAwayTeamName").addClass('is-invalid');
+            $("#matchModalAwayTeamName").removeClass('is-valid');
+            $("#matchModalAwayTeamFIFA").addClass('is-invalid');
+            $("#matchModalAwayTeamFIFA").removeClass('is-valid');
+        } else {
+            $("#matchModalHomeTeamName").addClass('is-valid');
+            $("#matchModalHomeTeamName").removeClass('is-invalid');
+            $("#matchModalHomeTeamFIFA").addClass('is-valid');
+            $("#matchModalHomeTeamFIFA").removeClass('is-invalid');
+            $("#matchModalAwayTeamName").addClass('is-valid');
+            $("#matchModalAwayTeamName").removeClass('is-invalid');
+            $("#matchModalAwayTeamFIFA").addClass('is-valid');
+            $("#matchModalAwayTeamFIFA").removeClass('is-invalid');
+        } 
+    };
 });

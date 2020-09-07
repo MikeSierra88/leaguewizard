@@ -2,7 +2,7 @@
 /* global $ */
 $(document).ready(function(){
     // activate tooltips
-    $('.fav-star').tooltip();
+    $('[data-toggle="tooltip"]').tooltip(); 
     
     // set "favorites" listeners on page load
     resetFavListeners();
