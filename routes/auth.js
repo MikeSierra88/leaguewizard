@@ -227,7 +227,7 @@ router.post("/resend",
                 text: 'Hello,\n\n'
                   + 'Your previous token has been disabled.\n\n'
                   + 'Please verify your account by clicking the following link: \nhttps:\/\/' 
-                + req.headers.host + '\/confirmation\/' + token.token + '.\n'
+                + req.headers.host + '\/confirmation\/' + token.token
               }, (err, info) => {
                   if (err) {
                   res.status(500).render("error", {error: err});
@@ -293,7 +293,7 @@ router.post("/forgot-password",
               to: foundUser.email,
               subject: 'League Wizard - Password Reset',
               text: 'Hello,\n\n' + 'Create a new password using the following link: \nhttps:\/\/' 
-              + req.headers.host + '\/password-reset\/' + token.token + '.\n'
+              + req.headers.host + '\/password-reset\/' + token.token
             }, (err, info) => {
                 if (err) {
                 res.status(500).render("error", {error: err});
@@ -411,7 +411,7 @@ router.post("/send-invite",
                         subject: "League Wizard - You're invited!",
                         text: 'Hello,\n\n' + 'You have been invited by ' + foundUser.playerName 
                               + ' to join LeagueWizard: \nhttps:\/\/' 
-                        + req.headers.host + '\/register\/' + token.token + '.\n'
+                        + req.headers.host + '\/register\/' + token.token
                       }, (err, info) => {
                           if (err) {
                           res.status(400).send({error: err});

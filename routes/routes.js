@@ -13,7 +13,7 @@ var leagueRouter = require('./leagues'),
 // index route
 router.get("/", (req, res) => {
     res.status(200).render("index", {
-        title: "",
+        title: "Welcome",
         pageType: "landing"
     });
 });
