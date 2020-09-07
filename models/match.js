@@ -1,5 +1,7 @@
 const mongoose = require("mongoose"),
-      League = require("./league"),
+      idValidator = require('mongoose-id-validator'),
+      League   = require("./league"),
+      User     = require("./user"),
       Team     = require("./team");
 
 var matchSchema = new mongoose.Schema({
@@ -14,7 +16,7 @@ var matchSchema = new mongoose.Schema({
         required: true
     },
     awayTeam: {
-        type:mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
         ref: "Team",
         required: true
     },
@@ -23,7 +25,14 @@ var matchSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    addedBy: {
+        type: mongoose.Schema.Types.ObjectID,
+        ref: "User",
+        required: true
     }
 });
+
+matchSchema.plugin(idValidator);
 
 module.exports = new mongoose.model("Match", matchSchema);

@@ -1,10 +1,16 @@
+<!-- Modal dialogs -->
+<%- include('../partials/modals'); -%>
+
+<!-- End of wrapper -->
+</div>
+
 <!-- Footer -->
 	<footer id="footer">
 		<div class="container">
 			<div class="row">
-				<div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center">
-					<p>League Wizard - an office league app</p>
-					<p>2020 &copy Gabor Meszaros</p>
+				<div class="col-xs-12 col-sm-12 col-md-12 text-center">
+					<p class="mb-0">League Wizard v<%=version%> - an office league app</p>
+					<p class="mb-0">2020 &copy Gabor Meszaros</p>
 				</div>
 			</div>	
 		</div>
@@ -16,6 +22,7 @@
 	<script type="text/javascript" src="/popper/umd/popper.min.js" nonce="<%=nonce%>"></script>
   <script type="text/javascript" src="/datatables/datatables.min.js" nonce="<%=nonce%>"></script>
   <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js" nonce="<%=nonce%>"></script>
+  <script src="/javascript/modals.js" nonce="<%=nonce%>"></script>
   <script type="text/javascript" src="/javascript/scripts.js" nonce="<%=nonce%>"></script>
 </body>
 </html>

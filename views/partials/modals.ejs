@@ -1,3 +1,5 @@
+<% if (currentUser) { %>
+
 <!-- Delete confirm modal -->
 
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalTitle" aria-hidden="true">
@@ -40,13 +42,13 @@
         </button>
       </div>
       
-      <form id="leagueModalForm" action="" method="POST">
+      <form id="leagueModalForm" action="" method="POST" class="needs-validation" novalidate>
       <input type="hidden" id="leagueModalLeagueId" name="league" value="">
       <div class="modal-body">
         <div class="form-row mb-2">
             <label for="leagueModalLeagueName" class="col-sm-3 col-form-label">League name</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="leagueModalLeagueName" name="name">
+                <input type="text" class="form-control" id="leagueModalLeagueName" name="name" required>
             </div>
         </div>
       </div>
@@ -75,19 +77,19 @@
         </button>
       </div>
       
-      <form id="teamModalForm" action="" method="POST">
+      <form id="teamModalForm" action="" method="POST" class="needs-validaiton">
       <input type="hidden" id="teamModalLeagueId" name="league" value="">
       <div class="modal-body">
         <div class="form-row mb-2">
             <label for="teamModalTeamName" class="col-sm-3 col-form-label">Player name</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="teamModalTeamName" name="name">
+                <input type="text" class="form-control" id="teamModalTeamName" name="name" required>
             </div>
         </div>
         <div class="form-row">
             <label for="teamModalTeamFIFA" class="col-sm-3 col-form-label">FIFA Team</label>
             <div class="col-sm-9">
-            <input type="text" class="form-control" id="teamModalTeamFIFA" name="footballTeam">
+            <input type="text" class="form-control" id="teamModalTeamFIFA" name="footballTeam" required>
             </div>
         </div>
       </div>
@@ -116,48 +118,48 @@
         </div>
         <% var leagueTeams %>
         <% if (typeof(league) == "undefined" ) { leagueTeams = team.league.teams } else { leagueTeams = league.teams } %>
-        <form id="modalMatchForm" action="" method="POST">
-        <input type="hidden" id="matchModalLeagueId" name="league" value="">
+        <form id="modalMatchForm" action="" method="POST" class="needs-validation" novalidate>
+        <input type="hidden" id="matchModalLeagueId" name="league" value="" required>
         <input type="hidden" id="matchModalMatchId" name="matchId" value="">
-        <input type="hidden" id="matchModalHomeTeam" name="homeTeam">
-        <input type="hidden" id="matchModalAwayTeam" name="awayTeam">
+        <input type="hidden" id="matchModalHomeTeam" name="homeTeam" required>
+        <input type="hidden" id="matchModalAwayTeam" name="awayTeam" required>
         <div class="modal-body">
             <div class="container-fluid">
-                <div class="form-group row mb-2">
-                    <div class="col-sm-4 floaty-row-left">
-                        <label for="matchModalHomeTeamName" class="col-form-label text-nowrap col-sm-5 mr-2">Home team</label>
-                        <select id="matchModalHomeTeamName" class="form-control col-sm-7">
+                <div class="form-group row mb-4">
+                    <div class="col-lg-4 col-sm-6 floaty-row-left mb-1">
+                        <label for="matchModalHomeTeamName" class="col-form-label text-nowrap mr-2 no-horizontal-padding">Home team</label>
+                        <select id="matchModalHomeTeamName" class="form-control is-invalid" required>
                             <option value="" disabled selected hidden></option>
                             <% leagueTeams.forEach((team) => { %>
                                 <option value="<%=team._id%>"><%=team.name%></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class="col-sm-4 floaty-row-left">
+                    <div class="col-lg-4 col-sm-6 floaty-row-left mb-1">
                         <label for="matchModalHomeTeamFIFA" class="col-form-label mr-2">as</label>
-                        <select id="matchModalHomeTeamFIFA" class="form-control">
+                        <select id="matchModalHomeTeamFIFA" class="form-control" required>
                             <option value="" disabled selected hidden></option>
                             <% leagueTeams.forEach((team) => { %>
                                 <option value="<%=team._id%>"><%=team.footballTeam%></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class=" col-sm-2 floaty-row-left">
+                    <div class=" col-lg-2 col-sm-12 floaty-row-left">
                         <label for="matchModalHomeScore" class="col-form-label mr-2">scored</label>
-                        <input id="matchModalHomeScore" name="homeScore" class="form-control" type="number" min="0" max="29" value="">
+                        <input id="matchModalHomeScore" name="homeScore" class="form-control" type="number" min="0" max="99" value="" required>
                     </div>
                 </div>
                 <div class="form-group row mb-4">
-                    <div class="col-sm-4 floaty-row-left">
-                        <label for="matchModalAwayTeamName" class="col-form-label text-nowrap col-sm-5 mr-2">Away team</label>
-                        <select id="matchModalAwayTeamName" class="form-control col-sm-7">
+                    <div class="col-lg-4 col-sm-6 floaty-row-left mb-1">
+                        <label for="matchModalAwayTeamName" class="col-form-label text-nowrap mr-2 no-horizontal-padding">Away team</label>
+                        <select id="matchModalAwayTeamName" class="form-control">
                             <option value="" disabled selected hidden></option>
                             <% leagueTeams.forEach((team) => { %>
                                 <option value="<%=team._id%>"><%=team.name%></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class="col-sm-4 floaty-row-left">
+                    <div class="col-lg-4 col-sm-6 floaty-row-left mb-1">
                         <label for="matchModalAwayTeamFIFA" class="col-form-label mr-2">as</label>
                         <select id="matchModalAwayTeamFIFA" class="form-control">
                             <option value="" disabled selected hidden></option>
@@ -166,15 +168,17 @@
                             <% }) %>
                         </select>
                     </div>
-                    <div class=" col-sm-2 floaty-row-left">
+                    <div class=" col-lg-2 col-sm-12 floaty-row-left">
                         <label for="matchModalAwayScore" class="col-form-label mr-2">scored</label>
-                        <input id="matchModalAwayScore" name="awayScore" class="form-control" type="number" min="0" max="29" value="">
+                        <input id="matchModalAwayScore" name="awayScore" class="form-control" type="number" min="0" max="99" value="" required>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="container-fluid floaty-row-center">
-                        <label for="matchModalMatchDate" class="col-form-label col-sm-2">Match Date</label>
-                        <input type="date" id="matchModalMatchDate" name="date"  class="form-control col-sm-3">
+                        <label for="matchModalMatchDate" class="col-form-label col-sm-4">Match Date</label>
+                        <input type="date" id="matchModalMatchDate" name="date"  class="form-control col-sm-4" 
+                          min="2020-01-01"
+                          required>
                     </div>
                 </div>
             </div>
@@ -191,5 +195,7 @@
     </div>
   </div>
 </div>
+
+<% } %>
 
 <% } %>

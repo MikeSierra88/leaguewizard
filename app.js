@@ -1,3 +1,4 @@
+'use strict';
 // app.js
 console.log("Starting server in environment: " + process.env.LEAGUE_ENV);
 if (process.env.LEAGUE_ENV == "prod") {
@@ -57,6 +58,7 @@ if (process.env.LEAGUE_ENV == "prod") {
         
         const CREDENTIALS = JSON.parse(secret);
         process.env.LEAGUE_RECAPTCHA_SECRET = CREDENTIALS.LEAGUE_RECAPTCHA_SECRET;
+        process.env.LEAGUE_SMTP = CREDENTIALS.LEAGUE_SMTP;
         
         runServer(process.env.LEAGUE_ENV, CREDENTIALS);
     });
@@ -75,20 +77,17 @@ function runServer(environment, CREDENTIALS) {
     const express               = require('express'),
           path                  = require('path'),
           cors                  = require('cors'),
+          favicon               = require('serve-favicon'),
           bodyParser            = require('body-parser'),
           createError           = require('http-errors'),
           mongoose              = require('mongoose'),
           logger                = require('morgan'),
+          flash                 = require('connect-flash'),
           passport              = require('passport'),
-          LocalStrategy         = require('passport-local'),
-          passportLocalMongoose = require('passport-local-mongoose'),
-          fetch                 = require('isomorphic-fetch'),
           User                  = require('./models/user'),
           cookieParser          = require('cookie-parser'),
           methodOverride        = require('method-override'),
-          indexRouter           = require('./routes/routes'),
-          leagueRouter          = require('./routes/leagues'),
-          authRouter            = require('./routes/auth'),
+          router                = require('./routes/routes'),
           {
             expressCspHeader,
             SELF,
@@ -99,7 +98,7 @@ function runServer(environment, CREDENTIALS) {
      * App Variables
      */
     const app  = express(),
-          port = parseInt(process.env.LEAGUE_PORT); // prod: 8082
+          port = parseInt(process.env.LEAGUE_PORT);
     
     /**
      *  App Configuration
@@ -112,7 +111,6 @@ function runServer(environment, CREDENTIALS) {
         
     }
     // // development DB
-    // const LEAGUEDB_URI = process.env.LEAGUEDB + '?retryWrites=true&w=majority';
 
     mongoose.set('useUnifiedTopology', true);
     mongoose.set('useNewUrlParser', true);
@@ -133,8 +131,7 @@ function runServer(environment, CREDENTIALS) {
     
     // initialize express-session
     app.use(require("express-session")({
-    //   secret: CREDENTIALS.LEAGUE_SESSION_SECRET, // production secret
-      secret: SESSION_SECRET,     // development secret
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false
     }));
@@ -143,7 +140,7 @@ function runServer(environment, CREDENTIALS) {
     app.use(logger('dev'));
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use(new LocalStrategy(User.authenticate()));
+    passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
     
@@ -158,12 +155,16 @@ function runServer(environment, CREDENTIALS) {
     app.use(cookieParser());
     app.use(methodOverride("_method"));
     
+    app.use(flash());
+    
     // static folders
     app.use(express.static(path.join(__dirname, 'public')));
     app.use("/bootstrap", express.static(path.join(__dirname, '/node_modules/bootstrap/dist')));
     app.use("/jquery", express.static(path.join(__dirname, '/node_modules/jquery/dist')));
     app.use("/popper", express.static(path.join(__dirname, '/node_modules/popper.js/dist')));
     
+    // favicon
+    app.use(favicon(path.join(__dirname, 'public', 'favicon/favicon.ico')))
     
     // CSP header and CORS
     app.use(expressCspHeader({
@@ -172,7 +173,8 @@ function runServer(environment, CREDENTIALS) {
             'script-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com', '*.google.com'],
             'style-src': [SELF, NONCE, 'cdn.datatables.net', '*.fontawesome.com'],
             'img-src': [SELF, NONCE, 'cdn.datatables.net'],
-            'font-src': [SELF, NONCE, '*.fontawesome.com']
+            'font-src': [SELF, NONCE, '*.fontawesome.com'],
+            'connect-src': [SELF, 'leaguewizard.xyz']
         }
     }));
 
@@ -182,6 +184,7 @@ function runServer(environment, CREDENTIALS) {
     app.use(function(req, res, next) {
         res.locals.currentUser = req.user;
         res.locals.nonce = req.nonce;
+        res.locals.version = process.env.npm_package_version;
         next();
     });
     
@@ -189,9 +192,7 @@ function runServer(environment, CREDENTIALS) {
      * Routers
      */
      
-    app.use("/leagues", leagueRouter);
-    app.use(authRouter);
-    app.use("/", indexRouter);
+    app.use("/", router);
     
     /**
      * Error Handling

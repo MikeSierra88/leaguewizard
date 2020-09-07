@@ -1,13 +1,6 @@
 <%- include('partials/header'); -%>
 <%- include('partials/navbar'); -%>
 
-
-
-    <div class="jumbotron jumbotron-fluid" id="index-jumbotron">
-      <div class="container">
-        <h1 class="display-4"><%=team.name%> - Team details</h1>
-      </div>
-    </div>
     <div class="container mb-2">
         <div class="row">
             <div class="col-md-6">
@@ -30,7 +23,7 @@
     </div>
     <div class="container mb-2">
         <div class="floaty-card-row">
-            <span>
+            <span class="league-floaty-row-left">
                 <% if (currentUser) { %>
                     <!-- Add Match Button -->
                     <span role="button" class="btn btn-primary" 
@@ -42,10 +35,11 @@
                     </span>
                 <% } %>
             </span>
-            <span>
-                <% if (currentUser) { %>
+            <span class="league-floaty-row-right">
+                <% if ((currentUser) && team.league.creator._id.equals(currentUser._id)) { %>
                     <!-- Edit Team Button -->
                     <span role="button" class="btn btn-outline-secondary" 
+                        data-purpose="edit"
                         data-toggle="modal" data-target="#teamModal"
                         data-edittype="team"
                         data-league="<%=team.league._id%>"
@@ -55,7 +49,7 @@
                             Edit team
                     </span>
                 <% } %>
-                <a class="btn btn-secondary" href="/leagues/<%= team.league._id %>">Back to league</a>
+                <a class="btn btn-secondary" href="/leagues/<%= team.league._id %>">Go back</a>
             </span>
         </div>
     </div>
@@ -70,11 +64,10 @@
                         <tr>
                             <th scope="col" data-priority="1" data-toggle="tooltip" title="Home/Away">H/A</th>
                             <th scope="col" data-priority="1" data-toggle="tooltip" title="Opponent">Opp</th>
-                            <th scope="col" data-priority="4">Team</th>
-                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Score">GF</th>
-                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Goals against">GA</th>
+                            <th scope="col" data-priority="4" data-toggle="tooltip" title="Opposing football team">Team</th>
+                            <th scope="col" data-priority="3" data-toggle="tooltip" title="Score" class="no-order">Score</th>
                             <th scope="col" data-priority="2" data-toggle="tooltip" title="Result">R</th>
-                            <th scope="col" data-priority="4">Date</th>
+                            <th scope="col" data-priority="4" class="no-wrap">Date</th>
                             <% if (currentUser) { %>
                             <th></th>
                             <% } %>
@@ -88,8 +81,7 @@
                                 <td>H</td>
                                 <td><%=match.awayTeam.name%></td>
                                 <td><%=match.awayTeam.footballTeam%></td>
-                                <td><%=match.homeScore%></td>
-                                <td><%=match.awayScore%></td>
+                                <td><span class="font-weight-bold"><%=match.homeScore%></span> - <%= match.awayScore %></td>
                                 <% var result; %>
                                 <% if (match.awayScore < match.homeScore) {result = "W"} else if (match.awayScore > match.homeScore) {result = "L"} else {result = "D"} %>
                                 <td><%= result %></td>
@@ -132,8 +124,7 @@
                                 <td>A</td>
                                 <td><%=match.homeTeam.name%></td>
                                 <td><%=match.homeTeam.footballTeam%></td>
-                                <td><%=match.awayScore%></td>
-                                <td><%=match.homeScore%></td>
+                                <td><%=match.homeScore%> - <span class="font-weight-bold"><%=match.awayScore%></span></td>
                                 <% var result; %>
                                 <% if (match.awayScore > match.homeScore) {result = "W"} else if (match.awayScore < match.homeScore) {result = "L"} else {result = "D"} %>
                                 <td><%= result %></td>
@@ -144,7 +135,6 @@
                                     <span role="button" class="btn btn-outline-primary btn-sm" 
                                         data-toggle="modal" data-target="#matchModal"
                                         data-purpose="edit"
-                                        data-edittype="match"
                                         data-league="<%=match.league%>"
                                         data-match="<%=match._id%>"
                                         data-hometeam="<%=match.homeTeam._id%>"
@@ -190,8 +180,24 @@
                             <% if (!(leagueTeam._id.equals(team._id))) { %>
                         <tr>
                             <td><%= leagueTeam.name %></td>
+                            <% if (currentUser) { %>
+                            <td class="remaining-match-clickable-cell" 
+                                id="home<%=leagueTeam._id%>" 
+                                data-league="<%= team.league._id %>" 
+                                data-hometeam="<%= team._id %>" 
+                                data-awayteam="<%= leagueTeam._id %>">
+                                    2
+                            </td>
+                            <td class="remaining-match-clickable-cell" id="away<%=leagueTeam._id%>" 
+                                data-league="<%= team.league._id %>"
+                                data-hometeam="<%= leagueTeam._id %>" 
+                                data-awayteam="<%= team._id %>">
+                                    2
+                            </td>
+                            <% }  else { %> 
                             <td id="home<%=leagueTeam._id%>">2</td>
                             <td id="away<%=leagueTeam._id%>">2</td>
+                            <% } %>
                         </tr>    
                             <% } %>
                         <% }); %>
@@ -202,11 +208,7 @@
         </div>
     </div>
     
-    
-    <!-- Modal dialogs -->
-    <%- include('partials/modals'); -%>
 
     <span id="variableJSON2" hidden> <%= JSON.stringify(team); %> </span>
     <script src="/javascript/showteam.js" nonce="<%=nonce%>" defer></script>
-    <script src="/javascript/modals.js" nonce="<%=nonce%>" defer></script>
 <%- include('partials/footer'); -%>
