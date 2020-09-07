@@ -12,17 +12,9 @@ var leagueRouter = require('./leagues'),
 
 // index route
 router.get("/", (req, res) => {
-    League.find({}).exec(function(err, leagues) {
-        if (err) {
-            res.render("error", { error: err });
-        }
-        else {
-            res.status(200).render("index", {
-                title: "League Wizard",
-                leagues: leagues,
-                pageType: "index"
-            });
-        }
+    res.status(200).render("index", {
+        title: "",
+        pageType: "landing"
     });
 });
 
@@ -30,25 +22,21 @@ router.get("/", (req, res) => {
 router.get("/dashboard", 
     middleware.isLoggedIn,
     function(req, res) {
-        League.find({ creator: req.user._id }).exec(function(err, myLeagues) {
-            if (err) {
-                res.render("error", { error: err });
-            }
-            else {
-                League.find().exec(function(err, allLeagues) {
-                    if (err) {
-                        res.render("error", { error: err });
-                    } else {
-                        res.status(200).render("users/dashboard", {
-                            title: "Dashboard",
-                            allLeagues: allLeagues,
-                            myLeagues: myLeagues,
-                            pageType: "dashboard"
-                        });
-                    }
+        League.find({ creator: req.user._id })
+        .sort('-date')
+        .then( (myLeagues) => {
+            League.find({})
+            .sort('-date')
+            .then( (allLeagues) => {
+                res.status(200).render("users/dashboard", {
+                    title: "Dashboard",
+                    allLeagues: allLeagues,
+                    myLeagues: myLeagues,
+                    pageType: "dashboard"
                 });
-            }
-        });
+            });
+        })
+        .catch( err => { res.render("error", { error: err }); } );
     }
 );
 

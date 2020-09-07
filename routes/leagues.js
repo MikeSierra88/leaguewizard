@@ -198,7 +198,6 @@ router.delete("/:leagueid/matches/:matchid",
 
 // SHOW TEAM
 router.get("/:leagueid/teams/:teamid/:leaguepos", 
-    middleware.isLoggedIn,
     (req, res) => {
 
     Team.findById(req.params.teamid)
@@ -384,9 +383,22 @@ router.delete("/:leagueid/teams/:teamid",
  */
 
 // leagues aggregate
-// redirects to dashboard
+// redirects to dashboard if logged in, otherwise shows limited-access aggregate
 router.get("/", (req, res) => {
-    res.redirect("/dashboard");
+    if (req.user) {
+        res.redirect("/dashboard");
+    } else {
+        League.find({}, '-creator')
+        .sort('-date')
+        .then((leagues) => {
+            res.status(200).render("leagues", {
+               title: "Active Leagues - Guest mode",
+               leagues: leagues,
+               pageType: "leagues"
+            });
+        })
+        .catch((err) => res.status(400).render("error", { error: err }));
+    }
 });
 
 // NEW LEAGUE FORM
@@ -395,9 +407,7 @@ router.get("/", (req, res) => {
 
 // SHOW LEAGUE
 router.get("/:id", 
-    middleware.isLoggedIn,
     (req, res) => {
-        
         League.findById(req.params.id)
             .select('-matchQueue')
             .populate("teams")
@@ -413,7 +423,6 @@ router.get("/:id",
                         res.status(200).render("showLeague", {
                             title: foundLeague.name + " Standings",
                             league: foundLeague,
-                            leagues: leagues,
                             pageType: "leagueShow",
                             moment: moment
                         });

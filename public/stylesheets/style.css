@@ -21,7 +21,7 @@ td {
 }
 
 .league-card {
-    width: 18rem;
+    cursor: pointer;
 }
 
 .floaty-card-row {

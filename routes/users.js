@@ -16,7 +16,7 @@ router.get("/:userid",
                 }
                 else {
                     res.status(200).render("users/profile", {
-                        title: "My Profile - League Wizard",
+                        title: "My Profile",
                         leagues: leagues,
                         pageType: "userProfile"
                     });

@@ -85,7 +85,6 @@ $(document).ready(function(){
             league:    $("input[id=leagueModalLeagueId]").val(),
             name:      $("#leagueModalLeagueName").val()
         };
-        console.log("Sending AJAX request");
         ajaxLeague($("#leagueModalForm").attr('action'), $("#leagueModalForm").data('purpose'), formData);
     });
     
@@ -118,7 +117,6 @@ $(document).ready(function(){
            // set form purpose to edit
            $('#teamModalForm').data('purpose', 'edit');
            $('#teamModalLongTitle').text("Edit team details");
-           console.log(button.data('league'));
            $('input[id=teamModalLeagueId]').val(button.data('league'));
            $('#teamModalTeamName').val(button.data('teamname'));
            $('#teamModalTeamFIFA').val(button.data('fifaname'));
@@ -145,7 +143,6 @@ $(document).ready(function(){
             name:      $('#teamModalTeamName').val(),
             footballTeam: $('#teamModalTeamFIFA').val()
         };
-        console.log("Sending AJAX request");
         ajaxTeam($("#teamModalForm").attr('action'), formData);
     });
     
@@ -232,7 +229,7 @@ $(document).ready(function(){
             formActionMatch = "/leagues/" + button.data('league') + "/matches";
             $("#modalMatchForm").attr('action', formActionMatch);
         }
-        
+        checkTeamValidity();
     });
     
     

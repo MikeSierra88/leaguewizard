@@ -26,6 +26,10 @@ var leagueSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "User",
         required: true
+    },
+    date:  {
+        type: Date,
+        default: Date.now
     }
     
     // LATER DEV
