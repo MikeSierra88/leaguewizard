@@ -105,6 +105,8 @@ router.post("/register",
         } else if (!foundToken || foundToken.tokenType !== "invite") {
           res.json({message: "Invite not found in database"});
         } else if (!(foundToken.inviteEmail == req.body.email)) { 
+          console.log(foundToken.inviteEmail);
+          console.log(req.body.email);
           res.json({message: "Invite not valid for this email address"});
         } else {
           var newUser = new User( {
@@ -117,8 +119,8 @@ router.post("/register",
               if (err) {
                 res.render("error", {error: err});
               } else {
-                Token.findOneAndRemove({ token: req.body.token });
-                res.redirect("/login");
+                Token.findOneAndDelete({ token: req.body.token })
+                .then(() => res.redirect("/login"));
               }
             }
           );

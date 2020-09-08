@@ -1,6 +1,6 @@
 {
   "name": "leaguewizard",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "FIFA Office League Web App",
   "main": "app.js",
   "scripts": {

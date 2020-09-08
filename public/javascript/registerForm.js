@@ -25,7 +25,7 @@ $(document).ready(function(){
     });
     
     $('#playername').on('keyup', function() {
-       if ($('#playername').val().length < 3) {
+       if ($('#playername').val().length < 2) {
            $('#playername').addClass('is-invalid');
            $('#playername').removeClass('is-valid');
        } else {
@@ -41,7 +41,7 @@ $(document).ready(function(){
               isValid = false;
            }
         });
-        if ( $('#playername').val().length < 3 ) {
+        if ( $('#playername').val().length < 2 ) {
             isValid = false;
         }
         $('#registerButton').attr('disabled', !isValid);

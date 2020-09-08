@@ -72,7 +72,10 @@ middlewareObj.userRegisterValidation = async function(req, res, next) {
   await check('playername').exists().run(req);
   
   // sanitize all and check email and password format
-  await check('email').normalizeEmail().isEmail().run(req);
+  await check('email')
+    .isEmail()
+    .normalizeEmail({gmail_remove_dots: false})
+    .run(req);
   await check('playername').trim().escape().run(req);
   await check('password').trim().escape()
           .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g")
@@ -129,8 +132,9 @@ middlewareObj.passwordResetValidation = async function(req, res, next) {
   await check('confirmNewPassword').exists().run(req);
   
   // sanitize all and check email and password format
-  await check('email').normalizeEmail()
+  await check('email')
           .isEmail()
+          .normalizeEmail({gmail_remove_dots: false})
           .run(req);
   await check('newPassword').trim().escape()
           .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,64}$/, "g")
@@ -159,7 +163,9 @@ middlewareObj.userResendValidation = async function(req, res, next) {
   await check('email').exists().run(req);
   
   // sanitize all and check email and password format
-  await check('email').normalizeEmail().isEmail().run(req);
+  await check('email')
+        .isEmail()
+        .normalizeEmail({gmail_remove_dots: false}).run(req);
 
   var result = validationResult(req);
   if (!result.isEmpty()) {
@@ -177,7 +183,9 @@ middlewareObj.userLoginValidation = async function(req, res, next) {
   await check('password').exists().run(req);
   
   // sanitize all and check email and password format
-  await check('email').normalizeEmail().isEmail().run(req);
+  await check('email')
+        .isEmail()
+        .normalizeEmail({gmail_remove_dots: false}).run(req);
   await check('password').trim().escape().run(req);
 
   var result = validationResult(req);
