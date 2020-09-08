@@ -69,7 +69,7 @@ $(document).ready(function(){
     function ajaxPostInvite() {
         // FORM DATA
         var formData = {
-            inviteEmail: $('#inviteEmail').val()
+            inviteEmail: $('#inviteEmail').val().toLowerCase()
         }
         
         // AJAX POST

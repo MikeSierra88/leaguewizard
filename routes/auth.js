@@ -260,13 +260,14 @@ router.get("/forgot-password", function(req, res) {
 // POST send password reset email
 router.post("/forgot-password", 
   // express-validator check email address validity
-  [ body('email').isEmail() ],
+  [ body('email').isEmail().normalizeEmail({gmail_remove_dots: false}) ],
   function(req, res) {
   var validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
     res.status(400).json({ errors: validationErrors.array() });
   }
-  User.findOne( {email: req.body.email}, function(err, foundUser) {
+  var email = req.body.email
+  User.findOne( {email: email.toLowerCase()}, function(err, foundUser) {
     if (err) { 
       return res.status(500).render("error", {error: err}); 
     } else if (!foundUser) {
@@ -349,7 +350,7 @@ router.post("/password-reset",
       if (err) {
         res.render("error", {error: err});
       }  else if (!foundToken && foundToken.tokenType == 'verifyEmail') {
-        return res.status(401).send({ 
+        return res.status(401).json({ 
           msg: 'The given token is invalid.'
         });
       } else {
@@ -357,8 +358,9 @@ router.post("/password-reset",
           if (err) {
             res.render("error", {error: err});
           } else {
-            if (req.body.email !== foundUser.email) {
-              res.status(401).send({ 
+            var email = req.body.email;
+            if (email.toLowerCase() !== foundUser.email) {
+              res.status(401).json({ 
                 msg: 'The given email address does not match the password reset request.'
               });
             } else {
