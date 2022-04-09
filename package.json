@@ -35,7 +35,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.5.1",
     "method-override": "^3.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.10.2",
     "mongoose-id-validator": "^0.6.0",
     "morgan": "^1.10.0",
