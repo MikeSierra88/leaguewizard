@@ -1,6 +1,6 @@
 import Toolbar from "@mui/material/Toolbar";
 import Stack from "@mui/material/Stack";
-import MuiNextLink from "@components/MuiNextLink";
+import MuiNextLink from "@components/navigation/MuiNextLink";
 
 const Navbar = ({ navLinks }) => {
   return (
@@ -15,7 +15,7 @@ const Navbar = ({ navLinks }) => {
             href={path}
             variant="button"
             activeClassName="active"
-            underline="none"
+            underline="hover"
             sx={{
               color: (theme) => theme.palette.common.white,
               opacity: 0.7

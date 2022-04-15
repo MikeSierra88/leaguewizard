@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import NextLink from "next/link";
 import MuiLink from '@mui/material/Link';
 
-export const MuiNextLink = React.forwardRef(function MuiNextLink(props: any, ref) {
+export const NextLinkComposed = React.forwardRef(function MuiNextLink(props: any, ref) {
   const { to, linkAs, href, replace, scroll, passHref, shallow, prefetch, locale, ...other } =
     props;
 
@@ -53,12 +53,12 @@ const Link = React.forwardRef(function Link(props: any, ref) {
   }
 
   if (noLinkStyle) {
-    return <MuiNextLink className={className} ref={ref} to={href} {...other} />;
+    return <NextLinkComposed className={className} ref={ref} to={href} {...other} />;
   }
 
   return (
     <MuiLink
-      component={MuiNextLink}
+      component={NextLinkComposed}
       linkAs={linkAs}
       className={className}
       ref={ref}
