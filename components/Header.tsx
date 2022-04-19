@@ -7,16 +7,24 @@ import Navbar from "@components/navigation/Navbar";
 import SideDrawer from "@components/navigation/SideDrawer";
 import { NavLink } from "../models/NavLink";
 import HideOnScroll from "@components/navigation/HideOnScroll";
+import { useUser } from "@auth0/nextjs-auth0";
 
 // this is to prevent the header being drawn over the top of the content
 const Offset = styled("div")(({ theme }) => theme.mixins["toolbar"]);
 
 const navLinks: NavLink[] = [
   { title: `dashboard`, path: `/dashboard` },
-  { title: `profile`, path: `/profile` }
+  { title: `profile`, path: `/profile` },
+  { title: "logout", path: "/api/auth/logout" }
+];
+
+const loggedOutNavLinks: NavLink[] = [
+  { title: "login / sign up", path: "/api/auth/login" }
 ];
 
 const Header = () => {
+  const { user } = useUser();
+
   return (
     <>
       <HideOnScroll>
@@ -35,8 +43,8 @@ const Header = () => {
               >
                 LeagueWizard
               </Typography>
-              <Navbar navLinks={navLinks} />
-              <SideDrawer navLinks={navLinks} />
+              <Navbar navLinks={user ? navLinks : loggedOutNavLinks} />
+              <SideDrawer navLinks={user ? navLinks : loggedOutNavLinks} />
             </Container>
           </Toolbar>
         </AppBar>

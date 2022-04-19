@@ -1,8 +1,17 @@
 import Grid from "@mui/material/Grid";
 import Image from "next/image";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import MuiNextLink from "@components/navigation/MuiNextLink";
+import { useUser } from "@auth0/nextjs-auth0";
 
 const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
+  const { user } = useUser();
+  const landingButton = user ? {
+    label: "Go To My Dashboard", path: "/dashboard"
+  } : {
+    label: "Login / Sign up", path: "/api/auth/login"
+  };
+
   return (
     <Grid
       component="section"
@@ -12,8 +21,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
         height: `100vh`,
         width: `100vw`,
         overflow: `hidden`,
-        zIndex: -100,
-        mb: 15
+        zIndex: -100
       }}
     >
       <Image src={imgSrc} alt={imgAlt} layout="fill" objectFit="cover" />
@@ -41,7 +49,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           gutterBottom
           sx={{
             color: "secondary.main",
-            fontWeight: 400,
+            fontWeight: 400
           }}
         >
           {title}
@@ -52,11 +60,17 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           align="center"
           color="common.white"
           sx={{
-            mb: 10,
+            mb: 10
           }}
         >
           {subtitle}
         </Typography>
+        {/*Todo: This button isn't working for some reason.*/}
+        <MuiNextLink href={landingButton.path} underline="none" passHref>
+          <Button variant="contained" size="large">
+            {landingButton.label}
+          </Button>
+        </MuiNextLink>
       </Grid>
     </Grid>
 
