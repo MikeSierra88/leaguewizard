@@ -21,7 +21,6 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
         height: `100vh`,
         width: `100vw`,
         overflow: `hidden`,
-        zIndex: -100
       }}
     >
       <Image src={imgSrc} alt={imgAlt} layout="fill" objectFit="cover" />
@@ -66,7 +65,14 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           {subtitle}
         </Typography>
         {/*Todo: This button isn't working for some reason.*/}
-        <MuiNextLink href={landingButton.path} underline="none" passHref>
+        <MuiNextLink
+          href={landingButton.path}
+          variant="button"
+          underline="hover"
+          sx={{
+            zIndex: 9000
+          }}
+        >
           <Button variant="contained" size="large">
             {landingButton.label}
           </Button>
