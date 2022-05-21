@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { CacheProvider } from "@emotion/react";
-import createEmotionCache from "../styles/createEmotionCache";
+import createEmotionCache from "../lib/createEmotionCache";
 import { ThemeProvider } from "@mui/material/styles";
 import { UserProvider } from '@auth0/nextjs-auth0';
 import CssBaseline from "@mui/material/CssBaseline";

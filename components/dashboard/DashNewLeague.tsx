@@ -1,7 +1,14 @@
+import DashNewLeagueForm from "@components/dashboard/new-league/NewLeagueForm";
+import { Container } from "@mui/material";
+
 const DashNewLeague = () => {
+
   return (
-    <h1>New League</h1>
+    <Container>
+      <h1>New League</h1>
+      <DashNewLeagueForm />
+    </Container>
   );
-}
+};
 
 export default DashNewLeague;

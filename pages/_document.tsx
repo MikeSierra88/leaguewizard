@@ -2,7 +2,7 @@ import * as React from "react";
 import theme from "../styles/theme";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
-import createEmotionCache from "../styles/createEmotionCache";
+import createEmotionCache from "../lib/createEmotionCache";
 
 export default class MyDocument extends Document {
   render() {
@@ -10,6 +10,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
+          <title>LeagueWizard</title>
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"

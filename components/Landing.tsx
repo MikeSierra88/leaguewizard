@@ -70,7 +70,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           variant="button"
           underline="hover"
           sx={{
-            zIndex: 9000
+            zIndex: 100
           }}
         >
           <Button variant="contained" size="large">

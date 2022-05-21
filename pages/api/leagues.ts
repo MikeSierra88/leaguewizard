@@ -1,30 +1,33 @@
 import dbConnect from "../../lib/dbConnect";
-import League from '../../models/League';
+import League from "../../models/League";
+import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 
-export default async function handler (req, res) {
-  const { method } = req
+export default withApiAuthRequired(async function handler(req, res) {
+  const { method } = req;
 
-  await dbConnect()
+  await dbConnect();
 
   switch (method) {
-    case 'GET':
+    case "GET":
       try {
-        const leagues = await League.find({})
-        res.status(200).json({ success: true, data: leagues })
+        const leagues = await League.find({});
+        res.status(200).json({ success: true, data: leagues });
       } catch (error) {
-        res.status(400).json({ success: false })
+        console.error("Error while processing GET", error);
+        res.status(400).json({ success: false, error });
       }
-      break
-    case 'POST':
+      break;
+    case "POST":
       try {
-        const league = await League.create(req.body)
-        res.status(201).json({ success: true, data: league })
+        console.log(req.body);
+        const league = await League.create(req.body);
+        res.status(201).json({ success: true, data: league });
       } catch (error) {
-        res.status(400).json({ success: false })
+        res.status(400).json({ success: false, error });
       }
-      break
+      break;
     default:
-      res.status(400).json({ success: false })
-      break
+      res.status(400).json({ success: false });
+      break;
   }
-}
+});
