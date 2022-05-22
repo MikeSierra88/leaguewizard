@@ -30,12 +30,7 @@ const DashLeagues = () => {
   }, []);
 
   const leagueArray = leagues.map((league) => {
-    return (
-      <LeagueListItem
-        key={league._id}
-        league={league}
-      />
-    );
+    return <LeagueListItem key={league._id} league={league} />;
   });
 
   return isLoading ? (

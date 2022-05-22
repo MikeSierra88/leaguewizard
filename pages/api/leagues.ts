@@ -11,7 +11,9 @@ export default withApiAuthRequired(async function handler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const leagues = await League.find({participants: { $all: [user.sub] }});
+        const leagues = await League.find({
+          participants: { $all: [user.sub] },
+        });
         res.status(200).json({ success: true, data: leagues });
       } catch (error) {
         console.error('Error while processing GET', error);

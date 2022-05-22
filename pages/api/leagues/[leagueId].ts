@@ -38,8 +38,13 @@ export default withApiAuthRequired(async function handler(req, res) {
       break;
     case 'DELETE':
       try {
-        await League.findByIdAndDelete(leagueId);
-        res.status(204).end();
+        const league = await League.findById(leagueId);
+        if (league.owner === user.sub) {
+          await League.findByIdAndDelete(leagueId);
+          res.status(204).end();
+        } else {
+          res.status(401).json({ success: false });
+        }
       } catch (error) {
         console.error('Error while processing DELETE', error);
         res.status(400).json({ success: false, error });
