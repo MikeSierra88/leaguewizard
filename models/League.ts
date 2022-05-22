@@ -9,6 +9,10 @@ const LeagueSchema = new Schema<LeagueDocument, LeagueModel>({
     type: String,
     required: true
   },
+  participants: {
+    type: [String],
+    required: true
+  },
   createdDate: {
     type: Date,
     default: Date.now
@@ -19,6 +23,7 @@ export interface League {
   _id?: string;
   name: string;
   owner: string;
+  participants: string[];
   createdDate: Date;
 }
 
@@ -26,6 +31,7 @@ interface LeagueBaseDocument extends League, Document {
   _id?: string;
   name: string;
   owner: string;
+  participants: string[];
   createdDate: Date;
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, Container } from '@mui/material';
+import { Box, CircularProgress, Container, Grid } from '@mui/material';
 import LeagueListItem from '@components/dashboard/leagues/LeagueListItem';
 import { League } from '../../models/League';
 
@@ -24,18 +24,6 @@ const DashLeagues = () => {
       });
   };
 
-  const deleteLeague = (leagueId: string) => {
-    setLoading(true);
-    fetch(`api/leagues/${leagueId}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        setLeagues(leagues.filter((league) => league._id !== leagueId));
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
-
   // load leagues from API
   useEffect(() => {
     fetchLeagues();
@@ -46,7 +34,6 @@ const DashLeagues = () => {
       <LeagueListItem
         key={league._id}
         league={league}
-        deleteLeague={deleteLeague}
       />
     );
   });
@@ -64,7 +51,9 @@ const DashLeagues = () => {
   ) : (
     <Container>
       <h1>Leagues</h1>
-      {leagueArray}
+      <Grid container spacing={4}>
+        {leagueArray}
+      </Grid>
     </Container>
   );
 };

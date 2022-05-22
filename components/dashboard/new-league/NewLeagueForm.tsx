@@ -27,6 +27,7 @@ const DashNewLeagueForm = () => {
         name: leagueName,
         createdDate: new Date(),
         owner: user.sub,
+        participants: [user.sub],
       }),
     })
       .then((res) => {

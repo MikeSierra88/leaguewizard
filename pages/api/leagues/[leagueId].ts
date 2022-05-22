@@ -1,10 +1,11 @@
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import dbConnect from '../../../lib/dbConnect';
 import League from '../../../models/League';
 
 export default withApiAuthRequired(async function handler(req, res) {
   const { method } = req;
   const { leagueId } = req.query;
+  const { user } = getSession(req, res);
 
   await dbConnect();
 
@@ -12,7 +13,11 @@ export default withApiAuthRequired(async function handler(req, res) {
     case 'GET':
       try {
         const league = await League.findById(leagueId);
-        res.status(200).json({ success: true, data: league });
+        if (league.participants.includes(user.sub)) {
+          res.status(200).json({ success: true, data: league });
+        } else {
+          res.status(401).json({ success: false });
+        }
       } catch (error) {
         console.error('Error while processing GET', error);
         res.status(400).json({ success: false, error });

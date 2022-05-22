@@ -1,22 +1,31 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, Card, CardActions, Grid, Typography } from '@mui/material';
 import { League } from '../../../models/League';
+import MuiNextLink from '@components/navigation/MuiNextLink';
 
 type Props = {
   league: League,
-  deleteLeague: (leagueId: string) => void,
 };
 
-const LeagueListItem = ({ league, deleteLeague }: Props) => {
-  const handleDelete = () => {
-    deleteLeague(league._id);
-  };
+const LeagueListItem = ({ league }: Props) => {
 
   return (
-    <div>
-      <p>{league.name}</p>
-      <Button onClick={handleDelete}>Delete</Button>
-    </div>
+    <Grid item md={3}>
+      <Card sx={{ minWidth: 275 }}>
+        <Typography variant='h5' component='div'>
+          {league.name}
+        </Typography>
+        <CardActions>
+          <MuiNextLink
+            href={`league/${league._id}`}
+            variant='button'
+            underline='hover'
+          >
+            <Button size='small'>Details</Button>
+          </MuiNextLink>
+        </CardActions>
+      </Card>
+    </Grid>
   );
 };
 
