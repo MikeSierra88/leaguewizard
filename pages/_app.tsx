@@ -1,19 +1,20 @@
-import Head from "next/head";
-import { CacheProvider } from "@emotion/react";
-import createEmotionCache from "../lib/createEmotionCache";
-import { ThemeProvider } from "@mui/material/styles";
+import React, { Component } from 'react';
+import Head from 'next/head';
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from '../lib/createEmotionCache';
+import { ThemeProvider } from '@mui/material/styles';
 import { UserProvider } from '@auth0/nextjs-auth0';
-import CssBaseline from "@mui/material/CssBaseline";
+import CssBaseline from '@mui/material/CssBaseline';
 
-import "/styles/global.css";
-import theme from "../styles/theme";
+import '/styles/global.css';
+import theme from '../styles/theme';
 
-import Header from "@components/Header";
+import Header from '@components/Header';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-export default function LeagueWizardApp(props) {
+export default function LeagueWizardApp(props: any) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   return (
@@ -26,7 +27,7 @@ export default function LeagueWizardApp(props) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <Header/>
+          <Header />
           <Component {...pageProps} />
         </ThemeProvider>
       </UserProvider>

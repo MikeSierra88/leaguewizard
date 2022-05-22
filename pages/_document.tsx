@@ -1,8 +1,8 @@
-import * as React from "react";
-import theme from "../styles/theme";
-import Document, { Head, Html, Main, NextScript } from "next/document";
-import createEmotionServer from "@emotion/server/create-instance";
-import createEmotionCache from "../lib/createEmotionCache";
+import React from 'react';
+import theme from '../styles/theme';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+import createEmotionServer from '@emotion/server/create-instance';
+import createEmotionCache from '../lib/createEmotionCache';
 
 export default class MyDocument extends Document {
   render() {
@@ -10,7 +10,6 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
-          <title>LeagueWizard</title>
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"
@@ -60,11 +59,11 @@ MyDocument.getInitialProps = async (context) => {
 
   context.renderPage = () =>
     originalRenderPage({
-      enhanceApp:
-        (App) => {
-          // @ts-ignore
-          return (props) => <App emotionCache={cache} {...props} />;
-        }
+      enhanceApp: (App) => {
+        // @ts-ignore
+        // eslint-disable-next-line react/display-name
+        return (props) => <App emotionCache={cache} {...props} />;
+      },
     });
 
   const initialProps = await Document.getInitialProps(context);
@@ -73,8 +72,9 @@ MyDocument.getInitialProps = async (context) => {
   const emotionStyles = extractCriticalToChunks(initialProps.html);
   const emotionStyleTags = emotionStyles.styles.map((style) => (
     <style
-      data-emotion={`${style.key} ${style.ids.join(" ")}`}
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
       key={style.key}
+      // @ts-ignore
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: style.css }}
     />
@@ -83,6 +83,9 @@ MyDocument.getInitialProps = async (context) => {
   return {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
-    styles: [...React.Children.toArray(initialProps.styles), ...emotionStyleTags]
+    styles: [
+      ...React.Children.toArray(initialProps.styles),
+      ...emotionStyleTags,
+    ],
   };
 };

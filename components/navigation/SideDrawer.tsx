@@ -1,18 +1,18 @@
-import { Box, Drawer, IconButton, Typography } from "@mui/material";
-import MuiNextLink from "./MuiNextLink";
-import { Menu } from "@mui/icons-material";
-import { useState } from "react";
-import { NavLink } from "../../models/NavLink";
+import { Box, Drawer, IconButton, Typography } from '@mui/material';
+import MuiNextLink from './MuiNextLink';
+import { Menu } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { NavLink } from '../../models/NavLink';
 
 const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
   const [state, setState] = useState({
-    right: false
+    right: false,
   });
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
     ) {
       return;
     }
@@ -27,7 +27,7 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
         marginTop: `auto`,
         marginBottom: `auto`,
         display: `flex`,
-        flexDirection: `column`
+        flexDirection: `column`,
       }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
@@ -40,11 +40,11 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
           sx={{
             ml: 5,
             my: 2,
-            textTransform: `uppercase`
+            textTransform: `uppercase`,
           }}
         >
           <MuiNextLink
-            sx={{ color: "common.white" }}
+            sx={{ color: 'common.white' }}
             href={path}
             underline="hover"
           >
@@ -60,10 +60,10 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
       <IconButton
         edge="start"
         aria-label="menu"
-        onClick={toggleDrawer("right", true)}
+        onClick={toggleDrawer('right', true)}
         sx={{
           color: `common.white`,
-          display: { xs: `inline`, md: `none` }
+          display: { xs: `inline`, md: `none` },
         }}
       >
         <Menu fontSize="large" />
@@ -71,14 +71,14 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
       <Drawer
         anchor="right"
         open={state.right}
-        onClose={toggleDrawer("right", false)}
+        onClose={toggleDrawer('right', false)}
         sx={{
-          ".MuiDrawer-paper": {
-            bgcolor: "primary.main"
-          }
+          '.MuiDrawer-paper': {
+            bgcolor: 'primary.main',
+          },
         }}
       >
-        {list("right")}
+        {list('right')}
       </Drawer>
     </>
   );

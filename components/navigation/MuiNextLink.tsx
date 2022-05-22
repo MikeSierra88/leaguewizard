@@ -1,12 +1,25 @@
-import * as React from "react";
+import * as React from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import NextLink from "next/link";
+import NextLink from 'next/link';
 import MuiLink from '@mui/material/Link';
 
-export const NextLinkComposed = React.forwardRef(function MuiNextLink(props: any, ref) {
-  const { to, linkAs, href, replace, scroll, passHref, shallow, prefetch, locale, ...other } =
-    props;
+export const NextLinkComposed = React.forwardRef(function MuiNextLink(
+  props: any,
+  ref
+) {
+  const {
+    to,
+    linkAs,
+    href,
+    replace,
+    scroll,
+    passHref,
+    shallow,
+    prefetch,
+    locale,
+    ...other
+  } = props;
 
   return (
     <NextLink
@@ -42,7 +55,8 @@ const Link = React.forwardRef(function Link(props: any, ref) {
   });
 
   const isExternal =
-    typeof href === 'string' && (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0);
+    typeof href === 'string' &&
+    (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0);
 
   if (isExternal) {
     if (noLinkStyle) {
@@ -53,7 +67,9 @@ const Link = React.forwardRef(function Link(props: any, ref) {
   }
 
   if (noLinkStyle) {
-    return <NextLinkComposed className={className} ref={ref} to={href} {...other} />;
+    return (
+      <NextLinkComposed className={className} ref={ref} to={href} {...other} />
+    );
   }
 
   return (

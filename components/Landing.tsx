@@ -1,16 +1,28 @@
-import Grid from "@mui/material/Grid";
-import Image from "next/image";
-import { Button, Typography } from "@mui/material";
-import MuiNextLink from "@components/navigation/MuiNextLink";
-import { useUser } from "@auth0/nextjs-auth0";
+import React from 'react';
+import Grid from '@mui/material/Grid';
+import Image from 'next/image';
+import { Button, Typography } from '@mui/material';
+import MuiNextLink from '@components/navigation/MuiNextLink';
+import { useUser } from '@auth0/nextjs-auth0';
 
-const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
+type Props = {
+  imgSrc: string,
+  imgAlt: string,
+  title: string,
+  subtitle: string,
+};
+
+const Landing = ({ imgSrc, imgAlt, title, subtitle }: Props) => {
   const { user } = useUser();
-  const landingButton = user ? {
-    label: "Go To My Dashboard", path: "/dashboard"
-  } : {
-    label: "Login / Sign up", path: "/api/auth/login"
-  };
+  const landingButton = user
+    ? {
+        label: 'Go To My Dashboard',
+        path: '/dashboard',
+      }
+    : {
+        label: 'Login / Sign up',
+        path: '/api/auth/login',
+      };
 
   return (
     <Grid
@@ -27,9 +39,9 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
       <Grid
         container
         sx={{
-          position: "absolute",
+          position: 'absolute',
           inset: 0,
-          backgroundColor: "rgba(0,0,0, .7)"
+          backgroundColor: 'rgba(0,0,0, .7)',
         }}
       />
       <Grid
@@ -39,7 +51,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
         justifyContent="center"
         alignItems="center"
         sx={{
-          zIndex: 15
+          zIndex: 15,
         }}
       >
         <Typography
@@ -47,8 +59,8 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           align="center"
           gutterBottom
           sx={{
-            color: "secondary.main",
-            fontWeight: 400
+            color: 'secondary.main',
+            fontWeight: 400,
           }}
         >
           {title}
@@ -59,7 +71,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           align="center"
           color="common.white"
           sx={{
-            mb: 10
+            mb: 10,
           }}
         >
           {subtitle}
@@ -70,7 +82,7 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
           variant="button"
           underline="hover"
           sx={{
-            zIndex: 100
+            zIndex: 100,
           }}
         >
           <Button variant="contained" size="large">
@@ -79,7 +91,6 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }) => {
         </MuiNextLink>
       </Grid>
     </Grid>
-
   );
 };
 

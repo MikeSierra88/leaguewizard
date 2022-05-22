@@ -1,8 +1,8 @@
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import React from "react";
-import { Box, Tabs, Tab } from "@mui/material";
-import DashLeagues from "@components/dashboard/DashLeagues";
-import DashNewLeague from "@components/dashboard/DashNewLeague";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import React from 'react';
+import { Box, Tabs, Tab } from '@mui/material';
+import DashLeagues from '@components/dashboard/DashLeagues';
+import DashNewLeague from '@components/dashboard/DashNewLeague';
 
 enum TabList {
   LEAGUES,
@@ -24,7 +24,7 @@ function TabPanel(props: TabPanelProps) {
       dashElement = <DashLeagues />;
       break;
     case TabList.NEW_LEAGUE:
-      dashElement = <DashNewLeague />
+      dashElement = <DashNewLeague />;
       break;
   }
 
@@ -36,11 +36,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {dashElement}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{dashElement}</Box>}
     </div>
   );
 }
@@ -54,7 +50,7 @@ const DashboardPage = withPageAuthRequired(() => {
 
   return (
     <>
-      <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
+      <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="My Leagues" />
           <Tab label="New League" />

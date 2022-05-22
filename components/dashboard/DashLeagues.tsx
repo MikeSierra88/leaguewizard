@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { Box, CircularProgress, Container } from "@mui/material";
-import LeagueListItem from "@components/dashboard/leagues/league-list-item";
-import { League } from "../../models/League";
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Container } from '@mui/material';
+import LeagueListItem from '@components/dashboard/leagues/LeagueListItem';
+import { League } from '../../models/League';
 
 const DashLeagues = () => {
   const [leagues, setLeagues] = useState<League[]>([]);
@@ -9,15 +9,15 @@ const DashLeagues = () => {
 
   const fetchLeagues = () => {
     setLoading(true);
-    fetch("api/leagues")
+    fetch('api/leagues')
       .then((res) => {
         return res.json();
       })
       .then((json) => {
         setLeagues(json.data);
       })
-      .catch(err => {
-        console.error("Error while fetching leagues", err);
+      .catch((err) => {
+        console.error('Error while fetching leagues', err);
       })
       .finally(() => {
         setLoading(false);
@@ -27,12 +27,12 @@ const DashLeagues = () => {
   const deleteLeague = (leagueId: string) => {
     setLoading(true);
     fetch(`api/leagues/${leagueId}`, {
-      method: "DELETE"
+      method: 'DELETE',
     })
       .then(() => {
-        setLeagues(leagues.filter(league => league._id !== leagueId));
+        setLeagues(leagues.filter((league) => league._id !== leagueId));
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   };
 
@@ -41,16 +41,24 @@ const DashLeagues = () => {
     fetchLeagues();
   }, []);
 
-  const leagueArray = leagues.map(league => {
-    return (<LeagueListItem key={league._id} league={league} deleteLeague={deleteLeague} />);
+  const leagueArray = leagues.map((league) => {
+    return (
+      <LeagueListItem
+        key={league._id}
+        league={league}
+        deleteLeague={deleteLeague}
+      />
+    );
   });
 
   return isLoading ? (
-    <Box sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <CircularProgress />
     </Box>
   ) : (
@@ -58,7 +66,6 @@ const DashLeagues = () => {
       <h1>Leagues</h1>
       {leagueArray}
     </Container>
-
   );
 };
 
