@@ -1,4 +1,5 @@
 import { Document, Model, model, models, Schema } from "mongoose";
+import { InviteCode } from './InviteCode';
 
 const LeagueSchema = new Schema<LeagueDocument, LeagueModel>({
   name: {
@@ -16,7 +17,11 @@ const LeagueSchema = new Schema<LeagueDocument, LeagueModel>({
   createdDate: {
     type: Date,
     default: Date.now
-  }
+  },
+  inviteCode: {
+    type: Schema.Types.ObjectId,
+    ref: 'InviteCode'
+  },
 });
 
 export interface League {
@@ -25,6 +30,7 @@ export interface League {
   owner: string;
   participants: string[];
   createdDate: Date;
+  inviteCode?: InviteCode;
 }
 
 interface LeagueBaseDocument extends League, Document {
@@ -33,6 +39,7 @@ interface LeagueBaseDocument extends League, Document {
   owner: string;
   participants: string[];
   createdDate: Date;
+  inviteCode?: InviteCode;
 }
 
 export interface LeagueDocument extends LeagueBaseDocument {

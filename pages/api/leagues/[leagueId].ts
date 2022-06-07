@@ -1,8 +1,9 @@
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import dbConnect from '../../../lib/dbConnect';
 import League from '../../../models/League';
+import InviteCode from '../../../models/InviteCode';
 
-export default withApiAuthRequired(async function handler(req, res) {
+export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
   const { leagueId } = req.query;
   const { user } = getSession(req, res);
@@ -13,8 +14,17 @@ export default withApiAuthRequired(async function handler(req, res) {
     case 'GET':
       try {
         const league = await League.findById(leagueId);
-        if (league.participants.includes(user.sub)) {
+        if (league.owner === user.sub) {
+          league.populate({ path: 'inviteCode', model: InviteCode });
           res.status(200).json({ success: true, data: league });
+        }
+        if (league.participants.includes(user.sub)) {
+          const limitedLeague = await League.findById(
+            leagueId,
+            '-inviteCode -owner -participants'
+          );
+          console.log(limitedLeague);
+          res.status(200).json({ success: true, data: limitedLeague });
         } else {
           res.status(401).json({ success: false });
         }

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { League } from '../../../models/League';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import LoadingScreen from '@components/core/LoadingScreen';
+import InviteCodeManager from '@components/league/manage/InviteCodeManager';
 
 type Props = {
   league: League,
@@ -24,7 +25,8 @@ const ManageLeaguePage = ({ league }: Props) => {
       <h1>Managing {league.name}</h1>
       {/* Change name */}
       {/* Manage participants */}
-      {/* Invite code? */}
+      {/* Invite code */}
+      <InviteCodeManager league={league} />
       {/* Reset */}
       {/* Delete */}
     </Container>
