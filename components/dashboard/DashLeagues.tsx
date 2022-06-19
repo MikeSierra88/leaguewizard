@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, Container, Grid } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Typography,
+} from '@mui/material';
 import LeagueListItem from '@components/dashboard/leagues/LeagueListItem';
-import { League } from '../../models/League';
+import { League } from '../../models/LeagueModel';
 
 const DashLeagues = () => {
   const [leagues, setLeagues] = useState<League[]>([]);
@@ -45,7 +51,7 @@ const DashLeagues = () => {
     </Box>
   ) : (
     <Container>
-      <h1>Leagues</h1>
+      <Typography variant="h5">Leagues</Typography>
       <Grid container spacing={4}>
         {leagueArray}
       </Grid>

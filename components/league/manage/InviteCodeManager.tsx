@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { League } from '../../../models/League';
+import { League } from '../../../models/LeagueModel';
 import { Button, Container, Typography } from '@mui/material';
 
 type Props = {

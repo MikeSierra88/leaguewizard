@@ -3,10 +3,12 @@ import React from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import DashLeagues from '@components/dashboard/DashLeagues';
 import DashNewLeague from '@components/dashboard/DashNewLeague';
+import DashJoinLeague from '@components/dashboard/DashJoinLeague';
 
 enum TabList {
   LEAGUES,
   NEW_LEAGUE,
+  JOIN_LEAGUE,
 }
 
 interface TabPanelProps {
@@ -25,6 +27,9 @@ function TabPanel(props: TabPanelProps) {
       break;
     case TabList.NEW_LEAGUE:
       dashElement = <DashNewLeague />;
+      break;
+    case TabList.JOIN_LEAGUE:
+      dashElement = <DashJoinLeague />;
       break;
   }
 
@@ -54,10 +59,12 @@ const DashboardPage = withPageAuthRequired(() => {
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="My Leagues" />
           <Tab label="New League" />
+          <Tab label="Join League" />
         </Tabs>
       </Box>
       <TabPanel value={value} index={TabList.LEAGUES} />
       <TabPanel value={value} index={TabList.NEW_LEAGUE} />
+      <TabPanel value={value} index={TabList.JOIN_LEAGUE} />
     </>
   );
 });

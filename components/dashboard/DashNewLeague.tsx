@@ -1,11 +1,11 @@
 import React from 'react';
 import DashNewLeagueForm from '@components/dashboard/new-league/NewLeagueForm';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
 const DashNewLeague = () => {
   return (
     <Container>
-      <h1>New League</h1>
+      <Typography variant="h5">New League</Typography>
       <DashNewLeagueForm />
     </Container>
   );

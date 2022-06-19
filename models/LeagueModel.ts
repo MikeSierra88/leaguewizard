@@ -1,5 +1,5 @@
 import { Document, Model, model, models, Schema } from "mongoose";
-import { InviteCode } from './InviteCode';
+import { InviteCode } from './InviteCodeModel';
 
 const LeagueSchema = new Schema<LeagueDocument, LeagueModel>({
   name: {

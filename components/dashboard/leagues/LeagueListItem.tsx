@@ -7,7 +7,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { League } from '../../../models/League';
+import { League } from '../../../models/LeagueModel';
 import MuiNextLink from '@components/navigation/MuiNextLink';
 
 type Props = {
@@ -25,7 +25,7 @@ const LeagueListItem = ({ league }: Props) => {
         </CardContent>
         <CardActions>
           <MuiNextLink
-            href={`league/${league._id}`}
+            href={`leagues/${league._id}`}
             variant="button"
             underline="hover"
           >

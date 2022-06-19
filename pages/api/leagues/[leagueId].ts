@@ -1,7 +1,7 @@
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import dbConnect from '../../../lib/dbConnect';
-import League from '../../../models/League';
-import InviteCode from '../../../models/InviteCode';
+import League from '../../../models/LeagueModel';
+import InviteCode from '../../../models/InviteCodeModel';
 
 export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
@@ -15,8 +15,11 @@ export default withApiAuthRequired(async (req, res) => {
       try {
         const league = await League.findById(leagueId);
         if (league.owner === user.sub) {
-          league.populate({ path: 'inviteCode', model: InviteCode });
-          res.status(200).json({ success: true, data: league });
+          const extendedLeague = await league.populate({
+            path: 'inviteCode',
+            model: InviteCode,
+          });
+          return res.status(200).json({ success: true, data: extendedLeague });
         }
         if (league.participants.includes(user.sub)) {
           const limitedLeague = await League.findById(
@@ -24,15 +27,14 @@ export default withApiAuthRequired(async (req, res) => {
             '-inviteCode -owner -participants'
           );
           console.log(limitedLeague);
-          res.status(200).json({ success: true, data: limitedLeague });
+          return res.status(200).json({ success: true, data: limitedLeague });
         } else {
-          res.status(401).json({ success: false });
+          return res.status(401).json({ success: false });
         }
       } catch (error) {
         console.error('Error while processing GET', error);
-        res.status(400).json({ success: false, error });
+        return res.status(400).json({ success: false, error });
       }
-      break;
     case 'PATCH':
       try {
         const updatedLeague = await League.findByIdAndUpdate(
@@ -40,28 +42,25 @@ export default withApiAuthRequired(async (req, res) => {
           req.body,
           { returnDocument: 'after' }
         );
-        res.status(200).json({ success: true, data: updatedLeague });
+        return res.status(200).json({ success: true, data: updatedLeague });
       } catch (error) {
         console.error('Error while processing PATCH', error);
-        res.status(400).json({ success: false, error });
+        return res.status(400).json({ success: false, error });
       }
-      break;
     case 'DELETE':
       try {
         const league = await League.findById(leagueId);
         if (league.owner === user.sub) {
           await League.findByIdAndDelete(leagueId);
-          res.status(204).end();
+          return res.status(204).end();
         } else {
-          res.status(401).json({ success: false });
+          return res.status(401).json({ success: false });
         }
       } catch (error) {
         console.error('Error while processing DELETE', error);
-        res.status(400).json({ success: false, error });
+        return res.status(400).json({ success: false, error });
       }
-      break;
     default:
-      res.status(400).json({ success: false });
-      break;
+      return res.status(405).json({ success: false });
   }
 });
