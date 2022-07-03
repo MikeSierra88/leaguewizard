@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Team } from '../../../models/TeamModel';
-import {
-  Button,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Container, Grid, Stack, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Team } from '../../../models/TeamModel';
+import MuiNextLink from '@components/navigation/MuiNextLink';
 
 type Props = {
   team: Team,
@@ -9,7 +10,9 @@ type Props = {
 const LeagueTableRow = ({ team }: Props) => {
   return (
     <Box>
-      <Typography>{team.name}</Typography>
+      <MuiNextLink href={`/teams/${team._id}`}>
+        <Typography>{team.name}</Typography>
+      </MuiNextLink>
     </Box>
   );
 };

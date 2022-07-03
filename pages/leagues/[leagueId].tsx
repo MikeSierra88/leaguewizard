@@ -8,6 +8,7 @@ import LeagueTable from '@components/league/league-table/LeagueTable';
 import { Team } from '../../models/TeamModel';
 import LeagueViewOnlyInfo from '@components/league/ViewOnlyInfo';
 import ManageLeagueButton from '@components/league/ManageLeagueButton';
+import MatchesTable from '@components/league/matches-table/MatchesTable';
 
 type Props = {
   league: League,
@@ -49,6 +50,7 @@ const LeagueDetailsPage = ({ league, teams }: Props) => {
         )}
       </h1>
       <LeagueTable teams={teams} />
+      <MatchesTable leagueId={league._id} />
     </Container>
   );
 };

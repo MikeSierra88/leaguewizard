@@ -35,7 +35,7 @@ export interface Team {
   fifaTeam: string;
   owner: string;
   createdDate?: Date;
-  confirmed?: Boolean;
+  confirmed?: boolean;
 }
 
 interface TeamBaseDocument extends Team, Document {
