@@ -1,5 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
+import { Match } from '../../../models/MatchModel';
+import { Box, Typography } from '@mui/material';
 
 type Props = {
   leagueId: string,
@@ -23,7 +25,14 @@ const MatchesTable = ({ leagueId, teamId }: Props) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  return <div>Matches: {data.data} (Placeholder)</div>;
+
+  const matches = data.data.map((match: Match) => (
+    <Box key={match._id}>
+      <Typography>{match.homeTeam}</Typography>
+    </Box>
+  ));
+
+  return <div>Matches: {matches}</div>;
 };
 
 export default MatchesTable;
