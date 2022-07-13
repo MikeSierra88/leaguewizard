@@ -8,7 +8,7 @@ const MatchSchema = new Schema<MatchDocument, MatchModel>({
   },
   homeTeam: {
     type: Schema.Types.ObjectId,
-    ref: 'Tean',
+    ref: 'Team',
     required: true,
   },
   homeScore: {
@@ -17,7 +17,7 @@ const MatchSchema = new Schema<MatchDocument, MatchModel>({
   },
   awayTeam: {
     type: Schema.Types.ObjectId,
-    ref: 'Tean',
+    ref: 'Team',
     required: true,
   },
   awayScore: {

@@ -24,9 +24,13 @@ export default withApiAuthRequired(async (req, res) => {
             matches = await MatchModel.find<Match>({
               league: leagueId,
               $or: [{ homeTeam: team }, { awayTeam: team }],
-            });
+            })
+              .populate('homeTeam')
+              .populate('awayTeam');
           } else {
-            matches = await MatchModel.find<Match>({ league: leagueId });
+            matches = await MatchModel.find<Match>({ league: leagueId })
+              .populate('homeTeam')
+              .populate('awayTeam');
           }
           return res.status(200).json({ success: true, data: matches });
         } else {
