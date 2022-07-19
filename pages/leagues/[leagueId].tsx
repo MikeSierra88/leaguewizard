@@ -4,11 +4,11 @@ import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { Button, Container, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import MuiNextLink from '@components/navigation/MuiNextLink';
-import LeagueTable from '@components/league/league-table/LeagueTable';
 import { Team } from '../../models/TeamModel';
 import LeagueViewOnlyInfo from '@components/league/ViewOnlyInfo';
 import ManageLeagueButton from '@components/league/ManageLeagueButton';
 import MatchesTable from '@components/league/matches-table/MatchesTable';
+import LeagueTableContainer from '@components/league/league-table/LeagueTableContainer';
 
 type Props = {
   league: League,
@@ -49,7 +49,7 @@ const LeagueDetailsPage = ({ league, teams }: Props) => {
           <></>
         )}
       </h1>
-      <LeagueTable teams={teams} />
+      <LeagueTableContainer teams={teams} leagueId={league._id} />
       <MatchesTable leagueId={league._id} />
     </Container>
   );

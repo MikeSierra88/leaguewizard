@@ -1,13 +1,13 @@
 import React from 'react';
 import useSWR from 'swr';
-import { Match } from '../../../models/MatchModel';
+import { MatchWithTeamData } from '../../../models/MatchModel';
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DateTime } from 'luxon';
 
 type Props = {
-  leagueId: string;
-  teamId?: string;
+  leagueId: string,
+  teamId?: string,
 };
 
 const fetcher = async (url) => {
@@ -38,15 +38,15 @@ const MatchesTable = ({ leagueId, teamId }: Props) => {
     { field: 'awayTeam', headerName: 'Away team', minWidth: 150 },
   ];
 
-  const rows = data.data.map((match: Match) => ({
+  const rows = data.data.map((match: MatchWithTeamData) => ({
     id: match._id,
     date: DateTime.fromISO(match.createdDate).toISODate(),
-    homeTeam: (match.homeTeam as any).name,
-    homeFifaTeam: (match.homeTeam as any).fifaTeam,
+    homeTeam: match.homeTeam.name,
+    homeFifaTeam: match.homeTeam.fifaTeam,
     homeScore: match.homeScore,
     awayScore: match.awayScore,
-    awayFifaTeam: (match.awayTeam as any).fifaTeam,
-    awayTeam: (match.awayTeam as any).name,
+    awayFifaTeam: match.awayTeam.fifaTeam,
+    awayTeam: match.awayTeam.name,
   }));
 
   return (

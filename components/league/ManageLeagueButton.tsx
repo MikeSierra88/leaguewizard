@@ -52,7 +52,7 @@ const ManageLeagueButton = ({ isOwner, leagueId }: Props) => {
       </Button>
       <ConfirmationDialog
         title="Warning"
-        text="You are about to delete this league. This cannot be undone. Do you with to continue?"
+        text="You are about to delete this league. This cannot be undone. Do you wish to continue?"
         confirmButtonText="Delete"
         open={open}
         onClose={deleteLeague}

@@ -1,4 +1,5 @@
 import { Document, model, Model, models, Schema } from 'mongoose';
+import { Team } from './TeamModel';
 
 const MatchSchema = new Schema<MatchDocument, MatchModel>({
   league: {
@@ -40,6 +41,17 @@ export interface Match {
   homeTeam: string;
   homeScore: number;
   awayTeam: string;
+  awayScore: number;
+  createdDate?: Date;
+  confirmed?: boolean;
+}
+
+export interface MatchWithTeamData {
+  _id?: string;
+  league: string;
+  homeTeam: Team;
+  homeScore: number;
+  awayTeam: Team;
   awayScore: number;
   createdDate?: Date;
   confirmed?: boolean;
