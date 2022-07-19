@@ -17,7 +17,6 @@ const ManageLeaguePage = ({ league, teams }: Props) => {
   const router = useRouter();
 
   const pendingTeams = teams.filter((team) => {
-    console.log(team);
     return team.confirmed === false;
   });
 

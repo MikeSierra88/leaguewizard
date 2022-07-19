@@ -1,10 +1,11 @@
 import { Team } from '../../models/TeamModel';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { Button, Container, Stack } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
 import MuiNextLink from '@components/navigation/MuiNextLink';
 import React from 'react';
 import MatchesTable from '@components/league/matches-table/MatchesTable';
 import ManageTeamButton from '@components/team/ManageTeamButton';
+import ViewOnlyInfo from '@components/league/ViewOnlyInfo';
 
 type Props = {
   team: Team,
@@ -25,10 +26,18 @@ const TeamDetailsPage = ({ team }: Props) => {
         </MuiNextLink>
         <ManageTeamButton
           isOwner={user?.sub === team?.owner}
+          isTeamConfirmed={team?.confirmed}
           teamId={team?._id}
           leagueId={team?.league}
         />
       </Stack>
+      <Container>
+        <Stack sx={{ marginTop: '1rem' }}>
+          <Typography variant="h4">{team.name}</Typography>
+          <Typography variant="h5">{team.fifaTeam}</Typography>
+        </Stack>
+      </Container>
+      <ViewOnlyInfo confirmed={team.confirmed} />
       <MatchesTable leagueId={team?.league} teamId={team?._id} />
     </Container>
   );

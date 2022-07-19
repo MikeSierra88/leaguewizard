@@ -9,7 +9,6 @@ type Props = {
 };
 
 const PendingTeams = ({ pendingTeams }: Props) => {
-  console.log(pendingTeams);
   const [pendingTeamList, setPendingTeamList] = useState(pendingTeams);
 
   const confirmOrRejectTeam = async (teamId: string, isConfirming: boolean) => {
@@ -20,7 +19,6 @@ const PendingTeams = ({ pendingTeams }: Props) => {
       }
     );
     const data = await res.json();
-    console.log(data);
     if (data.success) {
       setPendingTeamList(pendingTeams.filter((team) => team._id !== teamId));
     } else {

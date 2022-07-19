@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button, TableCell, TableRow } from '@mui/material';
+import { Button, TableCell, TableRow, Tooltip } from '@mui/material';
 import MuiNextLink from '@components/navigation/MuiNextLink';
+import AddIcon from '@mui/icons-material/Add';
 
 type Props = {
   place: number,
   teamId: string,
+  isOwner: boolean,
   teamName: string,
   fifaTeam: string,
   matchesPlayed: number,
@@ -18,6 +20,7 @@ const LeagueTableRow = ({
   place,
   teamId,
   teamName,
+  isOwner,
   fifaTeam,
   matchesPlayed = 0,
   points = 0,
@@ -25,6 +28,23 @@ const LeagueTableRow = ({
   goalsAgainst = 0,
   goalDiff = 0,
 }: Props) => {
+  const addMatchButton = isOwner ? (
+    <MuiNextLink
+      href={`/teams/${teamId}`}
+      variant="button"
+      underline="hover"
+      sx={{ marginInlineEnd: '0.5rem' }}
+    >
+      <Tooltip title="Add new match">
+        <Button variant="outlined" size="small" color="success">
+          <AddIcon />
+        </Button>
+      </Tooltip>
+    </MuiNextLink>
+  ) : (
+    <></>
+  );
+
   return (
     <TableRow>
       <TableCell component="th" scope="row">
@@ -48,10 +68,11 @@ const LeagueTableRow = ({
           underline="hover"
           sx={{ marginInlineEnd: '0.5rem' }}
         >
-          <Button variant="outlined" size="small">
+          <Button variant="outlined" size="small" color="primary">
             Details
           </Button>
         </MuiNextLink>
+        {addMatchButton}
       </TableCell>
     </TableRow>
   );

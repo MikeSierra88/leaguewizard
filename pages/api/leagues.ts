@@ -28,7 +28,6 @@ export default withApiAuthRequired(async function handler(req, res) {
       const session = await connection.startSession();
       try {
         await session.startTransaction();
-        console.log(req.body);
         const league = await LeagueModel.create(req.body.league);
         const team = await TeamModel.create({
           ...req.body.team,

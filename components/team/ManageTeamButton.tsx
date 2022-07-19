@@ -9,11 +9,17 @@ import { useRouter } from 'next/router';
 
 type Props = {
   isOwner: boolean,
+  isTeamConfirmed: boolean,
   teamId: string,
   leagueId: string,
 };
 
-const ManageTeamButton = ({ isOwner, teamId, leagueId }: Props) => {
+const ManageTeamButton = ({
+  isOwner,
+  isTeamConfirmed,
+  teamId,
+  leagueId,
+}: Props) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -38,16 +44,22 @@ const ManageTeamButton = ({ isOwner, teamId, leagueId }: Props) => {
     }
   };
 
+  const addMatchButton = isTeamConfirmed ? (
+    <MuiNextLink
+      href={`/leagues/${leagueId}/new-match`}
+      variant="button"
+      underline="hover"
+      sx={{ marginInlineEnd: '0.5rem' }}
+    >
+      <Button variant="contained">Add new match</Button>
+    </MuiNextLink>
+  ) : (
+    <></>
+  );
+
   return isOwner ? (
     <Box>
-      <MuiNextLink
-        href={`/leagues/${leagueId}/new-match`}
-        variant="button"
-        underline="hover"
-        sx={{ marginInlineEnd: '0.5rem' }}
-      >
-        <Button variant="contained">Add new match</Button>
-      </MuiNextLink>
+      {addMatchButton}
       <Button variant="contained" color="error" onClick={confirmDelete}>
         <DeleteIcon />
       </Button>

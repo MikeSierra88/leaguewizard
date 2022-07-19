@@ -17,7 +17,7 @@ type Props = {
 
 const LeagueDetailsPage = ({ league, teams }: Props) => {
   const { user } = useUser();
-  const ownTeam = teams.find((team) => team.owner === user.sub);
+  const ownTeam = teams.find((team) => team.owner === user?.sub);
 
   return (
     <Container>
@@ -37,7 +37,7 @@ const LeagueDetailsPage = ({ league, teams }: Props) => {
       <LeagueViewOnlyInfo confirmed={ownTeam?.confirmed} />
       <h1>
         {league.name}
-        {user.sub === league.owner ? (
+        {user?.sub === league.owner ? (
           <MuiNextLink
             href={`/leagues/${league._id}/manage`}
             underline="none"

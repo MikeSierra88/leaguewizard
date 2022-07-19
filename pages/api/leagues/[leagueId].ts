@@ -26,7 +26,6 @@ export default withApiAuthRequired(async (req, res) => {
             leagueId,
             '-inviteCode -owner -participants'
           );
-          console.log(limitedLeague);
           return res.status(200).json({ success: true, data: limitedLeague });
         } else {
           return res.status(401).json({ success: false });

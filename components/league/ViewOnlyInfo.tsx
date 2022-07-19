@@ -15,7 +15,7 @@ const LeagueViewOnlyInfo = ({ confirmed }: Props) => {
     >
       <Typography variant="h6">You can only view this league</Typography>
       <Typography>
-        The league owner hasn&apos;t yet confirmed your application.
+        The league owner has to confirm your application first.
       </Typography>
     </Box>
   ) : (

@@ -41,7 +41,7 @@ export default withApiAuthRequired(async (req, res) => {
         if (!leagueToUpdate) {
           return res.status(404).json({ success: false });
         }
-        if (leagueToUpdate.owner === user.sub) {
+        if (leagueToUpdate.owner === user?.sub) {
           const inviteCode = await generateCode();
           const codeInDb = await InviteCodeModel.create({
             code: inviteCode,
@@ -65,7 +65,7 @@ export default withApiAuthRequired(async (req, res) => {
           }
           return res.status(404).json({ success: false });
         }
-        if (leagueToUpdate.owner === user.sub) {
+        if (leagueToUpdate.owner === user?.sub) {
           await InviteCodeModel.findByIdAndDelete(inviteCodeToRemove);
           await League.findByIdAndUpdate(leagueToUpdate._id, {
             inviteCode: null,

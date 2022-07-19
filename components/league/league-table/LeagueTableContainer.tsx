@@ -7,6 +7,7 @@ import {
   teamDataComparator,
 } from '../../../lib/calculateTeamData';
 import LeagueTable from '@components/league/league-table/LeagueTable';
+import { useUser } from '@auth0/nextjs-auth0';
 
 type Props = {
   leagueId: string,
@@ -20,6 +21,7 @@ const fetcher = async (url) => {
 
 const LeagueTableContainer = ({ leagueId, teams }: Props) => {
   const { data, error } = useSWR(`/api/leagues/${leagueId}/matches`, fetcher);
+  const { user } = useUser();
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -32,6 +34,7 @@ const LeagueTableContainer = ({ leagueId, teams }: Props) => {
                 teamId: team._id,
                 teamName: team.name,
                 fifaTeam: team.fifaTeam,
+                isOwner: user?.sub === team.owner,
                 ...teamData,
               };
             })
