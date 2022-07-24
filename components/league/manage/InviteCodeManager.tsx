@@ -43,17 +43,18 @@ const InviteCodeManager = ({ league }: Props) => {
         alignItems: 'center',
         justifyContent: 'around',
         boxShadow: 2,
+        marginTop: '2rem',
       }}
     >
       <Typography
-        variant="h4"
+        variant="h5"
         sx={{
           marginBottom: '1.2rem',
         }}
       >
         Invite code
       </Typography>
-      <Typography variant="h5">{inviteCode ? inviteCode : 'Invitation is closed'}</Typography>
+      <Typography variant="h6">{inviteCode ? inviteCode : 'Invitation is closed'}</Typography>
       {button}
     </Container>
   );

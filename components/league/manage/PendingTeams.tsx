@@ -46,7 +46,7 @@ const PendingTeams = ({ pendingTeams }: Props) => {
       }}
     >
       <Typography
-        variant="h4"
+        variant="h5"
         sx={{
           marginBottom: '1.2rem',
         }}

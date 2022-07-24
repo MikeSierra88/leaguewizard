@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -9,6 +9,7 @@ import { Team } from '../../../models/TeamModel';
 import PendingTeams from '@components/league/manage/PendingTeams';
 import ResetLeagueSection from '@components/league/manage/ResetLeagueSection';
 import DeleteLeagueSection from '@components/league/manage/DeleteLeagueSection';
+import ChangeLeagueNameSection from '@components/league/manage/ChangeLeagueNameSection';
 
 type Props = {
   league: League,
@@ -17,21 +18,26 @@ type Props = {
 
 const ManageLeaguePage = ({ league, teams }: Props) => {
   const router = useRouter();
+  const [leagueName, setLeagueName] = useState(league.name);
 
   const pendingTeams = teams.filter((team) => {
     return team.confirmed === false;
   });
+
+  const saveLeagueName = (name: string) => setLeagueName(name);
 
   return league ? (
     <Container>
       <Button variant="contained" sx={{ marginTop: '1rem' }} onClick={() => router.back()}>
         Back
       </Button>
-      <h1>Managing {league.name}</h1>
-      {/* Change name */}
-      {/* Manage participants */}
+      <h1>Managing {leagueName}</h1>
       {/* Pending teams */}
       <PendingTeams pendingTeams={pendingTeams} />
+      {/* Pending matches */}
+      {/* Change name */}
+      <ChangeLeagueNameSection league={league} saveLeagueName={saveLeagueName.bind(this)} />
+      {/* Manage participants */}
       {/* Invite code */}
       <InviteCodeManager league={league} />
       <Container
