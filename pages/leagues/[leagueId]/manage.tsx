@@ -10,6 +10,7 @@ import PendingTeams from '@components/league/manage/PendingTeams';
 import ResetLeagueSection from '@components/league/manage/ResetLeagueSection';
 import DeleteLeagueSection from '@components/league/manage/DeleteLeagueSection';
 import ChangeLeagueNameSection from '@components/league/manage/ChangeLeagueNameSection';
+import ManageParticipantsSection from '@components/league/manage/ManageParticipantsSection';
 
 type Props = {
   league: League,
@@ -34,10 +35,11 @@ const ManageLeaguePage = ({ league, teams }: Props) => {
       <h1>Managing {leagueName}</h1>
       {/* Pending teams */}
       <PendingTeams pendingTeams={pendingTeams} />
-      {/* Pending matches */}
+      {/* TODO: Pending matches */}
       {/* Change name */}
       <ChangeLeagueNameSection league={league} saveLeagueName={saveLeagueName.bind(this)} />
       {/* Manage participants */}
+      <ManageParticipantsSection teams={teams} leagueOwner={league.owner} />
       {/* Invite code */}
       <InviteCodeManager league={league} />
       <Container

@@ -48,14 +48,18 @@ export default withApiAuthRequired(async (req, res) => {
         }
         const newMatch: Match = {
           league: league._id,
+          // all matches are confirmed in first version
+          confirmed: true,
           homeTeam: req.body.homeTeam,
           homeScore: req.body.homeScore,
           awayTeam: req.body.awayTeam,
           awayScore: req.body.awayScore,
         };
-        if (league.owner === user.sub) {
-          newMatch.confirmed = true;
-        }
+        // TODO: implement match confirmation
+        // disabling match confirmation for MVP
+        // if (league.owner === user.sub) {
+        //   newMatch.confirmed = true;
+        // }
         const newMatchInDB = await MatchModel.create<Match>(newMatch);
         await postSession.commitTransaction();
         await postSession.endSession();
