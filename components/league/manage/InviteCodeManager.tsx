@@ -25,20 +25,11 @@ const InviteCodeManager = ({ league }: Props) => {
   };
 
   const button = inviteCode ? (
-    <Button
-      variant="contained"
-      color="error"
-      sx={{ marginTop: '1rem' }}
-      onClick={() => removeInviteCode()}
-    >
+    <Button variant="contained" color="error" sx={{ marginTop: '1rem' }} onClick={() => removeInviteCode()}>
       Remove invite code
     </Button>
   ) : (
-    <Button
-      variant="contained"
-      sx={{ marginTop: '1rem' }}
-      onClick={() => getInviteCode()}
-    >
+    <Button variant="contained" sx={{ marginTop: '1rem' }} onClick={() => getInviteCode()}>
       Get invite code
     </Button>
   );
@@ -62,9 +53,7 @@ const InviteCodeManager = ({ league }: Props) => {
       >
         Invite code
       </Typography>
-      <Typography variant="h5">
-        {inviteCode ? inviteCode : 'Invitation is closed'}
-      </Typography>
+      <Typography variant="h5">{inviteCode ? inviteCode : 'Invitation is closed'}</Typography>
       {button}
     </Container>
   );

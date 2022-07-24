@@ -16,9 +16,7 @@ const fetcher = async (url) => {
 };
 
 const MatchesTable = ({ leagueId, teamId }: Props) => {
-  const apiUri = teamId
-    ? `/api/leagues/${leagueId}/matches?team=${teamId}`
-    : `/api/leagues/${leagueId}/matches`;
+  const apiUri = teamId ? `/api/leagues/${leagueId}/matches?team=${teamId}` : `/api/leagues/${leagueId}/matches`;
   const { data, error } = useSWR(apiUri, fetcher);
 
   if (!data) {
@@ -52,14 +50,7 @@ const MatchesTable = ({ leagueId, teamId }: Props) => {
   return (
     <Container sx={{ marginTop: '2rem' }}>
       <Typography variant="h6">Matches</Typography>
-      <DataGrid
-        autoHeight
-        getRowId={(row) => row.id}
-        columns={columns}
-        rows={rows}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10, 20, 50]}
-      />
+      <DataGrid autoHeight getRowId={(row) => row.id} columns={columns} rows={rows} pageSize={5} rowsPerPageOptions={[5, 10, 20, 50]} />
     </Container>
   );
 };

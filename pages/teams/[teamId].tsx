@@ -16,20 +16,11 @@ const TeamDetailsPage = ({ team }: Props) => {
 
   return (
     <Container>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        sx={{ marginTop: '1rem' }}
-      >
+      <Stack direction="row" justifyContent="space-between" sx={{ marginTop: '1rem' }}>
         <MuiNextLink href={`/leagues/${team?.league}`} underline="none">
           <Button variant="contained">Back to league</Button>
         </MuiNextLink>
-        <ManageTeamButton
-          isOwner={user?.sub === team?.owner}
-          isTeamConfirmed={team?.confirmed}
-          teamId={team?._id}
-          leagueId={team?.league}
-        />
+        <ManageTeamButton isOwner={user?.sub === team?.owner} isTeamConfirmed={team?.confirmed} teamId={team?._id} leagueId={team?.league} />
       </Stack>
       <Container>
         <Stack sx={{ marginTop: '1rem' }}>

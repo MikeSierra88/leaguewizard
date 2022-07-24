@@ -7,10 +7,7 @@ type Props = {
 
 const LoadingScreen = ({ loading }: Props) => {
   return (
-    <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loading}
-    >
+    <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
       <CircularProgress color="inherit" />
     </Backdrop>
   );

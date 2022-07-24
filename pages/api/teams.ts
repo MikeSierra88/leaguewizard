@@ -27,9 +27,7 @@ export default withApiAuthRequired(async (req, res) => {
         if (league.participants.includes(user.sub)) {
           await session.abortTransaction();
           await session.endSession();
-          return res
-            .status(400)
-            .json({ success: false, error: Errors.USER_ALREADY_IN_LEAGUE });
+          return res.status(400).json({ success: false, error: Errors.USER_ALREADY_IN_LEAGUE });
         }
         const newTeam: Team = await TeamModel.create<Team>({
           league: inviteCode.league,

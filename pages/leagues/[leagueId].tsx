@@ -21,28 +21,17 @@ const LeagueDetailsPage = ({ league, teams }: Props) => {
 
   return (
     <Container>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        sx={{ marginTop: '1rem' }}
-      >
+      <Stack direction="row" justifyContent="space-between" sx={{ marginTop: '1rem' }}>
         <MuiNextLink href="/dashboard" underline="none">
           <Button variant="contained">Back</Button>
         </MuiNextLink>
-        <ManageLeagueButton
-          isOwner={user?.sub === league.owner}
-          leagueId={league._id}
-        />
+        <ManageLeagueButton isOwner={user?.sub === league.owner} leagueId={league._id} />
       </Stack>
       <LeagueViewOnlyInfo confirmed={ownTeam?.confirmed} />
       <h1>
         {league.name}
         {user?.sub === league.owner ? (
-          <MuiNextLink
-            href={`/leagues/${league._id}/manage`}
-            underline="none"
-            sx={{ marginLeft: '0.5rem' }}
-          >
+          <MuiNextLink href={`/leagues/${league._id}/manage`} underline="none" sx={{ marginLeft: '0.5rem' }}>
             <EditIcon />
           </MuiNextLink>
         ) : (
@@ -62,25 +51,19 @@ export const getServerSideProps = withPageAuthRequired({
     const { leagueId } = ctx.params;
 
     // fetch league
-    let res = await fetch(
-      `${process.env.API_BASE_URL}api/leagues/${leagueId}`,
-      {
-        headers: {
-          Cookie: ctx.req.headers.cookie,
-        },
-      }
-    );
+    let res = await fetch(`${process.env.API_BASE_URL}api/leagues/${leagueId}`, {
+      headers: {
+        Cookie: ctx.req.headers.cookie,
+      },
+    });
     let data = await res.json();
     const league: League = data.data;
     // fetch teams
-    res = await fetch(
-      `${process.env.API_BASE_URL}api/leagues/${leagueId}/teams`,
-      {
-        headers: {
-          Cookie: ctx.req.headers.cookie,
-        },
-      }
-    );
+    res = await fetch(`${process.env.API_BASE_URL}api/leagues/${leagueId}/teams`, {
+      headers: {
+        Cookie: ctx.req.headers.cookie,
+      },
+    });
     data = await res.json();
     const teams: Team[] = data.data;
 

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
 export enum ConfirmationDialogResponse {
   CONFIRM = 'CONFIRM',
@@ -23,8 +16,7 @@ export interface ConfirmationDialogProps {
 }
 
 const ConfirmationDialog = (props: ConfirmationDialogProps) => {
-  const { onClose, open, title, text, confirmButtonText, cancelButtonText } =
-    props;
+  const { onClose, open, title, text, confirmButtonText, cancelButtonText } = props;
 
   const handleCancel = () => {
     onClose(ConfirmationDialogResponse.CANCEL);
@@ -35,19 +27,13 @@ const ConfirmationDialog = (props: ConfirmationDialogProps) => {
   };
 
   return (
-    <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-      maxWidth="xs"
-      open={open}
-    >
+    <Dialog sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }} maxWidth="xs" open={open}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Typography>{text}</Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleOk}>
-          {confirmButtonText ? confirmButtonText : 'Confirm'}
-        </Button>
+        <Button onClick={handleOk}>{confirmButtonText ? confirmButtonText : 'Confirm'}</Button>
         <Button autoFocus onClick={handleCancel}>
           {cancelButtonText ? cancelButtonText : 'Cancel'}
         </Button>

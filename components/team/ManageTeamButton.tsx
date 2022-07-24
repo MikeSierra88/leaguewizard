@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import MuiNextLink from '@components/navigation/MuiNextLink';
 import { Box, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmationDialog, {
-  ConfirmationDialogResponse,
-} from '@components/core/ConfirmationDialog';
+import ConfirmationDialog, { ConfirmationDialogResponse } from '@components/core/ConfirmationDialog';
 import { useRouter } from 'next/router';
 
 type Props = {
@@ -14,12 +12,7 @@ type Props = {
   leagueId: string,
 };
 
-const ManageTeamButton = ({
-  isOwner,
-  isTeamConfirmed,
-  teamId,
-  leagueId,
-}: Props) => {
+const ManageTeamButton = ({ isOwner, isTeamConfirmed, teamId, leagueId }: Props) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -45,12 +38,7 @@ const ManageTeamButton = ({
   };
 
   const addMatchButton = isTeamConfirmed ? (
-    <MuiNextLink
-      href={`/leagues/${leagueId}/new-match`}
-      variant="button"
-      underline="hover"
-      sx={{ marginInlineEnd: '0.5rem' }}
-    >
+    <MuiNextLink href={`/leagues/${leagueId}/new-match`} variant="button" underline="hover" sx={{ marginInlineEnd: '0.5rem' }}>
       <Button variant="contained">Add new match</Button>
     </MuiNextLink>
   ) : (

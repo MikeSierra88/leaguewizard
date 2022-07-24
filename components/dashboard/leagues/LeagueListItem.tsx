@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardActions, CardContent, Grid, Stack, Tooltip, Typography } from '@mui/material';
 import { League } from '../../../models/LeagueModel';
 import MuiNextLink from '@components/navigation/MuiNextLink';
 import { useUser } from '@auth0/nextjs-auth0';
@@ -42,11 +33,7 @@ const LeagueListItem = ({ league }: Props) => {
           </Stack>
         </CardContent>
         <CardActions>
-          <MuiNextLink
-            href={`leagues/${league._id}`}
-            variant="button"
-            underline="hover"
-          >
+          <MuiNextLink href={`leagues/${league._id}`} variant="button" underline="hover">
             <Button size="small">Details</Button>
           </MuiNextLink>
         </CardActions>

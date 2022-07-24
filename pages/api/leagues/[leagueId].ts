@@ -22,10 +22,7 @@ export default withApiAuthRequired(async (req, res) => {
           return res.status(200).json({ success: true, data: extendedLeague });
         }
         if (league.participants.includes(user.sub)) {
-          const limitedLeague = await League.findById(
-            leagueId,
-            '-inviteCode -owner -participants'
-          );
+          const limitedLeague = await League.findById(leagueId, '-inviteCode -owner -participants');
           return res.status(200).json({ success: true, data: limitedLeague });
         } else {
           return res.status(401).json({ success: false });
@@ -36,11 +33,7 @@ export default withApiAuthRequired(async (req, res) => {
       }
     case 'PATCH':
       try {
-        const updatedLeague = await League.findByIdAndUpdate(
-          leagueId,
-          req.body,
-          { returnDocument: 'after' }
-        );
+        const updatedLeague = await League.findByIdAndUpdate(leagueId, req.body, { returnDocument: 'after' });
         return res.status(200).json({ success: true, data: updatedLeague });
       } catch (error) {
         console.error('Error while processing PATCH', error);

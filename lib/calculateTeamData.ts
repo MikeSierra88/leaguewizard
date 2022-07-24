@@ -9,39 +9,23 @@ export type LeagueTableTeamData = {
   goalDiff: number,
 };
 
-export const calculateTeamData = (
-  team: Team,
-  matches: MatchWithTeamData[]
-): LeagueTableTeamData => {
+export const calculateTeamData = (team: Team, matches: MatchWithTeamData[]): LeagueTableTeamData => {
   const sumOfArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
-  const teamMatches = matches.filter(
-    (match) =>
-      team._id === match.homeTeam._id || team._id === match.awayTeam._id
-  );
+  const teamMatches = matches.filter((match) => team._id === match.homeTeam._id || team._id === match.awayTeam._id);
   const matchesPlayed = teamMatches.length;
   const points = sumOfArray(
     teamMatches.map((match) => {
       if (match.homeScore === match.awayScore) {
         return 1;
       }
-      const ownScore =
-        team._id === match.homeTeam._id ? match.homeScore : match.awayScore;
-      const oppScore =
-        team._id === match.homeTeam._id ? match.awayScore : match.homeScore;
+      const ownScore = team._id === match.homeTeam._id ? match.homeScore : match.awayScore;
+      const oppScore = team._id === match.homeTeam._id ? match.awayScore : match.homeScore;
       return ownScore > oppScore ? 3 : 0;
     })
   );
-  const goalsFor = sumOfArray(
-    teamMatches.map((match) =>
-      team._id === match.homeTeam._id ? match.homeScore : match.awayScore
-    )
-  );
-  const goalsAgainst = sumOfArray(
-    teamMatches.map((match) =>
-      team._id === match.homeTeam._id ? match.awayScore : match.homeScore
-    )
-  );
+  const goalsFor = sumOfArray(teamMatches.map((match) => (team._id === match.homeTeam._id ? match.homeScore : match.awayScore)));
+  const goalsAgainst = sumOfArray(teamMatches.map((match) => (team._id === match.homeTeam._id ? match.awayScore : match.homeScore)));
   const goalDiff = goalsFor - goalsAgainst;
 
   return {

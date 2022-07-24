@@ -19,9 +19,7 @@ const navLinks: NavLink[] = [
   { title: 'logout', path: '/api/auth/logout' },
 ];
 
-const loggedOutNavLinks: NavLink[] = [
-  { title: 'login / sign up', path: '/api/auth/login' },
-];
+const loggedOutNavLinks: NavLink[] = [{ title: 'login / sign up', path: '/api/auth/login' }];
 
 const Header = () => {
   const { user } = useUser();
@@ -31,10 +29,7 @@ const Header = () => {
       <HideOnScroll>
         <AppBar position="fixed">
           <Toolbar>
-            <Container
-              maxWidth="lg"
-              sx={{ display: `flex`, justifyContent: `space-between` }}
-            >
+            <Container maxWidth="lg" sx={{ display: `flex`, justifyContent: `space-between` }}>
               <Typography
                 variant="h6"
                 noWrap

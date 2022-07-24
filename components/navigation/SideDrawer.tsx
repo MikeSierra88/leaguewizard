@@ -10,10 +10,7 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
   });
 
   const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
 
@@ -43,11 +40,7 @@ const SideDrawer = ({ navLinks }: { navLinks: NavLink[] }) => {
             textTransform: `uppercase`,
           }}
         >
-          <MuiNextLink
-            sx={{ color: 'common.white' }}
-            href={path}
-            underline="hover"
-          >
+          <MuiNextLink sx={{ color: 'common.white' }} href={path} underline="hover">
             {title}
           </MuiNextLink>
         </Typography>

@@ -12,12 +12,9 @@ const PendingTeams = ({ pendingTeams }: Props) => {
   const [pendingTeamList, setPendingTeamList] = useState(pendingTeams);
 
   const confirmOrRejectTeam = async (teamId: string, isConfirming: boolean) => {
-    const res = await fetch(
-      `/api/teams/${teamId}/${isConfirming ? 'confirm' : 'reject'}`,
-      {
-        method: 'POST',
-      }
-    );
+    const res = await fetch(`/api/teams/${teamId}/${isConfirming ? 'confirm' : 'reject'}`, {
+      method: 'POST',
+    });
     const data = await res.json();
     if (data.success) {
       setPendingTeamList(pendingTeams.filter((team) => team._id !== teamId));
@@ -27,13 +24,7 @@ const PendingTeams = ({ pendingTeams }: Props) => {
   };
 
   const updateTeamsList = () => {
-    return pendingTeamList.map((team) => (
-      <PendingTeam
-        team={team}
-        key={team._id}
-        confirmOrRejectTeam={confirmOrRejectTeam.bind(this)}
-      />
-    ));
+    return pendingTeamList.map((team) => <PendingTeam team={team} key={team._id} confirmOrRejectTeam={confirmOrRejectTeam.bind(this)} />);
   };
 
   let teamsList = updateTeamsList();
@@ -78,13 +69,7 @@ const PendingTeams = ({ pendingTeams }: Props) => {
   );
 };
 
-const PendingTeam = ({
-  team,
-  confirmOrRejectTeam,
-}: {
-  team: Team,
-  confirmOrRejectTeam: Function,
-}) => {
+const PendingTeam = ({ team, confirmOrRejectTeam }: { team: Team, confirmOrRejectTeam: Function }) => {
   const confirmTeam = () => {
     return confirmOrRejectTeam(team._id, true);
   };
@@ -103,20 +88,10 @@ const PendingTeam = ({
       </Grid>
       <Grid item xs={4}>
         <Stack direction="row" spacing={1} justifyContent="center">
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            onClick={confirmTeam}
-          >
+          <Button variant="contained" color="success" size="small" onClick={confirmTeam}>
             <CheckIcon />
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={rejectTeam}
-          >
+          <Button variant="contained" color="error" size="small" onClick={rejectTeam}>
             <ClearIcon />
           </Button>
         </Stack>

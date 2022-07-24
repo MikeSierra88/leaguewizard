@@ -12,10 +12,7 @@ export default withApiAuthRequired(async (req, res) => {
       try {
         const team = await TeamModel.findById<Team>(teamId);
         const league = await LeagueModel.findById(team.league);
-        if (
-          league.owner === user.sub ||
-          league.participants.includes(user.sub)
-        ) {
+        if (league.owner === user.sub || league.participants.includes(user.sub)) {
           return res.status(200).json({ success: true, data: team });
         }
         return res.status(401).json({ success: false });

@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import React from 'react';
 
 export interface AlertDialogProps {
@@ -24,11 +17,7 @@ const AlertDialog = (props: AlertDialogProps) => {
   };
 
   return (
-    <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-      maxWidth="xs"
-      open={open}
-    >
+    <Dialog sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }} maxWidth="xs" open={open}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Typography>{text}</Typography>

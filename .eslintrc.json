@@ -26,7 +26,11 @@
         "prettier"
     ],
     "rules": {
-        "prettier/prettier": ["error", {"singleQuote": true, "parser": "flow"}]
+        "prettier/prettier": ["error", {
+            "singleQuote": true,
+            "parser": "flow",
+            "printWidth": 160
+        }]
     },
     "settings": {
         "react": {

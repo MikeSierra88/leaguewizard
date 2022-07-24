@@ -1,9 +1,7 @@
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import League from '../../../../models/LeagueModel';
 import dbConnect from '../../../../lib/dbConnect';
-import InviteCodeModel, {
-  InviteCode,
-} from '../../../../models/InviteCodeModel';
+import InviteCodeModel, { InviteCode } from '../../../../models/InviteCodeModel';
 
 export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
@@ -18,11 +16,7 @@ export default withApiAuthRequired(async (req, res) => {
     while (!foundValidCode) {
       code = '';
       for (code; code.length < 7; ) {
-        code =
-          code +
-          '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'[
-            (Math.random() * 60) | 0
-          ];
+        code = code + '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'[(Math.random() * 60) | 0];
       }
       const existingCodes = await InviteCodeModel.find<InviteCode>({ code });
       // InviteCode.find() returns an empty array if didn't find anything

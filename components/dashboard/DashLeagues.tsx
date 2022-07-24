@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, Container, Grid, Typography } from '@mui/material';
 import LeagueListItem from '@components/dashboard/leagues/LeagueListItem';
 import { League } from '../../models/LeagueModel';
 
