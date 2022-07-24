@@ -5,6 +5,9 @@ import LeagueTableRow from '@components/league/league-table/LeagueTableRow';
 export type LeagueTableRowData = {
   place: number,
   teamId: string,
+  leagueId: string,
+  isOwner: boolean,
+  isConfirmed: boolean,
   teamName: string,
   fifaTeam: string,
   matchesPlayed: number,

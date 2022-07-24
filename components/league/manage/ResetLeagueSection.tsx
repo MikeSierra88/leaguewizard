@@ -90,7 +90,13 @@ const ResetLeagueSection = ({ leagueId }: Props) => {
             Error while deleting matches - please try again.
           </Alert>
         </Collapse>
-        <LoadingButton variant="contained" color="error" sx={{ marginTop: '1rem' }} loading={loading} onClick={() => setConfirmDialogOpen(true)}>
+        <LoadingButton
+          variant="contained"
+          color="error"
+          sx={{ marginTop: '1rem' }}
+          loading={loading}
+          onClick={() => setConfirmDialogOpen(true)}
+        >
           Reset league
         </LoadingButton>
       </Stack>

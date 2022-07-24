@@ -20,7 +20,12 @@ const TeamDetailsPage = ({ team }: Props) => {
         <MuiNextLink href={`/leagues/${team?.league}`} underline="none">
           <Button variant="contained">Back to league</Button>
         </MuiNextLink>
-        <ManageTeamButton isOwner={user?.sub === team?.owner} isTeamConfirmed={team?.confirmed} teamId={team?._id} leagueId={team?.league} />
+        <ManageTeamButton
+          isOwner={user?.sub === team?.owner}
+          isTeamConfirmed={team?.confirmed}
+          teamId={team?._id}
+          leagueId={team?.league}
+        />
       </Stack>
       <Container>
         <Stack sx={{ marginTop: '1rem' }}>

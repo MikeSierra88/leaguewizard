@@ -47,8 +47,8 @@ const DeleteUserSection = () => {
         Delete user
       </Typography>
       <Typography textAlign="center" sx={{ mb: 2 }}>
-        You can delete all your stored data, which includes every league you own, every team you created and every match you recorded. This cannot be undone,
-        the data will be lost forever.
+        You can delete all your stored data, which includes every league you own, every team you created and every match you recorded. This
+        cannot be undone, the data will be lost forever.
       </Typography>
       <Collapse in={failureAlertOpen}>
         <Alert

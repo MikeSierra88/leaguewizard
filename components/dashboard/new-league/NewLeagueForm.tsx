@@ -89,7 +89,13 @@ const DashNewLeagueForm = () => {
         <Typography>Your team details</Typography>
         <FormControl error={!!errors.playerName} required>
           <InputLabel htmlFor="league-name">Your nickname</InputLabel>
-          <Input id="team-nickname" aria-describedby="team-nickname-helper" required error={!!errors.playerName} {...register('playerName')} />
+          <Input
+            id="team-nickname"
+            aria-describedby="team-nickname-helper"
+            required
+            error={!!errors.playerName}
+            {...register('playerName')}
+          />
           <FormHelperText id="team-nickname-helper" error={!!errors.playerName}>
             {errors.playerName ? errors.playerName.message : 'Enter your nickname to use for this league.'}
           </FormHelperText>

@@ -8,7 +8,16 @@ export const NextLinkComposed = React.forwardRef(function MuiNextLink(props: any
   const { to, linkAs, href, replace, scroll, passHref, shallow, prefetch, locale, ...other } = props;
 
   return (
-    <NextLink href={to} prefetch={prefetch} as={linkAs} replace={replace} scroll={scroll} shallow={shallow} passHref={passHref} locale={locale}>
+    <NextLink
+      href={to}
+      prefetch={prefetch}
+      as={linkAs}
+      replace={replace}
+      scroll={scroll}
+      shallow={shallow}
+      passHref={passHref}
+      locale={locale}
+    >
       <a ref={ref} {...other} />
     </NextLink>
   );
