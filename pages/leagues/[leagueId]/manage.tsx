@@ -8,6 +8,7 @@ import { League } from '../../../models/LeagueModel';
 import { Team } from '../../../models/TeamModel';
 import PendingTeams from '@components/league/manage/PendingTeams';
 import ResetLeagueSection from '@components/league/manage/ResetLeagueSection';
+import DeleteLeagueSection from '@components/league/manage/DeleteLeagueSection';
 
 type Props = {
   league: League,
@@ -57,6 +58,7 @@ const ManageLeaguePage = ({ league, teams }: Props) => {
         {/* Reset */}
         <ResetLeagueSection leagueId={league._id} />
         {/* Delete */}
+        <DeleteLeagueSection leagueId={league._id} />
       </Container>
     </Container>
   ) : (
