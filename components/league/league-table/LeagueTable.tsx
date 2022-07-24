@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import LeagueTableRow from '@components/league/league-table/LeagueTableRow';
 
 export type LeagueTableRowData = {
@@ -27,9 +19,7 @@ type Props = {
 };
 
 const LeagueTable = ({ rowData }: Props) => {
-  const rows = rowData.map((props: LeagueTableRowData) => (
-    <LeagueTableRow key={props.teamId} {...props} />
-  ));
+  const rows = rowData.map((props: LeagueTableRowData) => <LeagueTableRow key={props.teamId} {...props} />);
 
   return (
     <TableContainer component={Paper}>
@@ -37,12 +27,8 @@ const LeagueTable = ({ rowData }: Props) => {
         <TableHead>
           <TableRow>
             <TableCell>Place</TableCell>
-            <TableCell sx={{ width: '1px', whiteSpace: 'nowrap' }}>
-              Name
-            </TableCell>
-            <TableCell sx={{ width: '1px', whiteSpace: 'nowrap' }}>
-              In-game team
-            </TableCell>
+            <TableCell sx={{ width: '1px', whiteSpace: 'nowrap' }}>Name</TableCell>
+            <TableCell sx={{ width: '1px', whiteSpace: 'nowrap' }}>In-game team</TableCell>
             <TableCell align="right">Pld</TableCell>
             <TableCell align="right">GF</TableCell>
             <TableCell align="right">GA</TableCell>

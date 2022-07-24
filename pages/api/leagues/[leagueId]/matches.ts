@@ -3,6 +3,7 @@ import dbConnect from '../../../../lib/dbConnect';
 import LeagueModel, { League } from '../../../../models/LeagueModel';
 import MatchModel, { Match } from '../../../../models/MatchModel';
 import mongoose from 'mongoose';
+import Errors from '../../../../models/Errors';
 
 export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
@@ -15,10 +16,7 @@ export default withApiAuthRequired(async (req, res) => {
     case 'GET':
       try {
         const league = await LeagueModel.findById(leagueId);
-        if (
-          league.owner === user.sub ||
-          league.participants.includes(user.sub)
-        ) {
+        if (league.owner === user.sub || league.participants.includes(user.sub)) {
           let matches: Match[];
           if (team) {
             matches = await MatchModel.find<Match>({
@@ -28,9 +26,7 @@ export default withApiAuthRequired(async (req, res) => {
               .populate('homeTeam')
               .populate('awayTeam');
           } else {
-            matches = await MatchModel.find<Match>({ league: leagueId })
-              .populate('homeTeam')
-              .populate('awayTeam');
+            matches = await MatchModel.find<Match>({ league: leagueId }).populate('homeTeam').populate('awayTeam');
           }
           return res.status(200).json({ success: true, data: matches });
         } else {
@@ -41,16 +37,13 @@ export default withApiAuthRequired(async (req, res) => {
         return res.status(400).json({ success: false, error });
       }
     case 'POST':
-      const session = await connection.startSession();
+      const postSession = await connection.startSession();
       try {
-        await session.startTransaction();
+        await postSession.startTransaction();
         const league = await LeagueModel.findById<League>(leagueId);
-        if (
-          !league.participants.includes(user.sub) &&
-          league.owner !== user.sub
-        ) {
-          await session.abortTransaction();
-          await session.endSession();
+        if (!league.participants.includes(user.sub) && league.owner !== user.sub) {
+          await postSession.abortTransaction();
+          await postSession.endSession();
           return res.status(401).json({ success: false });
         }
         const newMatch: Match = {
@@ -64,13 +57,36 @@ export default withApiAuthRequired(async (req, res) => {
           newMatch.confirmed = true;
         }
         const newMatchInDB = await MatchModel.create<Match>(newMatch);
-        await session.commitTransaction();
-        await session.endSession();
+        await postSession.commitTransaction();
+        await postSession.endSession();
         return res.status(201).json({ success: true, data: newMatchInDB });
       } catch (error) {
         console.error('Error while processing POST', error);
-        await session.abortTransaction();
-        await session.endSession();
+        await postSession.abortTransaction();
+        await postSession.endSession();
+        return res.status(400).json({ success: false, error });
+      }
+    case 'DELETE':
+      if (!leagueId) {
+        return res.status(400).json({ success: false, error: Errors.NO_LEAGUE_ID_PROVIDED });
+      }
+      const deleteSession = await connection.startSession();
+      try {
+        await deleteSession.startTransaction();
+        const league = await LeagueModel.findById<League>(leagueId);
+        if (!league || league.owner !== user.sub) {
+          await deleteSession.abortTransaction();
+          await deleteSession.endSession();
+          return res.status(401).json({ success: false });
+        }
+        await MatchModel.deleteMany({ league: leagueId });
+        await deleteSession.commitTransaction();
+        await deleteSession.endSession();
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error while processing DELETE', error);
+        await deleteSession.abortTransaction();
+        await deleteSession.endSession();
         return res.status(400).json({ success: false, error });
       }
     default:

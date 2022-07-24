@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { Team } from '../../../models/TeamModel';
 import useSWR from 'swr';
-import {
-  calculateTeamData,
-  teamDataComparator,
-} from '../../../lib/calculateTeamData';
+import { calculateTeamData, teamDataComparator } from '../../../lib/calculateTeamData';
 import LeagueTable from '@components/league/league-table/LeagueTable';
 import { useUser } from '@auth0/nextjs-auth0';
 
@@ -32,9 +29,11 @@ const LeagueTableContainer = ({ leagueId, teams }: Props) => {
               const teamData = calculateTeamData(team, data.data);
               return {
                 teamId: team._id,
+                leagueId: team.league,
                 teamName: team.name,
                 fifaTeam: team.fifaTeam,
                 isOwner: user?.sub === team.owner,
+                isConfirmed: team.confirmed,
                 ...teamData,
               };
             })
