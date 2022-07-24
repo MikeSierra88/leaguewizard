@@ -29,7 +29,7 @@
         "prettier/prettier": ["error", {
             "singleQuote": true,
             "parser": "flow",
-            "printWidth": 160
+            "printWidth": 140
         }]
     },
     "settings": {

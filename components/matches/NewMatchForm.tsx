@@ -143,7 +143,14 @@ const NewMatchForm = ({ league, teams }: Props) => {
             name="formHomeTeam"
             rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
-              <Select labelId="new-match-home-team-label" id="new-match-home-team" label="Home team" autoWidth value={value} onChange={onChange}>
+              <Select
+                labelId="new-match-home-team-label"
+                id="new-match-home-team"
+                label="Home team"
+                autoWidth
+                value={value}
+                onChange={onChange}
+              >
                 {teamDropdownItems}
               </Select>
             )}
@@ -158,7 +165,14 @@ const NewMatchForm = ({ league, teams }: Props) => {
             name="formHomeTeam"
             rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
-              <Select labelId="new-match-home-fifa-team-label" id="new-match-home-fifa-team" label="In-game team" autoWidth value={value} onChange={onChange}>
+              <Select
+                labelId="new-match-home-fifa-team-label"
+                id="new-match-home-fifa-team"
+                label="In-game team"
+                autoWidth
+                value={value}
+                onChange={onChange}
+              >
                 {fifaTeamDropdownItems}
               </Select>
             )}
@@ -190,7 +204,14 @@ const NewMatchForm = ({ league, teams }: Props) => {
             name="formAwayTeam"
             rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
-              <Select labelId="new-match-away-team-label" id="new-match-away-team" label="Away team" autoWidth value={value} onChange={onChange}>
+              <Select
+                labelId="new-match-away-team-label"
+                id="new-match-away-team"
+                label="Away team"
+                autoWidth
+                value={value}
+                onChange={onChange}
+              >
                 {teamDropdownItems}
               </Select>
             )}
@@ -205,7 +226,14 @@ const NewMatchForm = ({ league, teams }: Props) => {
             name="formAwayTeam"
             rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
-              <Select labelId="new-match-away-fifa-team-label" id="new-match-away-fifa-team" label="In-game team" autoWidth value={value} onChange={onChange}>
+              <Select
+                labelId="new-match-away-fifa-team-label"
+                id="new-match-away-fifa-team"
+                label="In-game team"
+                autoWidth
+                value={value}
+                onChange={onChange}
+              >
                 {fifaTeamDropdownItems}
               </Select>
             )}

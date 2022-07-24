@@ -45,7 +45,9 @@ const DeleteLeagueSection = ({ leagueId }: Props) => {
         <Typography variant="h6" textAlign="center">
           Delete league
         </Typography>
-        <Typography textAlign="center">Deletes league, including all teams and all recorded matches. This action cannot be undone.</Typography>
+        <Typography textAlign="center">
+          Deletes league, including all teams and all recorded matches. This action cannot be undone.
+        </Typography>
         <Collapse in={failureAlertOpen}>
           <Alert
             severity="error"
@@ -66,7 +68,13 @@ const DeleteLeagueSection = ({ leagueId }: Props) => {
             Error while deleting league - please try again.
           </Alert>
         </Collapse>
-        <LoadingButton variant="contained" color="error" sx={{ marginTop: '1rem' }} loading={loading} onClick={() => setConfirmDialogOpen(true)}>
+        <LoadingButton
+          variant="contained"
+          color="error"
+          sx={{ marginTop: '1rem' }}
+          loading={loading}
+          onClick={() => setConfirmDialogOpen(true)}
+        >
           Delete League
         </LoadingButton>
       </Stack>

@@ -38,7 +38,13 @@ const ManageParticipantsTableRow = ({ team, removeTeamFromList }: Props) => {
         <Typography>{team.fifaTeam}</Typography>
       </Grid>
       <Grid item xs>
-        <LoadingButton startIcon={<DeleteIcon />} variant="contained" color="error" loading={loading} onClick={() => setConfirmDialogOpen(true)}>
+        <LoadingButton
+          startIcon={<DeleteIcon />}
+          variant="contained"
+          color="error"
+          loading={loading}
+          onClick={() => setConfirmDialogOpen(true)}
+        >
           Delete team
         </LoadingButton>
       </Grid>
