@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Button, Typography } from '@mui/material';
 import MuiNextLink from '@components/navigation/MuiNextLink';
 import { useUser } from '@auth0/nextjs-auth0';
+import theme from '../styles/theme';
 
 type Props = {
   imgSrc: string,
@@ -30,8 +31,13 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }: Props) => {
       container
       sx={{
         position: `relative`,
-        height: `100vh`,
-        width: `100vw`,
+        [`${theme.breakpoints.between('xs', 'sm')} and (orientation: landscape)`]: {
+          height: `calc(100vh - 48px)`,
+        },
+        [theme.breakpoints.up('sm')]: {
+          height: `calc(100vh - 64px)`,
+        },
+        height: `calc(100vh - 56px)`,
         overflow: `hidden`,
       }}
     >
@@ -76,7 +82,6 @@ const Landing = ({ imgSrc, imgAlt, title, subtitle }: Props) => {
         >
           {subtitle}
         </Typography>
-        {/*Todo: This button isn't working for some reason.*/}
         <MuiNextLink
           href={landingButton.path}
           variant="button"
