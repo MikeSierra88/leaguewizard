@@ -15,7 +15,7 @@ const InviteCodeSchema = new Schema<InviteCodeDocument, InviteCodeModel>({
 export interface InviteCode {
   _id?: string;
   code: string;
-  league: string;
+  league: string | Schema.Types.ObjectId;
 }
 
 interface InviteCodeBaseDocument extends InviteCode, Document {
@@ -26,5 +26,4 @@ export interface InviteCodeDocument extends InviteCodeBaseDocument {}
 
 export interface InviteCodeModel extends Model<InviteCodeDocument> {}
 
-export default models.InviteCode ||
-  model<InviteCodeDocument, InviteCodeModel>('InviteCode', InviteCodeSchema);
+export default models.InviteCode || model<InviteCodeDocument, InviteCodeModel>('InviteCode', InviteCodeSchema);

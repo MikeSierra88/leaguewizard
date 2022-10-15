@@ -36,22 +36,11 @@ const MatchSchema = new Schema<MatchDocument, MatchModel>({
 });
 
 export interface Match {
-  _id?: string;
-  league: string;
-  homeTeam: string;
+  _id?: string | Schema.Types.ObjectId;
+  league: string | Schema.Types.ObjectId;
+  homeTeam: string | Schema.Types.ObjectId;
   homeScore: number;
-  awayTeam: string;
-  awayScore: number;
-  createdDate?: Date;
-  confirmed?: boolean;
-}
-
-export interface MatchWithTeamData {
-  _id?: string;
-  league: string;
-  homeTeam: Team;
-  homeScore: number;
-  awayTeam: Team;
+  awayTeam: string | Schema.Types.ObjectId;
   awayScore: number;
   createdDate?: Date;
   confirmed?: boolean;
@@ -65,5 +54,4 @@ export interface MatchDocument extends MatchBaseDocument {}
 
 export interface MatchModel extends Model<MatchDocument> {}
 
-export default models.Match ||
-  model<MatchDocument, MatchModel>('Match', MatchSchema);
+export default models.Match || model<MatchDocument, MatchModel>('Match', MatchSchema);

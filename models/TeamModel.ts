@@ -30,7 +30,7 @@ const TeamSchema = new Schema<TeamDocument, TeamModel>({
 
 export interface Team {
   _id?: string;
-  league: string;
+  league: string | Schema.Types.ObjectId;
   name: string;
   fifaTeam: string;
   owner: string;
@@ -46,5 +46,4 @@ export interface TeamDocument extends TeamBaseDocument {}
 
 export interface TeamModel extends Model<TeamDocument> {}
 
-export default models.Team ||
-  model<TeamDocument, TeamModel>('Team', TeamSchema);
+export default models.Team || model<TeamDocument, TeamModel>('Team', TeamSchema);

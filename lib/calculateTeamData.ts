@@ -1,5 +1,5 @@
 import { Team } from '../models/TeamModel';
-import { MatchWithTeamData } from '../models/MatchModel';
+import { MatchWithTeamData } from '../services/matches.service';
 
 export type LeagueTableTeamData = {
   matchesPlayed: number,
@@ -10,6 +10,8 @@ export type LeagueTableTeamData = {
 };
 
 export const calculateTeamData = (team: Team, matches: MatchWithTeamData[]): LeagueTableTeamData => {
+  if (!team || !matches) return null;
+
   const sumOfArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
   const teamMatches = matches.filter((match) => team._id === match.homeTeam._id || team._id === match.awayTeam._id);

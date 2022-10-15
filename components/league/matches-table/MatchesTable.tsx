@@ -1,9 +1,9 @@
 import React from 'react';
 import useSWR from 'swr';
-import { MatchWithTeamData } from '../../../models/MatchModel';
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DateTime } from 'luxon';
+import { MatchWithTeamData } from '../../../services/matches.service';
 
 type Props = {
   leagueId: string,
