@@ -1,45 +1,50 @@
-import dbConnect from '../../lib/dbConnect';
-import LeagueModel from '../../models/LeagueModel';
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import mongoose from 'mongoose';
-import TeamModel from '../../models/TeamModel';
+import { getPrisma } from '../../prisma/prisma.service';
 
 export default withApiAuthRequired(async function handler(req, res) {
   const { method } = req;
   const { user } = getSession(req, res);
 
-  const connection: mongoose.Connection = await dbConnect();
+  const prisma = getPrisma();
 
   switch (method) {
     case 'GET':
       try {
-        const leagues = await LeagueModel.find(
-          {
-            participants: { $all: [user.sub] },
+        const leagues = await prisma.league.findMany({
+          where: {
+            participants: { contains: user.sub },
           },
-          '-inviteCode -participants'
-        );
+          select: {
+            id: true,
+            name: true,
+            owner: true,
+            createdDate: true,
+          },
+        });
+        console.log('leagues from prisma', leagues);
         return res.status(200).json({ success: true, data: leagues });
       } catch (error) {
         console.error('Error while processing GET', error);
         return res.status(400).json({ success: false, error });
       }
     case 'POST':
-      const session = await connection.startSession();
       try {
-        await session.startTransaction();
-        const league = await LeagueModel.create(req.body.league);
-        const team = await TeamModel.create({
-          ...req.body.team,
-          league: league._id,
-          confirmed: true,
+        const createLeague = await prisma.league.create({
+          data: {
+            ...req.body.league,
+            teams: {
+              create: [
+                {
+                  ...req.body.team,
+                  confirmed: true,
+                },
+              ],
+            },
+          },
         });
-        await session.commitTransaction();
-        await session.endSession();
-        return res.status(201).json({ success: true, data: { league, team } });
+        console.log('league created', createLeague);
+        return res.status(201).json({ success: true, data: { league: { ...createLeague } } });
       } catch (error) {
-        await session.abortTransaction();
-        await session.endSession();
         return res.status(400).json({ success: false, error });
       }
     default:

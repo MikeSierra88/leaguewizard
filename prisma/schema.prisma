@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model League {
+  id           String      @id @default(uuid())
+  name         String
+  owner        String
+  participants String
+  createdDate  DateTime    @default(now())
+  teams        Team[]      @relation("LeagueTeams")
+  matches      Match[]     @relation("LeagueMatches")
+  inviteCode   InviteCode? @relation(fields: [inviteCodeId], references: [code])
+  inviteCodeId String?
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  owner       String
+  name        String
+  fifaTeam    String
+  createdDate DateTime @default(now())
+  confirmed   Boolean  @default(false)
+  homeMatches Match[]  @relation("HomeMatches")
+  awayMatches Match[]  @relation("AwayMatches")
+  league      League   @relation(name: "LeagueTeams", fields: [leagueId], references: [id])
+  leagueId    String
+}
+
+model Match {
+  id          String   @id @default(uuid())
+  homeScore   Int
+  awayScore   Int
+  createdDate DateTime @default(now())
+  confirmed   Boolean  @default(false)
+  league      League   @relation(name: "LeagueMatches", fields: [leagueId], references: [id])
+  leagueId    String
+  homeTeam    Team     @relation(name: "HomeMatches", fields: [homeTeamId], references: [id])
+  homeTeamId  String
+  awayTeam    Team     @relation(name: "AwayMatches", fields: [awayTeamId], references: [id])
+  awayTeamId  String
+}
+
+model InviteCode {
+  code     String   @id
+  leagueId String   @unique
+  league   League[]
+}

@@ -54,7 +54,7 @@ const DashNewLeagueForm = () => {
             name: values.leagueName,
             createdDate: new Date(),
             owner: user.sub,
-            participants: [user.sub],
+            participants: user.sub,
           },
           team: {
             name: values.playerName,
@@ -68,7 +68,7 @@ const DashNewLeagueForm = () => {
       console.log('Created league', jsonResponse);
       setLoading(false);
       if (jsonResponse.success) {
-        setNewLeagueId(jsonResponse.data.league._id);
+        setNewLeagueId(jsonResponse.data.league.id);
       }
     } catch (err) {
       setLoading(false);

@@ -7,10 +7,10 @@ type Props = {
 };
 
 const InviteCodeManager = ({ league }: Props) => {
-  const [inviteCode, setInviteCode] = useState(league.inviteCode?.code);
+  const [inviteCode, setInviteCode] = useState(league.inviteCodeId);
 
   const getInviteCode = async () => {
-    const response = await fetch(`/api/leagues/${league._id}/invite-code`);
+    const response = await fetch(`/api/leagues/${league.id}/invite-code`);
     const inviteCode = await response.json();
     if (inviteCode.data) {
       setInviteCode(inviteCode.data);
@@ -18,7 +18,7 @@ const InviteCodeManager = ({ league }: Props) => {
   };
 
   const removeInviteCode = async () => {
-    await fetch(`/api/leagues/${league._id}/invite-code`, {
+    await fetch(`/api/leagues/${league.id}/invite-code`, {
       method: 'DELETE',
     });
     setInviteCode(null);

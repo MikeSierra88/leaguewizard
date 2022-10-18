@@ -1,32 +1,32 @@
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import dbConnect from '../../../lib/dbConnect';
-import LeagueModel from '../../../models/LeagueModel';
-import InviteCode from '../../../models/InviteCodeModel';
-import mongoose from 'mongoose';
 import Errors from '../../../models/Errors';
-import MatchModel from '../../../models/MatchModel';
-import TeamModel from '../../../models/TeamModel';
+import { getPrisma } from '../../../prisma/prisma.service';
+import { queryToString } from '../../../lib/queryUtils';
 
 export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
-  const { leagueId } = req.query;
+  const leagueId = queryToString(req.query.leagueId);
   const { user } = getSession(req, res);
 
-  const connection: mongoose.Connection = await dbConnect();
+  const prisma = getPrisma();
 
   switch (method) {
     case 'GET':
       try {
-        const league = await LeagueModel.findById(leagueId);
+        const league = await prisma.league.findUnique({ where: { id: leagueId } });
+        console.log(league);
         if (league.owner === user.sub) {
-          const extendedLeague = await league.populate({
-            path: 'inviteCode',
-            model: InviteCode,
-          });
-          return res.status(200).json({ success: true, data: extendedLeague });
+          return res.status(200).json({ success: true, data: league });
         }
         if (league.participants.includes(user.sub)) {
-          const limitedLeague = await LeagueModel.findById(leagueId, '-inviteCode -owner -participants');
+          const limitedLeague = await prisma.league.findUnique({
+            where: { id: leagueId },
+            select: {
+              id: true,
+              name: true,
+              createdDate: true,
+            },
+          });
           return res.status(200).json({ success: true, data: limitedLeague });
         } else {
           return res.status(401).json({ success: false });
@@ -37,7 +37,10 @@ export default withApiAuthRequired(async (req, res) => {
       }
     case 'PATCH':
       try {
-        const updatedLeague = await LeagueModel.findByIdAndUpdate(leagueId, req.body, { returnDocument: 'after' });
+        const updatedLeague = await prisma.league.update({
+          where: { id: leagueId },
+          data: { ...req.body },
+        });
         return res.status(200).json({ success: true, data: updatedLeague });
       } catch (error) {
         console.error('Error while processing PATCH', error);
@@ -47,24 +50,25 @@ export default withApiAuthRequired(async (req, res) => {
       if (!leagueId) {
         return res.status(400).json({ success: false, error: Errors.NO_LEAGUE_ID_PROVIDED });
       }
-      const deleteSession = await connection.startSession();
       try {
-        await deleteSession.startTransaction();
-        const league = await LeagueModel.findById(leagueId);
+        const league = await prisma.league.findUnique({ where: { id: leagueId } });
         if (league.owner !== user.sub) {
           return res.status(401).json({ success: false });
         }
-        await MatchModel.deleteMany({ league: leagueId });
-        await TeamModel.deleteMany({ league: leagueId });
-        await InviteCode.deleteMany({ league: leagueId });
-        await LeagueModel.findByIdAndDelete(leagueId);
-        await deleteSession.commitTransaction();
-        await deleteSession.endSession();
+        await prisma.$transaction([
+          prisma.inviteCode.deleteMany({ where: { leagueId: league.id } }),
+          prisma.league.update({
+            where: { id: leagueId },
+            data: {
+              matches: { deleteMany: {} },
+              teams: { deleteMany: {} },
+            },
+          }),
+          prisma.league.delete({ where: { id: leagueId } }),
+        ]);
         return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error while processing DELETE', error);
-        await deleteSession.abortTransaction();
-        await deleteSession.endSession();
         return res.status(400).json({ success: false, error });
       }
     default:

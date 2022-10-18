@@ -1,9 +1,9 @@
 import React from 'react';
 import useSWR from 'swr';
-import { MatchWithTeamData } from '../../../models/MatchModel';
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DateTime } from 'luxon';
+import { MatchWithTeamData } from '../../../services/matches.service';
 
 type Props = {
   leagueId: string,
@@ -37,7 +37,7 @@ const MatchesTable = ({ leagueId, teamId }: Props) => {
   ];
 
   const rows = data.data.map((match: MatchWithTeamData) => ({
-    id: match._id,
+    id: match.id,
     date: DateTime.fromISO(match.createdDate).toISODate(),
     homeTeam: match.homeTeam.name,
     homeFifaTeam: match.homeTeam.fifaTeam,

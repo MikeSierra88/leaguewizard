@@ -1,39 +1,42 @@
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { ClientSession, Connection } from 'mongoose';
-import dbConnect from '../../../../lib/dbConnect';
-import LeagueModel, { League } from '../../../../models/LeagueModel';
-import TeamModel, { Team } from '../../../../models/TeamModel';
+import { getPrisma } from '../../../../prisma/prisma.service';
+import { removeUserFromParticipants } from '../../../../lib/calculateTeamData';
+import { queryToString } from '../../../../lib/queryUtils';
 
 export default withApiAuthRequired(async (req, res) => {
   const { method } = req;
-  const { teamId } = req.query;
+  const teamId = queryToString(req.query.teamId);
   const { user } = getSession(req, res);
 
-  const connection: Connection = await dbConnect();
-  let session: ClientSession;
+  const prisma = getPrisma();
 
   switch (method) {
     case 'POST':
-      session = await connection.startSession();
       try {
-        await session.startTransaction();
-        const team = await TeamModel.findById<Team>(teamId);
-        const league = await LeagueModel.findById<League>(team.league);
-        if (user.sub !== league.owner) {
-          await session.abortTransaction();
-          await session.endSession();
+        const team = await prisma.team.findUnique({
+          where: { id: teamId },
+          include: { league: true },
+        });
+        if (user.sub !== team.league.owner) {
           return res.status(401).json({ success: false });
         }
-        await TeamModel.findByIdAndDelete(teamId);
-        await LeagueModel.findByIdAndUpdate(league._id, {
-          $pull: { participants: team.owner },
-        });
-        await session.commitTransaction();
-        await session.endSession();
+        await prisma.$transaction([
+          prisma.team.update({
+            where: { id: teamId },
+            data: {
+              homeMatches: { deleteMany: {} },
+              awayMatches: { deleteMany: {} },
+            },
+          }),
+          prisma.team.delete({ where: { id: teamId } }),
+          prisma.league.update({
+            where: { id: team.league.id },
+            data: { participants: removeUserFromParticipants(team.league.participants, user.sub) },
+          }),
+        ]);
         return res.status(200).json({ success: true });
       } catch (e) {
-        await session.abortTransaction();
-        await session.endSession();
+        console.error(e);
         return res.status(400).json({ success: false, e });
       }
     default:

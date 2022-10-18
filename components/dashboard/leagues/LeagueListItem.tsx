@@ -33,7 +33,7 @@ const LeagueListItem = ({ league }: Props) => {
           </Stack>
         </CardContent>
         <CardActions>
-          <MuiNextLink href={`leagues/${league._id}`} variant="button" underline="hover">
+          <MuiNextLink href={`leagues/${league.id}`} variant="button" underline="hover">
             <Button size="small">Details</Button>
           </MuiNextLink>
         </CardActions>

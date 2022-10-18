@@ -43,7 +43,7 @@ const ChangeLeagueNameSection = ({ league, saveLeagueName }: Props) => {
   const onSubmitHandler: SubmitHandler<ChangeNameInput> = async (values) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/leagues/${league._id}`, {
+      const res = await fetch(`/api/leagues/${league.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

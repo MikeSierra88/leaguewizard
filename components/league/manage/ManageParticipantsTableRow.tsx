@@ -18,19 +18,19 @@ const ManageParticipantsTableRow = ({ team, removeTeamFromList }: Props) => {
     setConfirmDialogOpen(false);
     if (dialogResponse === ConfirmationDialogResponse.CONFIRM) {
       setLoading(true);
-      const response = await fetch(`/api/teams/${team._id}`, {
+      const response = await fetch(`/api/teams/${team.id}`, {
         method: 'DELETE',
       });
       setLoading(false);
       const jsonRes = await response.json();
       if (jsonRes.success) {
-        removeTeamFromList(team._id);
+        removeTeamFromList(team.id);
       }
     }
   };
 
   return (
-    <Grid key={team._id} container spacing={1} sx={{ mb: 1 }}>
+    <Grid key={team.id} container spacing={1} sx={{ mb: 1 }}>
       <Grid item xs={5}>
         <Typography>{team.name}</Typography>
       </Grid>

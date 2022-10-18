@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { Team } from '../../../models/TeamModel';
-import useSWR from 'swr';
 import { calculateTeamData, teamDataComparator } from '../../../lib/calculateTeamData';
 import LeagueTable from '@components/league/league-table/LeagueTable';
 import { useUser } from '@auth0/nextjs-auth0';
+import { MatchWithTeamData } from '../../../services/matches.service';
 
 type Props = {
   leagueId: string,
   teams: Array<Team>,
+  matches: Array<MatchWithTeamData>,
 };
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-  return res.json();
-};
-
-const LeagueTableContainer = ({ leagueId, teams }: Props) => {
-  const { data, error } = useSWR(`/api/leagues/${leagueId}/matches`, fetcher);
+const LeagueTableContainer = ({ leagueId, teams, matches }: Props) => {
   const { user } = useUser();
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(
-      teams && data
+      matches
         ? teams
             .map((team) => {
-              const teamData = calculateTeamData(team, data.data);
+              const teamData = calculateTeamData(team, matches);
               return {
-                teamId: team._id,
-                leagueId: team.league,
+                teamId: team.id,
+                leagueId: leagueId,
                 teamName: team.name,
                 fifaTeam: team.fifaTeam,
                 isOwner: user?.sub === team.owner,
@@ -46,14 +41,7 @@ const LeagueTableContainer = ({ leagueId, teams }: Props) => {
             })
         : []
     );
-  }, [teams, data]);
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  }, [matches]);
 
   return (
     <Container sx={{ marginTop: '2rem' }}>
