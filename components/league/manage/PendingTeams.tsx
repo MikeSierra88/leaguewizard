@@ -17,14 +17,14 @@ const PendingTeams = ({ pendingTeams }: Props) => {
     });
     const data = await res.json();
     if (data.success) {
-      setPendingTeamList(pendingTeams.filter((team) => team._id !== teamId));
+      setPendingTeamList(pendingTeams.filter((team) => team.id !== teamId));
     } else {
       console.log("Couldn't confirm team");
     }
   };
 
   const updateTeamsList = () => {
-    return pendingTeamList.map((team) => <PendingTeam team={team} key={team._id} confirmOrRejectTeam={confirmOrRejectTeam.bind(this)} />);
+    return pendingTeamList.map((team) => <PendingTeam team={team} key={team.id} confirmOrRejectTeam={confirmOrRejectTeam.bind(this)} />);
   };
 
   let teamsList = updateTeamsList();
@@ -71,11 +71,11 @@ const PendingTeams = ({ pendingTeams }: Props) => {
 
 const PendingTeam = ({ team, confirmOrRejectTeam }: { team: Team, confirmOrRejectTeam: Function }) => {
   const confirmTeam = () => {
-    return confirmOrRejectTeam(team._id, true);
+    return confirmOrRejectTeam(team.id, true);
   };
 
   const rejectTeam = () => {
-    return confirmOrRejectTeam(team._id, false);
+    return confirmOrRejectTeam(team.id, false);
   };
 
   return (

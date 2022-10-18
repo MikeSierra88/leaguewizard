@@ -1,10 +1,12 @@
 import { Team } from '../models/TeamModel';
 
 export interface MatchWithTeamData {
-  _id?: string;
+  id?: string;
   league: string;
+  homeTeamId: string;
   homeTeam: Team;
   homeScore: number;
+  awayTeamId: string;
   awayTeam: Team;
   awayScore: number;
   createdDate?: Date;

@@ -23,7 +23,7 @@ const LeagueTableContainer = ({ leagueId, teams, matches }: Props) => {
             .map((team) => {
               const teamData = calculateTeamData(team, matches);
               return {
-                teamId: team._id,
+                teamId: team.id,
                 leagueId: leagueId,
                 teamName: team.name,
                 fifaTeam: team.fifaTeam,

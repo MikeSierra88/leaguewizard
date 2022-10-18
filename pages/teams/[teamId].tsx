@@ -35,7 +35,7 @@ const TeamDetailsPage = withPageAuthRequired(
           <ManageTeamButton
             isOwner={user?.sub === team?.owner}
             isTeamConfirmed={team?.confirmed}
-            teamId={team?._id}
+            teamId={team?.id}
             leagueId={team?.league}
           />
         </Stack>
@@ -46,7 +46,7 @@ const TeamDetailsPage = withPageAuthRequired(
           </Stack>
         </Container>
         <ViewOnlyInfo confirmed={team.confirmed} />
-        <MatchesTable leagueId={team?.league} teamId={team?._id} />
+        <MatchesTable leagueId={team?.league} teamId={team?.id} />
       </Container>
     );
   },

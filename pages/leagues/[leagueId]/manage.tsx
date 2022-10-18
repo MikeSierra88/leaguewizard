@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -15,9 +15,20 @@ import { fetchLeagueDetails, FetchLeagueDetailsResponse } from '../../../service
 const ManageLeaguePage = withPageAuthRequired(
   () => {
     const router = useRouter();
+    const [leagueName, setLeagueName] = useState('');
+    const [league, setLeague] = useState(null);
+    const [teams, setTeams] = useState([]);
 
     const { leagueId } = router.query;
     const { data, error } = useSWR<FetchLeagueDetailsResponse>(leagueId, fetchLeagueDetails);
+
+    useEffect(() => {
+      if (data) {
+        console.log(data);
+        setLeague(data.league);
+        setTeams(data.teams);
+      }
+    }, [data]);
 
     if (!data) {
       return <LoadingScreen loading={true} />;
@@ -25,10 +36,6 @@ const ManageLeaguePage = withPageAuthRequired(
     if (error) {
       return <div>Error: {error}</div>;
     }
-
-    const { teams, league } = data;
-
-    const [leagueName, setLeagueName] = useState(league.name);
 
     const pendingTeams = teams.filter((team) => {
       return team.confirmed === false;
@@ -73,9 +80,9 @@ const ManageLeaguePage = withPageAuthRequired(
             Danger zone
           </Typography>
           {/* Reset */}
-          <ResetLeagueSection leagueId={league._id} />
+          <ResetLeagueSection leagueId={league.id} />
           {/* Delete */}
-          <DeleteLeagueSection leagueId={league._id} />
+          <DeleteLeagueSection leagueId={league.id} />
         </Container>
       </Container>
     ) : (

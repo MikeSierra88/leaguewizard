@@ -11,11 +11,11 @@ type Props = {
 const ManageParticipantsSection = ({ teams, leagueOwner }: Props) => {
   const [teamList, setTeamList] = useState(teams.filter((team) => team.owner !== leagueOwner));
 
-  const removeTeam = (id: string) => setTeamList(teamList.filter((team) => team._id !== id));
+  const removeTeam = (id: string) => setTeamList(teamList.filter((team) => team.id !== id));
 
   const teamRows =
     teamList.length > 0 ? (
-      teamList.map((team) => <ManageParticipantsTableRow key={team._id} team={team} removeTeamFromList={removeTeam.bind(this)} />)
+      teamList.map((team) => <ManageParticipantsTableRow key={team.id} team={team} removeTeamFromList={removeTeam.bind(this)} />)
     ) : (
       <Typography>No other teams in league. Try inviting some of your friends!</Typography>
     );

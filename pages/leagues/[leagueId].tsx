@@ -37,21 +37,21 @@ const LeagueDetailsPage = withPageAuthRequired(
           <MuiNextLink href="/dashboard" underline="none">
             <Button variant="contained">Back</Button>
           </MuiNextLink>
-          <ManageLeagueButton isOwner={user?.sub === league.owner} leagueId={league._id} />
+          <ManageLeagueButton isOwner={user?.sub === league.owner} leagueId={league.id} />
         </Stack>
         <LeagueViewOnlyInfo confirmed={ownTeam?.confirmed} />
         <h1>
           {league.name}
           {user?.sub === league.owner ? (
-            <MuiNextLink href={`/leagues/${league._id}/manage`} underline="none" sx={{ marginLeft: '0.5rem' }}>
+            <MuiNextLink href={`/leagues/${league.id}/manage`} underline="none" sx={{ marginLeft: '0.5rem' }}>
               <EditIcon />
             </MuiNextLink>
           ) : (
             <></>
           )}
         </h1>
-        <LeagueTableContainer teams={teams} leagueId={league._id} matches={matches} />
-        <MatchesTable leagueId={league._id} />
+        <LeagueTableContainer teams={teams} leagueId={league.id} matches={matches} />
+        <MatchesTable leagueId={league.id} />
       </Container>
     );
   },

@@ -25,11 +25,10 @@ const NewMatchForm = ({ league, teams }: Props) => {
   const [failureAlertOpen, setFailureAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const UUIDRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+
   const newMatchSchema = object({
-    formHomeTeam: string()
-      .min(1, { message: 'You must select a home team' })
-      // Mongo ID regex
-      .regex(/^[a-f\d]{24}$/i, { message: 'Invalid team' }),
+    formHomeTeam: string().min(1, { message: 'You must select a home team' }).regex(UUIDRegExp, { message: 'Invalid team' }),
     formHomeScore: string()
       .refine((val) => !Number.isNaN(parseInt(val)), {
         message: 'Score must be a number',
@@ -37,10 +36,7 @@ const NewMatchForm = ({ league, teams }: Props) => {
       .refine((val) => parseInt(val) >= 0, {
         message: 'Score cannot be negative',
       }),
-    formAwayTeam: string()
-      .min(1, { message: 'You must select an away team' })
-      // Mongo ID regex
-      .regex(/^[a-f\d]{24}$/i, { message: 'Invalid team' }),
+    formAwayTeam: string().min(1, { message: 'You must select an away team' }).regex(UUIDRegExp, { message: 'Invalid team' }),
     formAwayScore: string()
       .refine((val) => !Number.isNaN(parseInt(val)), {
         message: 'Score must be a number',
@@ -49,6 +45,7 @@ const NewMatchForm = ({ league, teams }: Props) => {
         message: 'Score cannot be negative',
       }),
   }).superRefine((data, ctx) => {
+    console.log(data);
     if (data.formHomeTeam === data.formAwayTeam) {
       ctx.addIssue({
         code: ZodIssueCode.custom,
@@ -61,7 +58,7 @@ const NewMatchForm = ({ league, teams }: Props) => {
         path: ['formAwayTeam'],
       });
     }
-    if (!isLeagueOwner && ownTeam._id !== data.formAwayTeam && ownTeam._id !== data.formHomeTeam) {
+    if (!isLeagueOwner && ownTeam.id !== data.formAwayTeam && ownTeam.id !== data.formHomeTeam) {
       ctx.addIssue({
         code: ZodIssueCode.custom,
         message: 'One of the teams must be your own',
@@ -94,13 +91,13 @@ const NewMatchForm = ({ league, teams }: Props) => {
   const onSubmitHandler: SubmitHandler<NewMatchInput> = async (values) => {
     try {
       setLoading(true);
-      await fetch(`/api/leagues/${league._id}/matches`, {
+      await fetch(`/api/leagues/${league.id}/matches`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          league: league._id,
+          league: league.id,
           homeTeam: values.formHomeTeam,
           homeScore: values.formHomeScore,
           awayTeam: values.formAwayTeam,
@@ -123,12 +120,12 @@ const NewMatchForm = ({ league, teams }: Props) => {
   };
 
   const teamDropdownItems = teams.map((team) => (
-    <MenuItem key={team._id} value={team._id}>
+    <MenuItem key={team.id} value={team.id}>
       {team.name}
     </MenuItem>
   ));
   const fifaTeamDropdownItems = teams.map((team) => (
-    <MenuItem key={team._id} value={team._id}>
+    <MenuItem key={team.id} value={team.id}>
       {team.fifaTeam}
     </MenuItem>
   ));

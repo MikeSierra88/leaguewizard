@@ -37,7 +37,7 @@ const MatchesTable = ({ leagueId, teamId }: Props) => {
   ];
 
   const rows = data.data.map((match: MatchWithTeamData) => ({
-    id: match._id,
+    id: match.id,
     date: DateTime.fromISO(match.createdDate).toISODate(),
     homeTeam: match.homeTeam.name,
     homeFifaTeam: match.homeTeam.fifaTeam,
