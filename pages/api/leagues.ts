@@ -21,7 +21,6 @@ export default withApiAuthRequired(async function handler(req, res) {
             createdDate: true,
           },
         });
-        console.log('leagues from prisma', leagues);
         return res.status(200).json({ success: true, data: leagues });
       } catch (error) {
         console.error('Error while processing GET', error);
@@ -42,7 +41,6 @@ export default withApiAuthRequired(async function handler(req, res) {
             },
           },
         });
-        console.log('league created', createLeague);
         return res.status(201).json({ success: true, data: { league: { ...createLeague } } });
       } catch (error) {
         return res.status(400).json({ success: false, error });

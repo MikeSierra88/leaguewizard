@@ -29,14 +29,14 @@ const TeamDetailsPage = withPageAuthRequired(
     return (
       <Container>
         <Stack direction="row" justifyContent="space-between" sx={{ marginTop: '1rem' }}>
-          <MuiNextLink href={`/leagues/${team?.league}`} underline="none">
+          <MuiNextLink href={`/leagues/${team?.leagueId}`} underline="none">
             <Button variant="contained">Back to league</Button>
           </MuiNextLink>
           <ManageTeamButton
             isOwner={user?.sub === team?.owner}
             isTeamConfirmed={team?.confirmed}
             teamId={team?.id}
-            leagueId={team?.league}
+            leagueId={team?.leagueId}
           />
         </Stack>
         <Container>
@@ -46,7 +46,7 @@ const TeamDetailsPage = withPageAuthRequired(
           </Stack>
         </Container>
         <ViewOnlyInfo confirmed={team.confirmed} />
-        <MatchesTable leagueId={team?.league} teamId={team?.id} />
+        <MatchesTable leagueId={team?.leagueId} teamId={team?.id} />
       </Container>
     );
   },

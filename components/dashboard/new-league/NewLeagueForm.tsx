@@ -65,7 +65,6 @@ const DashNewLeagueForm = () => {
         }),
       });
       const jsonResponse = await res.json();
-      console.log('Created league', jsonResponse);
       setLoading(false);
       if (jsonResponse.success) {
         setNewLeagueId(jsonResponse.data.league.id);

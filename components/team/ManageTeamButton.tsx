@@ -30,7 +30,6 @@ const ManageTeamButton = ({ isOwner, isTeamConfirmed, teamId, leagueId }: Props)
         method: 'DELETE',
       })
         .then(() => {
-          console.log('Team deleted');
           router.push('/dashboard');
         })
         .catch((err) => console.error(err));

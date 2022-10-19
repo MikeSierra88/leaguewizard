@@ -19,7 +19,6 @@ const DeleteLeagueSection = ({ leagueId }: Props) => {
     setConfirmDialogOpen(false);
     if (confirmationResponse === ConfirmationDialogResponse.CONFIRM) {
       setLoading(true);
-      console.log('deleting league');
       try {
         const res = await fetch(`/api/leagues/${leagueId}`, {
           method: 'DELETE',

@@ -24,7 +24,6 @@ const ManageLeaguePage = withPageAuthRequired(
 
     useEffect(() => {
       if (data) {
-        console.log(data);
         setLeague(data.league);
         setTeams(data.teams);
       }
