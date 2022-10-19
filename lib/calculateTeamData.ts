@@ -12,8 +12,6 @@ export type LeagueTableTeamData = {
 export const calculateTeamData = (team: Team, matches: MatchWithTeamData[]): LeagueTableTeamData => {
   if (!team || !matches) return null;
 
-  console.log(matches);
-
   const sumOfArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
   const teamMatches = matches.filter((match) => team.id === match.homeTeamId || team.id === match.awayTeamId);

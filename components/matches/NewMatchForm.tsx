@@ -45,7 +45,6 @@ const NewMatchForm = ({ league, teams }: Props) => {
         message: 'Score cannot be negative',
       }),
   }).superRefine((data, ctx) => {
-    console.log(data);
     if (data.formHomeTeam === data.formAwayTeam) {
       ctx.addIssue({
         code: ZodIssueCode.custom,

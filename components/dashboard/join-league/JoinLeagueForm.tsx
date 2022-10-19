@@ -59,7 +59,6 @@ const DashJoinLeagueForm = () => {
         body: JSON.stringify(newTeamRequest),
       });
       const jsonResponse = await response.json();
-      console.log('New team created', jsonResponse);
       setLoading(false);
       if (jsonResponse.success) {
         setNewLeagueId(jsonResponse.data.league);

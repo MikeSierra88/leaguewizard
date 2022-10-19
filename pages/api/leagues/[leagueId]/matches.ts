@@ -15,6 +15,9 @@ export default withApiAuthRequired(async (req, res) => {
     case 'GET':
       try {
         const league = await prisma.league.findUnique({ where: { id: leagueId } });
+        if (!league) {
+          return res.status(404).json({ success: false });
+        }
         if (league.owner === user.sub || league.participants.includes(user.sub)) {
           let matches;
           matches = await prisma.match.findMany({

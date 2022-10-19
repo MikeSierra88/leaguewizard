@@ -41,7 +41,6 @@ export default withApiAuthRequired(async (req, res) => {
         if (!leagueToUpdate) {
           return res.status(404).json({ success: false });
         }
-        console.log('leagueToUpdate', leagueToUpdate);
         if (leagueToUpdate.owner === user?.sub) {
           const inviteCode = await generateCode();
           await prisma.inviteCode.create({

@@ -19,7 +19,6 @@ const PendingTeams = ({ pendingTeams }: Props) => {
     if (data.success) {
       setPendingTeamList(pendingTeams.filter((team) => team.id !== teamId));
     } else {
-      console.log("Couldn't confirm team");
     }
   };
 
