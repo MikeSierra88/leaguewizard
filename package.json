@@ -28,7 +28,7 @@
     "@mui/material": "^5.10.9",
     "@mui/x-data-grid": "^5.17.7",
     "@prisma/client": "^4.5.0",
-    "auth0": "^2.43.0",
+    "auth0": "^3.0.1",
     "clsx": "^1.1.1",
     "luxon": "^3.0.1",
     "next": "^12.3.1",
